@@ -9,14 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+ public function up(): void
 {
     Schema::create('mensajeros', function (Blueprint $table) {
         $table->id();
-        $table->string('nombre', 20)->nullable();
-        $table->string('apellido', 20)->nullable();
-        $table->string('telefono', 20)->nullable();
+        $table->string('nombre', 50)->nullable();
+        $table->string('apellido', 50)->nullable();
+        
+        // Datos de contacto tradicionales
+        $table->string('telefono', 25)->nullable();
         $table->string('correo', 100)->nullable();
+
+        $table->string('whatsapp_id')->nullable()->unique(); 
+        $table->string('telegram_id')->nullable()->unique();
+        $table->string('instagram_id')->nullable()->unique();
+
         $table->timestamps();
     });
 }
