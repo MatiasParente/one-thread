@@ -13,6 +13,16 @@ class Categoria extends Model
 
     }
 
+public function admins()
+{
+    return $this->belongsToMany(
+        Admin::class, 
+        'admin_categorias', 
+        'id_categoria', 
+        'id_admin'
+    );
+}
+
     public function tipo(): HasMany{
         return $this->hasMany(Tipo::class);
     }
