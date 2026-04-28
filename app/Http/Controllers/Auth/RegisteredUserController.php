@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use App\Models\Admin;
+use App\Models\Categoria;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -12,16 +13,17 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
      */
-    public function create(): Response
+    public function create(): \Inertia\Response
     {
-        return Inertia::render('Auth/Register');
+    return Inertia::render('Auth/Register', [
+        'categorias' => Categoria::all(['id', 'nombre']) 
+    ]);
     }
 
     /**
@@ -30,23 +32,34 @@ class RegisteredUserController extends Controller
      * @throws ValidationException
      */
     public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        'telefono' => 'required|string|max:20',
+        'categorias_ids' => 'required|array', // Validamos que sea un array
+        'categorias_ids.*' => 'exists:categorias,id', // Y que cada ID exista
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
 
-        event(new Registered($user));
+    $admin = Admin::create([
+        'id_user' => $user->id,
+        'nombre' => $request->name,
+        'telefono' => $request->telefono,
+    ]);
 
-        Auth::login($user);
+    // Usamos el método sincronizar o adjuntar
+    $admin->categorias()->attach($request->categorias_ids);
 
-        return redirect(route('dashboard', absolute: false));
-    }
+    event(new Registered($user));
+    Auth::login($user);
+
+    return redirect(route('dashboard'));
+}
 }
