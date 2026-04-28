@@ -16,7 +16,6 @@ return new class extends Migration
         $table->foreignId('id_user')->unique()->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
         $table->string('nombre', 40)->nullable();
         $table->string('telefono', 20)->nullable();
-        $table->foreignId('id_categoria')->constrained('categorias')->cascadeOnUpdate()->restrictOnDelete();
         $table->timestamps();
     });
 }
