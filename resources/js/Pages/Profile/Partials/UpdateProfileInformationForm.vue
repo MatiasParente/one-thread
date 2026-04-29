@@ -5,13 +5,11 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 
-defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
+const props = defineProps({
+    mustVerifyEmail: { type: Boolean },
+    status: { type: String },
+    admin: { type: Object },
+    allCategorias: { type: Array }, 
 });
 
 const user = usePage().props.auth.user;
@@ -19,6 +17,8 @@ const user = usePage().props.auth.user;
 const form = useForm({
     name: user.name,
     email: user.email,
+    telefono: props.admin?.telefono || '',
+    categorias_ids: props.admin?.categorias?.map(cat => cat.id) || [],
 });
 </script>
 
@@ -89,6 +89,37 @@ const form = useForm({
                     A new verification link has been sent to your email address.
                 </div>
             </div>
+
+            <div class="mt-4">
+    <InputLabel for="telefono" value="Teléfono" />
+    <TextInput
+        id="telefono"
+        type="text"
+        class="mt-1 block w-full"
+        v-model="form.telefono"
+        required
+    />
+    <InputError class="mt-2" :message="form.errors.telefono" />
+</div>
+
+<div class="mt-4">
+    <InputLabel value="Mis Categorías" />
+    <div class="grid grid-cols-2 gap-2 mt-2">
+        <div v-for="cat in allCategorias" :key="cat.id" class="flex items-center">
+            <input 
+                type="checkbox" 
+                :id="'edit-cat-' + cat.id"
+                :value="cat.id" 
+                v-model="form.categorias_ids" 
+                class="rounded dark:bg-gray-900 border-gray-300 text-indigo-600 shadow-sm"
+            />
+            <label :for="'edit-cat-' + cat.id" class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                {{ cat.nombre }}
+            </label>
+        </div>
+    </div>
+    <InputError class="mt-2" :message="form.errors.categorias_ids" />
+</div>
 
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">Save</PrimaryButton>

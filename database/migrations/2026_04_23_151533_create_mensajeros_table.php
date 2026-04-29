@@ -16,7 +16,6 @@ return new class extends Migration
         $table->string('nombre', 50)->nullable();
         $table->string('apellido', 50)->nullable();
         
-        // Datos de contacto tradicionales
         $table->string('telefono', 25)->nullable();
         $table->string('correo', 100)->nullable();
 
