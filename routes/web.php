@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MensajeController;
+use App\Models\Mensaje_Clasificado;
+use App\Http\Controllers\MensajeClasificadoController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -15,8 +18,12 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    $mensajes = Mensaje_Clasificado::all();
+    return Inertia::render('Dashboard', ['mensajes' => $mensajes]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/mensajes', [MensajeController::class, 'index'])->name('mensajes.index');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
