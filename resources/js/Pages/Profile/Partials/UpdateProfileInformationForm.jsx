@@ -2,26 +2,33 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
+import { Transition } from '@headlessui/react';
 
-export default function UpdateProfileInformation({
-    mustVerifyEmail,
-    status,
-    className = '',
-}) {
+export default function UpdateProfileInformation({ mustVerifyEmail, status, admin, allCategorias, className = '' }) {
     const user = usePage().props.auth.user;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
-        useForm({
-            name: user.name,
-            email: user.email,
-        });
+    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
+        name: user.name,
+        email: user.email,
+        telefono: admin?.telefono || '',
+        categorias_ids: admin?.categorias?.map(cat => cat.id) || [],
+    });
 
     const submit = (e) => {
         e.preventDefault();
-
         patch(route('profile.update'));
+    };
+
+    // Manejador manual para los checkboxes (React no tiene v-model)
+    const handleCategoryChange = (id) => {
+        let newIds = [...data.categorias_ids];
+        if (newIds.includes(id)) {
+            newIds = newIds.filter(catId => catId !== id);
+        } else {
+            newIds.push(id);
+        }
+        setData('categorias_ids', newIds);
     };
 
     return (
@@ -30,7 +37,6 @@ export default function UpdateProfileInformation({
                 <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     Profile Information
                 </h2>
-
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                     Update your account's profile information and email address.
                 </p>
@@ -39,7 +45,6 @@ export default function UpdateProfileInformation({
             <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
                     <InputLabel htmlFor="name" value="Name" />
-
                     <TextInput
                         id="name"
                         className="mt-1 block w-full"
@@ -49,13 +54,11 @@ export default function UpdateProfileInformation({
                         isFocused
                         autoComplete="name"
                     />
-
                     <InputError className="mt-2" message={errors.name} />
                 </div>
 
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
-
                     <TextInput
                         id="email"
                         type="email"
@@ -65,7 +68,6 @@ export default function UpdateProfileInformation({
                         required
                         autoComplete="username"
                     />
-
                     <InputError className="mt-2" message={errors.email} />
                 </div>
 
@@ -82,15 +84,51 @@ export default function UpdateProfileInformation({
                                 Click here to re-send the verification email.
                             </Link>
                         </p>
-
                         {status === 'verification-link-sent' && (
                             <div className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
-                                A new verification link has been sent to your
-                                email address.
+                                A new verification link has been sent to your email address.
                             </div>
                         )}
                     </div>
                 )}
+
+                <div>
+                    <InputLabel htmlFor="telefono" value="Teléfono" />
+                    <TextInput
+                        id="telefono"
+                        type="text"
+                        className="mt-1 block w-full"
+                        value={data.telefono}
+                        onChange={(e) => setData('telefono', e.target.value)}
+                        required
+                    />
+                    <InputError className="mt-2" message={errors.telefono} />
+                </div>
+
+                <div>
+                    <InputLabel value="Mis Categorías" />
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                        {allCategorias?.map((cat) => (
+                            <div key={cat.id} className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id={`edit-cat-${cat.id}`}
+                                    value={cat.id}
+                                    checked={data.categorias_ids.includes(cat.id)}
+                                    onChange={() => handleCategoryChange(cat.id)}
+                                    className="rounded dark:bg-gray-900 border-gray-300 text-indigo-600 shadow-sm"
+                                />
+                                <label 
+                                    htmlFor={`edit-cat-${cat.id}`} 
+                                    className="ml-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer"
+                                >
+                                    {cat.nombre}
+                                </label>
+                            </div>
+                        ))}
+                    </div>
+                    <InputError className="mt-2" message={errors.categorias_ids} />
+                </div>
 
                 <div className="flex items-center gap-4">
                     <PrimaryButton disabled={processing}>Save</PrimaryButton>

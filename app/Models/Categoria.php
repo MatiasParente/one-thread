@@ -26,5 +26,4 @@ public function admins()
     public function tipos(): HasMany{
         return $this->hasMany(Tipo::class, 'id_categoria');
     }
-
 }
