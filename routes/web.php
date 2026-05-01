@@ -7,6 +7,8 @@ use App\Http\Controllers\MensajeController;
 use App\Models\Mensaje_Clasificado;
 use App\Http\Controllers\MensajeClasificadoController;
 use Inertia\Inertia;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\TipoController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -29,6 +31,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+    
+  
+    Route::resource('categorias', CategoriaController::class);
+    
+   
+    Route::resource('tipos', TipoController::class);
 });
 
 require __DIR__.'/auth.php';
