@@ -23,8 +23,8 @@ public function admins()
     );
 }
 
-    public function tipo(): HasMany{
-        return $this->hasMany(Tipo::class);
+    public function tipos(): HasMany{
+        return $this->hasMany(Tipo::class, 'id_categoria');
     }
-    //
+
 }
