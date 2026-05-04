@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import '../../css/mensajes.css';
+import NormalButton from '@/Components/NormalButton';
 
 export default function Dashboard({ mensajes }) {
     return (
@@ -12,6 +13,16 @@ export default function Dashboard({ mensajes }) {
             }
         >
             <Head title="Dashboard" />
+
+            
+                <NormalButton href='mensajes'>
+                    Ir a mensajes
+                </NormalButton>
+                
+                <NormalButton href={route('mensajes.create')}>
+                    Crear Mensaje
+                </NormalButton>
+        
 
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -25,6 +36,7 @@ export default function Dashboard({ mensajes }) {
                                         <th>Resumen</th>
                                         <th>Prioridad</th>
                                         <th>Requiere Revision</th>
+                                        <th>Accion</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -34,7 +46,10 @@ export default function Dashboard({ mensajes }) {
                                                     <tr key={index}>
                                                         <td> {mensaje.resumen} </td>
                                                         <td> {mensaje.prioridad} </td>
-                                                        <td> {mensaje.requiere_revision} </td>
+                                                        <td> {mensaje.requiere_revision ? 'Sí' : 'No'} </td>
+                                                        <td>
+                                                            <NormalButton href={route('mensajes.show', mensaje.id)}> Ver Mensaje</NormalButton>
+                                                        </td>
                                                     </tr>
                                                 ))
                                         ) : (
