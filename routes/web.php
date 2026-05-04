@@ -24,6 +24,11 @@ Route::get('/dashboard', function () {
 
 Route::get('/mensajes', [MensajeController::class, 'index'])->name('mensajes.index');
 
+Route::resource('mensajes', MensajeClasificadoController::class)
+    ->only(['create', 'store', 'edit', 'update', 'destroy','show'])
+    ->middleware(['auth', 'verified']);
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
