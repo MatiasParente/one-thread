@@ -5,13 +5,14 @@ import NormalButton from '@/Components/NormalButton';
 
 export default function Edit({ mensaje }) {
     const { data, setData, put, processing, errors } = useForm({
-        contenido: mensaje.contenido,
-        origen: mensaje.origen
+        resumen: mensaje.resumen,
+        prioridad: mensaje.prioridad,
+        requiere_revision: mensaje.requiere_revision
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        put(route('mensajes-simples.update', mensaje.id));
+        put(route('mensajes-clasificados.update', mensaje.id));
     };
 
     return (
@@ -24,28 +25,36 @@ export default function Edit({ mensaje }) {
                     <div className="bg-white p-6 shadow sm:rounded-lg dark:bg-gray-800">
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label>Contenido *</label>
+                                <label>Resumen *</label>
                                 <input
                                     type="text"
-                                    value={data.contenido}
-                                    onChange={(e) => setData('contenido', e.target.value)}
+                                    value={data.resumen}
+                                    onChange={(e) => setData('resumen', e.target.value)}
                                     className="w-full rounded border p-2"
                                 />
-                                {errors.contenido && <div className="text-red-500">{errors.resumen}</div>}
+                                {errors.resumen && <div className="text-red-500">{errors.resumen}</div>}
                             </div>
 
                             <div>
                                 <label>Prioridad *</label>
                                 <select
-                                    value={data.origen}
-                                    onChange={(e) => setData('origen', e.target.value)}
+                                    value={data.prioridad}
+                                    onChange={(e) => setData('prioridad', e.target.value)}
                                     className="w-full rounded border p-2"
                                 >
-                                    <option value="Telegram">Telegram</option>
-                                    <option value="Instagram">Instagram</option>
-                                    <option value="Whatsapp">Whatsapp</option>
-                                    <option value="Gmail">Gmail</option>
+                                    <option value="Alta">Alta</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Baja">Baja</option>
                                 </select>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={data.requiere_revision}
+                                    onChange={(e) => setData('requiere_revision', e.target.checked)}
+                                />
+                                <label>Requiere revisión</label>
                             </div>
 
                             <div className="flex justify-end">

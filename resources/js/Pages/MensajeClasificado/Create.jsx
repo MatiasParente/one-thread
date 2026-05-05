@@ -5,14 +5,15 @@ import NormalButton from '@/Components/NormalButton';
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
-        contenido: '',
-        origen: '',
-        id_mensajero: 1
+        resumen: '',
+        prioridad: 'media',
+        requiere_revision: false,
+        id_mensaje: 2
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('mensajes-simples.store'));
+        post(route('mensajes-clasificados.store'));
     };
 
     return (
@@ -26,29 +27,38 @@ export default function Create() {
                     <div className="bg-white p-6 shadow sm:rounded-lg dark:bg-gray-800">
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block font-medium">Contenido *</label>
+                                <label className="block font-medium">Resumen *</label>
                                 <input
                                     type="text"
-                                    value={data.contenido}
-                                    onChange={(e) => setData('contenido', e.target.value)}
+                                    value={data.resumen}
+                                    onChange={(e) => setData('resumen', e.target.value)}
                                     className="w-full rounded border p-2"
                                 />
-                                {errors.contenido && <div className="text-red-500 text-sm">{errors.resumen}</div>}
+                                {errors.resumen && <div className="text-red-500 text-sm">{errors.resumen}</div>}
                             </div>
 
                             <div>
-                                <label className="block font-medium">Origen *</label>
+                                <label className="block font-medium">Prioridad *</label>
                                 <select
-                                    value={data.origen}
-                                    onChange={(e) => setData('origen', e.target.value)}
+                                    value={data.prioridad}
+                                    onChange={(e) => setData('prioridad', e.target.value)}
                                     className="w-full rounded border p-2"
                                 >
-                                    <option value="Telegram">Telegram</option>
-                                    <option value="Instagram">Instagram</option>
-                                    <option value="Whatsapp">Whatsapp</option>
-                                    <option value="Gmail">Gmail</option>
+                                    <option value="alta">Alta</option>
+                                    <option value="media">Media</option>
+                                    <option value="baja">Baja</option>
                                 </select>
-                                {errors.origen && <div className="text-red-500 text-sm">{errors.prioridad}</div>}
+                                {errors.prioridad && <div className="text-red-500 text-sm">{errors.prioridad}</div>}
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={data.requiere_revision}
+                                    onChange={(e) => setData('requiere_revision', e.target.checked)}
+                                />
+                                <label>Requiere revisión</label>
+                                {errors.requiere_revision && <div className="text-red-500 text-sm">{errors.requiere_revision}</div>}
                             </div>
 
 

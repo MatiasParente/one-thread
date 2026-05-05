@@ -6,7 +6,7 @@ import NormalButton from '@/Components/NormalButton';
 export default function Show({ mensaje }) {
      const handleDelete = (id, resumen) => {
         if (confirm(`¿Eliminar mensaje "${resumen}"?`)) {
-            router.delete(route('mensajes.destroy', id));
+            router.delete(route('mensajes-clasificados.destroy', id));
         }
     };
     return (
@@ -22,7 +22,7 @@ export default function Show({ mensaje }) {
                             <Link href={route('dashboard')}>
                                 <NormalButton>Volver</NormalButton>
                             </Link>
-                            <Link href={route('mensajes.edit', mensaje.id)}>
+                            <Link href={route('mensajes-clasificados.edit', mensaje.id)}>
                                 <NormalButton>Editar</NormalButton>
                             </Link>
                             <NormalButton

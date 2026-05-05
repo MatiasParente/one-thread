@@ -15,11 +15,11 @@ export default function Dashboard({ mensajes }) {
             <Head title="Dashboard" />
 
             
-                <NormalButton href='mensajes'>
+                <NormalButton href={route('mensajes-simples.index')}>
                     Ir a mensajes
                 </NormalButton>
                 
-                <NormalButton href={route('mensajes.create')}>
+                <NormalButton href={route('mensajes-clasificados.create')}>
                     Crear Mensaje
                 </NormalButton>
         
@@ -48,7 +48,7 @@ export default function Dashboard({ mensajes }) {
                                                         <td> {mensaje.prioridad} </td>
                                                         <td> {mensaje.requiere_revision ? 'Sí' : 'No'} </td>
                                                         <td>
-                                                            <NormalButton href={route('mensajes.show', mensaje.id)}> Ver Mensaje</NormalButton>
+                                                            <NormalButton href={route('mensajes-clasificados.show', mensaje.id)}> Ver Mensaje</NormalButton>
                                                         </td>
                                                     </tr>
                                                 ))

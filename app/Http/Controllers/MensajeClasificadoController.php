@@ -21,7 +21,7 @@ class MensajeClasificadoController extends Controller
 
     public function create()
     {
-        return Inertia::render('Mensaje/Create');
+        return Inertia::render('MensajeClasificado/Create');
     }
 
     
@@ -43,7 +43,7 @@ class MensajeClasificadoController extends Controller
     public function show($id)
     {
         $mensaje = Mensaje_Clasificado::findOrFail($id);
-        return Inertia::render('Mensaje/Show', [
+        return Inertia::render('MensajeClasificado/Show', [
             'mensaje' => $mensaje,
         ]);
     }
@@ -52,7 +52,7 @@ class MensajeClasificadoController extends Controller
     public function edit($id)
     {
         $mensaje = Mensaje_Clasificado::findOrFail($id);
-        return Inertia::render('Mensaje/Edit', [
+        return Inertia::render('MensajeClasificado/Edit', [
             'mensaje' => $mensaje,
         ]);
     }

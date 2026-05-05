@@ -24,13 +24,14 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard', ['mensajes' => $mensajes]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/mensajes', [MensajeController::class, 'index'])->name('mensajes.index');
 
-Route::resource('mensajes', MensajeClasificadoController::class)
+Route::resource('mensajes-clasificados', MensajeClasificadoController::class)
     ->only(['create', 'store', 'edit', 'update', 'destroy','show'])
     ->middleware(['auth', 'verified']);
 
-
+Route::resource('mensajes-simples', MensajeController::class)
+    ->only(['index','create', 'store', 'edit', 'update', 'destroy','show'])
+    ->middleware(['auth', 'verified']);  
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
