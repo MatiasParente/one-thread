@@ -1,5 +1,79 @@
 # AGENTS.md
 
+## Project Overview
+
+**One Thread** es una plataforma SaaS que centraliza los canales de comunicación de PyMEs (Telegram, WhatsApp, Email, etc.) en una única interfaz. Los mensajes recibidos son clasificados automáticamente con IA (Gemini), asignados al agente correspondiente, y priorizados para optimizar tiempos de respuesta y reducir costos operativos.
+
+### Objetivo
+Proveer a PyMEs una herramienta simple y accesible para gestionar la atención al cliente multicanal, con clasificación inteligente de mensajes y asignación automática a agentes.
+
+### Propósito/Misión
+Centralizar la comunicación empresarial, clasificar mensajes automáticamente con IA, y asignarlos al personal adecuado — ahorrando tiempo, esfuerzo y dinero.
+
+### Usuarios objetivo
+- **Administradores**: Dueños/encargados del negocio que configuran el sistema y supervisan operaciones
+- **Agentes/Operadores**: Personal que atiende directamente los mensajes de los clientes
+- **Clientes externos**: Los clientes del negocio (no acceden al sistema, solo envían mensajes por los canales integrados)
+
+### Estado actual
+MVP/Prototipo en desarrollo. Equipo de 2-3 desarrolladores. Plazo estimado: 1-2 meses para versión funcional.
+
+### Región
+Uruguay
+
+### Canales de comunicación (MVP)
+- Telegram (primera integración)
+- Email
+- WhatsApp (futuro)
+
+### Funcionalidades core del MVP
+1. Recepción de mensajes desde canales integrados
+2. Clasificación automática con IA (Gemini - capa gratuita)
+3. Asignación de mensajes a agentes
+4. Historial de conversaciones por cliente
+5. Dashboard con métricas y reportes
+6. Gestión de usuarios y roles
+
+### Datos capturados por mensaje
+- Contenido del mensaje
+- Datos del contacto (nombre, teléfono, email)
+- Canal de origen
+- Timestamp
+- Clasificación IA
+- Prioridad (urgente, normal, bajo)
+- Estado (nuevo, en proceso, resuelto)
+
+### Arquitectura de integración
+- **Laravel orquesta**: Laravel recibe, n8n clasifica, Laravel asigna
+- **IA**: Google Gemini (capa gratuita)
+- **Integración n8n**: Por definir (API REST, webhooks, o acceso directo a DB)
+
+### Modelo de negocio
+- Suscripción por planes (plan único actualmente)
+- Target: PyMEs
+
+### Diferenciador clave
+Simplicidad y UX — fácil de configurar y usar.
+
+### KPIs de éxito
+- Reducción de tiempo de respuesta
+- Volumen de mensajes procesados
+- Satisfacción del cliente (CSAT)
+- Ahorro de tiempo del equipo
+
+### Infraestructura
+- Hosting: VPS/Servidor propio
+- Móvil: No planeada (solo web responsive)
+- Dominio: No definido aún
+
+### Integraciones adicionales
+Ninguna por ahora (enfoque en el MVP core)
+
+### Design System
+Ver `.agents/DESIGN_SYSTEM.md` — tokens de color, tipografía, espaciado, componentes UI, patrones de interacción y accesibilidad. Todas las decisiones estéticas deben basarse en ese documento.
+
+---
+
 ## Stack
 
 - Laravel 13 + PHP 8.3+, React 18 + Inertia.js v2, Tailwind CSS 3, Vite 8
