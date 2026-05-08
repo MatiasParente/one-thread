@@ -7,7 +7,7 @@ export default function Edit({ mensaje }) {
     const { data, setData, put, processing, errors } = useForm({
         resumen: mensaje.resumen,
         prioridad: mensaje.prioridad,
-        requiere_revision: mensaje.requiere_revision
+        estado: mensaje.estado
     });
 
     const handleSubmit = (e) => {
@@ -17,7 +17,8 @@ export default function Edit({ mensaje }) {
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="text-xl font-semibold">Editar mensaje</h2>}
+            title="Editar Clasificado"
+            subtitle="Modificar mensaje clasificado"
         >
             <Head title="Editar mensaje" />
             <div className="py-12">
@@ -48,13 +49,19 @@ export default function Edit({ mensaje }) {
                                 </select>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    checked={data.requiere_revision}
-                                    onChange={(e) => setData('requiere_revision', e.target.checked)}
-                                />
-                                <label>Requiere revisión</label>
+                            <div>
+                                <label>Estado *</label>
+                                <select
+                                    value={data.estado}
+                                    onChange={(e) => setData('estado', parseInt(e.target.value))}
+                                    className="w-full rounded border p-2"
+                                >
+                                    <option value="0">Pendiente</option>
+                                    <option value="1">En proceso</option>
+                                    <option value="2">En pausa</option>
+                                    <option value="3">Resuelto</option>
+                                </select>
+                                {errors.estado && <div className="text-red-500">{errors.estado}</div>}
                             </div>
 
                             <div className="flex justify-end">

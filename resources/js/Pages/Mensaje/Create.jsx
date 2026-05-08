@@ -17,7 +17,8 @@ export default function Create() {
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="text-xl font-semibold">Crear mensaje</h2>}
+            title="Nuevo Mensaje"
+            subtitle="Registrar un mensaje simple"
         >
             <Head title="Nuevo mensaje" />
 

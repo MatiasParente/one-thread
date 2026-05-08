@@ -38,7 +38,10 @@ export default function Index({ categorias }) {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout
+            title="Categorías"
+            subtitle="Organización de tipos de consulta"
+        >
             <div className="p-6">
                 <h1 className="text-2xl font-bold mb-6 text-white">Gestión de Categorías</h1>
 

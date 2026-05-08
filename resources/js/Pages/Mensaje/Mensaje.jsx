@@ -15,11 +15,8 @@ export default function Index({ mensajes }) {
 
     return (
         <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                    Gestión de Mensajes 
-                </h2>
-            }
+            title="Mensajes"
+            subtitle="Gestión de mensajes recibidos"
         >
             <Head title="Mensajes" />
 

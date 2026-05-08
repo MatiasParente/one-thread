@@ -10,14 +10,17 @@ export default function Show({ mensaje }) {
         }
     };
     return (
-        <AuthenticatedLayout header={<h2>Detalle del mensaje</h2>}>
+        <AuthenticatedLayout
+            title="Detalle"
+            subtitle="Ver mensaje clasificado"
+        >
             <Head title={mensaje.resumen} />
             <div className="py-12">
                 <div className="mx-auto max-w-3xl">
                     <div className="bg-white p-6 shadow rounded">
                         <h3 className="text-xl font-bold">{mensaje.resumen}</h3>
                         <p><strong>Prioridad:</strong> {mensaje.prioridad}</p>
-                        <p><strong>Requiere revisión:</strong> {mensaje.requiere_revision ? 'Sí' : 'No'}</p>
+                        <p><strong>Estado:</strong> {mensaje.estado_label}</p>
                         <div className="mt-4">
                             <Link href={route('dashboard')}>
                                 <Button>Volver</Button>

@@ -16,7 +16,8 @@ export default function Edit({ mensaje }) {
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="text-xl font-semibold">Editar mensaje</h2>}
+            title="Editar Mensaje"
+            subtitle="Modificar mensaje existente"
         >
             <Head title="Editar mensaje" />
             <div className="py-12">

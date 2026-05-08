@@ -1,19 +1,24 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import Button from '@/Components/Button';
+import StatsCards from '@/Components/StatsCards';
 
-export default function Dashboard({ mensajes }) {
-    const user = usePage().props.auth.user;
+const estadoLabels = {
+    0: { text: 'Pendiente', className: 'bg-primary-light text-primary' },
+    1: { text: 'En proceso', className: 'bg-amber-50 text-amber-700' },
+    2: { text: 'En pausa', className: 'bg-gray-100 text-gray-600' },
+    3: { text: 'Resuelto', className: 'bg-emerald-50 text-emerald-700' },
+};
 
+export default function Dashboard({ stats, mensajes }) {
     return (
         <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Bienvenido {user.name}
-                </h2>
-            }
+            title="Dashboard"
+            subtitle="Resumen de actividad y mensajes"
         >
             <Head title="Dashboard" />
+
+            <StatsCards stats={stats} />
 
             <div className="mb-6 flex gap-3">
                 <Button href={route('mensajes-simples.index')}>
@@ -33,24 +38,31 @@ export default function Dashboard({ mensajes }) {
                             <tr>
                                 <th className="p-3 text-left text-sm font-medium text-gray-600">Resumen</th>
                                 <th className="p-3 text-left text-sm font-medium text-gray-600">Prioridad</th>
-                                <th className="p-3 text-left text-sm font-medium text-gray-600">Requiere Revision</th>
+                                <th className="p-3 text-left text-sm font-medium text-gray-600">Estado</th>
                                 <th className="p-3 text-left text-sm font-medium text-gray-600">Accion</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {mensajes && mensajes.length > 0 ? (
-                                mensajes.map((mensaje) => (
-                                    <tr key={mensaje.id} className="hover:bg-gray-50">
-                                        <td className="p-3 text-sm text-gray-800">{mensaje.resumen}</td>
-                                        <td className="p-3 text-sm text-gray-800">{mensaje.prioridad}</td>
-                                        <td className="p-3 text-sm text-gray-800">{mensaje.requiere_revision ? 'Sí' : 'No'}</td>
-                                        <td className="p-3">
-                                            <Button size="sm" href={route('mensajes-clasificados.show', mensaje.id)}>
-                                                Ver Mensaje
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                ))
+                                mensajes.map((mensaje) => {
+                                    const estado = estadoLabels[mensaje.estado] ?? estadoLabels[0];
+                                    return (
+                                        <tr key={mensaje.id} className="hover:bg-gray-50">
+                                            <td className="p-3 text-sm text-gray-800">{mensaje.resumen}</td>
+                                            <td className="p-3 text-sm text-gray-800">{mensaje.prioridad}</td>
+                                            <td className="p-3">
+                                                <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${estado.className}`}>
+                                                    {estado.text}
+                                                </span>
+                                            </td>
+                                            <td className="p-3">
+                                                <Button size="sm" href={route('mensajes-clasificados.show', mensaje.id)}>
+                                                    Ver Mensaje
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             ) : (
                                 <tr>
                                     <td colSpan="4" className="p-3 text-center text-sm text-gray-500">

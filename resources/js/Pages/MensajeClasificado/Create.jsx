@@ -7,7 +7,7 @@ export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
         resumen: '',
         prioridad: 'media',
-        requiere_revision: false,
+        estado: 0,
         id_mensaje: 2
     });
 
@@ -18,7 +18,8 @@ export default function Create() {
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="text-xl font-semibold">Crear mensaje</h2>}
+            title="Nuevo Clasificado"
+            subtitle="Crear mensaje clasificado"
         >
             <Head title="Nuevo mensaje" />
 
@@ -51,14 +52,19 @@ export default function Create() {
                                 {errors.prioridad && <div className="text-red-500 text-sm">{errors.prioridad}</div>}
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    checked={data.requiere_revision}
-                                    onChange={(e) => setData('requiere_revision', e.target.checked)}
-                                />
-                                <label>Requiere revisión</label>
-                                {errors.requiere_revision && <div className="text-red-500 text-sm">{errors.requiere_revision}</div>}
+                            <div>
+                                <label className="block font-medium">Estado *</label>
+                                <select
+                                    value={data.estado}
+                                    onChange={(e) => setData('estado', parseInt(e.target.value))}
+                                    className="w-full rounded border p-2"
+                                >
+                                    <option value="0">Pendiente</option>
+                                    <option value="1">En proceso</option>
+                                    <option value="2">En pausa</option>
+                                    <option value="3">Resuelto</option>
+                                </select>
+                                {errors.estado && <div className="text-red-500 text-sm">{errors.estado}</div>}
                             </div>
 
 

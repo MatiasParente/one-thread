@@ -1,9 +1,17 @@
 import Sidebar from '@/Components/Sidebar';
 import { useState } from 'react';
+import { Link, usePage } from '@inertiajs/react';
 import { Menu } from 'lucide-react';
 
-export default function AuthenticatedLayout({ header, children }) {
+export default function AuthenticatedLayout({ title, subtitle, children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const user = usePage().props.auth.user;
+    const initials = user.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
 
     return (
         <div className="flex min-h-screen bg-gray-50">
@@ -13,19 +21,40 @@ export default function AuthenticatedLayout({ header, children }) {
             />
 
             <div className="flex flex-1 flex-col lg:ml-0">
-                <header className="flex h-16 items-center border-b border-gray-200 bg-white px-4 lg:px-6">
-                    <button
-                        onClick={() => setSidebarOpen(true)}
-                        className="rounded-sm p-1 text-gray-500 hover:bg-gray-50 hover:text-gray-700 lg:hidden"
-                    >
-                        <Menu size={24} />
-                    </button>
+                <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 lg:px-6">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => setSidebarOpen(true)}
+                            className="rounded-sm p-1 text-gray-500 hover:bg-gray-50 hover:text-gray-700 lg:hidden"
+                        >
+                            <Menu size={24} />
+                        </button>
 
-                    {header && (
-                        <div className="ml-4 lg:ml-0">
-                            {header}
+                        {title && (
+                            <div>
+                                <h1 className="text-lg font-bold leading-tight text-gray-900">
+                                    {title}
+                                </h1>
+                                {subtitle && (
+                                    <p className="text-sm text-gray-500">
+                                        {subtitle}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    <Link
+                        href={route('profile.edit')}
+                        className="flex items-center gap-3 rounded-md px-2 py-1 transition-colors hover:bg-gray-50"
+                    >
+                        <span className="hidden text-sm font-medium text-gray-700 sm:block">
+                            {user.name}
+                        </span>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-light text-xs font-semibold text-primary">
+                            {initials}
                         </div>
-                    )}
+                    </Link>
                 </header>
 
                 <main className="flex-1 p-4 lg:p-6">
