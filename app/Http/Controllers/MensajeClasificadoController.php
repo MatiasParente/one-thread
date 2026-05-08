@@ -29,9 +29,9 @@ class MensajeClasificadoController extends Controller
     {
         $validated = $request->validate([
             'resumen' => 'required|string|max:255',
-            'prioridad' => 'required|string|in:alta,media,baja',
+            'prioridad' => 'required|string|in:Alta,Media,Baja',
             'requiere_revision' => 'required|boolean',
-            'id_mensaje' => 'required||integer',
+            'id_mensaje' => 'required|integer',
         ]);
 
         Mensaje_Clasificado::create($validated);

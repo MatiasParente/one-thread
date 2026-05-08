@@ -18,6 +18,6 @@ class Tipo_Mensaje extends Model
 
     public function mensajes(): BelongsTo
     {
-        return $this->belongsTo(Mensaje_Clasificado::class);
+        return $this->belongsTo(Mensaje_Clasificado::class, 'id_mensaje');
     }
 }

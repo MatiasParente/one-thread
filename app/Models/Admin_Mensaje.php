@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Admin_Mensaje extends Model
 {
+    protected $table = 'admin_mensaje';
+    protected $fillable = ['id_admin', 'id_mensaje'];
     //
     public function mensaje(): BelongsTo
     {
