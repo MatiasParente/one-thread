@@ -30,7 +30,7 @@ class MensajeClasificadoController extends Controller
         $validated = $request->validate([
             'resumen' => 'required|string|max:255',
             'prioridad' => 'required|string|in:Alta,Media,Baja',
-            'requiere_revision' => 'required|boolean',
+            'estado' => 'required|integer|in:0,1,2,3',
             'id_mensaje' => 'required|integer',
         ]);
 
@@ -65,7 +65,7 @@ class MensajeClasificadoController extends Controller
         $validated = $request->validate([
             'resumen' => 'required|string|max:255',
             'prioridad' => 'required|string|in:Alta,Media,Baja',
-            'requiere_revision' => 'required|boolean'
+            'estado' => 'required|integer|in:0,1,2,3'
         ]);
 
         $mensaje->update($validated);

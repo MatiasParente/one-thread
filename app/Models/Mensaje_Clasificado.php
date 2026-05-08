@@ -9,7 +9,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Mensaje_Clasificado extends Model
 {
     protected $table = 'mensajes_clasificados';
-    protected $fillable = ['id','id_mensaje','resumen','prioridad','puntaje_confianza','requiere_revision','created_at','updated_at']; 
+    protected $fillable = ['id','id_mensaje','resumen','prioridad','puntaje_confianza','estado','created_at','updated_at'];
+    protected $appends = ['estado_label'];
+
+    const ESTADO_PENDIENTE = 0;
+    const ESTADO_EN_PROCESO = 1;
+    const ESTADO_EN_PAUSA = 2;
+    const ESTADO_RESUELTO = 3;
+
+    const ESTADOS = [
+        self::ESTADO_PENDIENTE => 'Pendiente',
+        self::ESTADO_EN_PROCESO => 'En proceso',
+        self::ESTADO_EN_PAUSA => 'En pausa',
+        self::ESTADO_RESUELTO => 'Resuelto',
+    ];
+
+    public function getEstadoLabelAttribute(): string
+    {
+        return self::ESTADOS[$this->estado] ?? 'Desconocido';
+    }
+
     //
     public function tipo_mensaje(): HasMany
     {
