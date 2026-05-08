@@ -15,59 +15,59 @@ import {
     X,
 } from 'lucide-react';
 
-const navItems = [
-    {
-        label: 'Dashboard',
-        href: route('dashboard'),
-        active: route().current('dashboard'),
-        icon: LayoutDashboard,
-    },
-    {
-        label: 'Mensajes',
-        href: route('mensajes-simples.index'),
-        active: route().current('mensajes-simples.*'),
-        icon: MessageSquare,
-    },
-    {
-        label: 'Clasificados',
-        href: route('mensajes-clasificados.create'),
-        active: route().current('mensajes-clasificados.*'),
-        icon: Sparkles,
-    },
-    {
-        label: 'Categorías',
-        href: route('categorias.index'),
-        active: route().current('categorias.*'),
-        icon: FolderTree,
-    },
-    {
-        label: 'Tipos',
-        href: route('tipos.index'),
-        active: route().current('tipos.*'),
-        icon: Tags,
-    },
-    {
-        label: 'Usuarios',
-        href: '#',
-        active: false,
-        icon: Users,
-    },
-    {
-        label: 'Reportes',
-        href: '#',
-        active: false,
-        icon: BarChart3,
-    },
-    {
-        label: 'Configuración',
-        href: '#',
-        active: false,
-        icon: Settings,
-    },
-];
-
 export default function Sidebar({ show, onClose }) {
     const user = usePage().props.auth.user;
+
+    const navItems = [
+        {
+            label: 'Dashboard',
+            href: route('dashboard'),
+            active: route().current('dashboard'),
+            icon: LayoutDashboard,
+        },
+        {
+            label: 'Mensajes',
+            href: route('mensajes-simples.index'),
+            active: route().current('mensajes-simples.*'),
+            icon: MessageSquare,
+        },
+        {
+            label: 'Clasificados',
+            href: route('mensajes-clasificados.create'),
+            active: route().current('mensajes-clasificados.*'),
+            icon: Sparkles,
+        },
+        {
+            label: 'Categorías',
+            href: route('categorias.index'),
+            active: route().current('categorias.*'),
+            icon: FolderTree,
+        },
+        {
+            label: 'Tipos',
+            href: route('tipos.index'),
+            active: route().current('tipos.*'),
+            icon: Tags,
+        },
+        {
+            label: 'Usuarios',
+            href: '#',
+            active: false,
+            icon: Users,
+        },
+        {
+            label: 'Reportes',
+            href: '#',
+            active: false,
+            icon: BarChart3,
+        },
+        {
+            label: 'Configuración',
+            href: '#',
+            active: false,
+            icon: Settings,
+        },
+    ];
 
     return (
         <>
