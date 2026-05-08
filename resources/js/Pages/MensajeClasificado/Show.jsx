@@ -1,7 +1,7 @@
 // resources/js/Pages/Mensajes/Show.jsx
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
-import NormalButton from '@/Components/NormalButton';
+import Button from '@/Components/Button';
 
 export default function Show({ mensaje }) {
      const handleDelete = (id, resumen) => {
@@ -20,15 +20,15 @@ export default function Show({ mensaje }) {
                         <p><strong>Requiere revisión:</strong> {mensaje.requiere_revision ? 'Sí' : 'No'}</p>
                         <div className="mt-4">
                             <Link href={route('dashboard')}>
-                                <NormalButton>Volver</NormalButton>
+                                <Button>Volver</Button>
                             </Link>
                             <Link href={route('mensajes-clasificados.edit', mensaje.id)}>
-                                <NormalButton>Editar</NormalButton>
+                                <Button>Editar</Button>
                             </Link>
-                            <NormalButton
+                            <Button
                             size="sm"
                             variant="danger"
-                            onClick={() => handleDelete(mensaje.id, mensaje.resumen)}>Eliminar</NormalButton>
+                            onClick={() => handleDelete(mensaje.id, mensaje.resumen)}>Eliminar</Button>
                         </div>
                     </div>
                 </div>

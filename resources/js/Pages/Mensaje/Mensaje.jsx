@@ -1,7 +1,7 @@
 // resources/js/Pages/Mensajes/Index.jsx
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage, router } from '@inertiajs/react';
-import NormalButton from '@/Components/NormalButton';
+import Button from '@/Components/Button';
 import '../../../css/mensajes.css'
 
 export default function Index({ mensajes }) {
@@ -30,7 +30,7 @@ export default function Index({ mensajes }) {
                         <div className="p-6">
                             <div className="mb-4 flex justify-end">
                                 <Link href={route('mensajes-simples.create')}>
-                                    <NormalButton>+ Nuevo Mensaje</NormalButton>
+                                    <Button>+ Nuevo Mensaje</Button>
                                 </Link>
                             </div>
 
@@ -53,15 +53,15 @@ export default function Index({ mensajes }) {
                                                     <td>{mensaje.fecha_envion}</td>
                                                     <td className="space-x-2">
                                                         <Link href={route('mensajes-simples.edit', mensaje.id)}>
-                                                            <NormalButton size="sm" variant="secondary">Editar</NormalButton>
+                                                            <Button size="sm" variant="secondary">Editar</Button>
                                                         </Link>
-                                                        <NormalButton
+                                                        <Button
                                                             size="sm"
                                                             variant="danger"
                                                             onClick={() => handleDelete(mensaje.id, mensaje.contenido)}
                                                         >
                                                             Eliminar
-                                                        </NormalButton>
+                                                        </Button>
                                                     </td>
                                                 </tr>
                                             ))

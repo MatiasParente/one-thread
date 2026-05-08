@@ -1,7 +1,7 @@
 // resources/js/Pages/Mensajes/Edit.jsx
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import NormalButton from '@/Components/NormalButton';
+import Button from '@/Components/Button';
 
 export default function Edit({ mensaje }) {
     const { data, setData, put, processing, errors } = useForm({
@@ -58,9 +58,9 @@ export default function Edit({ mensaje }) {
                             </div>
 
                             <div className="flex justify-end">
-                                <NormalButton type="submit" disabled={processing}>
+                                <Button type="submit" disabled={processing}>
                                     Actualizar
-                                </NormalButton>
+                                </Button>
                             </div>
                         </form>
                     </div>

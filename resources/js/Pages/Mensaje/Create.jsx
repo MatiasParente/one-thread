@@ -1,7 +1,7 @@
 // resources/js/Pages/Mensajes/Create.jsx
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import NormalButton from '@/Components/NormalButton';
+import Button from '@/Components/Button';
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
@@ -53,9 +53,9 @@ export default function Create() {
 
 
                             <div className="flex justify-end">
-                                <NormalButton type="submit" disabled={processing}>
+                                <Button type="submit" disabled={processing}>
                                     Guardar mensaje
-                                </NormalButton>
+                                </Button>
                             </div>
                         </form>
                     </div>

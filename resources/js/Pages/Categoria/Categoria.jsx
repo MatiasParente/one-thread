@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import Button from '@/Components/Button';
 
 export default function Index({ categorias }) {
     const [editing, setEditing] = useState(null);
@@ -57,23 +58,22 @@ export default function Index({ categorias }) {
                                 <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>
                             )}
                         </div>
-                        <button
+                        <Button
                             type="submit"
-                            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                         >
                             {editing ? 'Actualizar' : 'Guardar'}
-                        </button>
+                        </Button>
                         {editing && (
-                            <button
+                            <Button
+                                variant="secondary"
                                 type="button"
                                 onClick={() => {
                                     setEditing(null);
                                     reset();
                                 }}
-                                className="bg-gray-500 text-white px-4 py-2 rounded"
                             >
                                 Cancelar
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </form>
@@ -96,18 +96,20 @@ export default function Index({ categorias }) {
                                     <td className="p-3">{categoria.nombre}</td>
                                 
                                     <td className="p-3">
-                                        <button
+                                        <Button
+                                            size="sm"
                                             onClick={() => handleEdit(categoria)}
-                                            className="bg-blue-500 text-white px-3 py-1 rounded mr-2 hover:bg-blue-600"
+                                            className="mr-2"
                                         >
                                             Editar
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="danger"
                                             onClick={() => handleDelete(categoria.id)}
-                                            className="bg-red-500 text-white px-3 py-1 rounded"
                                         >
                                             Eliminar
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                             ))}

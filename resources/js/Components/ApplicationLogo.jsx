@@ -1,6 +1,8 @@
-export default function ApplicationLogo() {
+export default function ApplicationLogo({ className = '' }) {
     return (
-        <span className="text-3xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-400">
+        <span
+            className={`text-3xl font-extrabold tracking-tighter text-primary ${className}`}
+        >
             ONE THREAD
         </span>
     );

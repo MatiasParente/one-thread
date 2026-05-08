@@ -1,7 +1,7 @@
 import GuestLayout from '@/Layouts/GuestLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
+import Button from '@/Components/Button';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
 
@@ -129,9 +129,9 @@ export default function Register({ categorias = [] }) { // Definimos un array va
                     <Link href={route('login')} className="rounded-md text-sm text-gray-600 underline hover:text-gray-900">
                         ¿Ya tienes cuenta?
                     </Link>
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <Button type="submit" className="ms-4" disabled={processing}>
                         Registrar Administrador
-                    </PrimaryButton>
+                    </Button>
                 </div>
             </form>
         </GuestLayout>
