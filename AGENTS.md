@@ -131,6 +131,45 @@ resources/js/
 
 FK convention: `id_{referenced_table}` (e.g. `id_user`, `id_admin`, `id_categoria`).
 
+## Backend: Controllers & Routes
+
+> **REGLA**: Cada vez que se cree, modifique o elimine un controller, 
+> **actualizar esta sección**. Los agentes dependen de esta documentación 
+> para saber qué operaciones CRUD están disponibles y cuáles no.
+
+### Controllers implementados
+
+| Controller | Entity | Métodos implementados | Rutas | Notas |
+|---|---|---|---|---|
+| `MensajeController` | `Mensaje` | index, create, store, edit, update, destroy | `mensajes-simples.*` | Falta `show` (ruta registrada pero método no existe) |
+| `MensajeClasificadoController` | `Mensaje_Clasificado` | create, store, show, edit, update, destroy | `mensajes-clasificados.*` | `index` no está en `only()` pero existe en el controller |
+| `CategoriaController` | `Categoria` | index, store, update, destroy | `categorias.*` (resource completo) | Faltan `create`, `show`, `edit` (ruta registrada, método no existe) |
+| `TipoController` | `Tipo` | index, store, update, destroy | `tipos.*` (resource completo) | Faltan `create`, `show`, `edit` (ruta registrada, método no existe) |
+| `ProfileController` | `User` / `Admin` | edit, update, destroy | `GET/PATCH/DELETE /profile` | Implementado completamente |
+| `AdminController` | `Admin` | index | **Sin ruta** | Implementado pero no expuesto en `web.php` |
+
+### Controllers stub (vacíos)
+
+| Controller | Entity | Estado |
+|---|---|---|
+| `MensajeroController` | `Mensajero` | Stub vacío — sin métodos ni rutas |
+| `TipoMensajeController` | `Tipo_Mensaje` | Stub vacío — sin métodos ni rutas |
+| `AdminCategoriaController` | `Admin_Categoria` | Stub vacío — sin métodos ni rutas |
+| `AdminMensajeController` | `Admin_Mensaje` | Stub vacío — sin métodos ni rutas |
+
+### Auth controllers (Breeze)
+
+| Controller | Rutas | Estado |
+|---|---|---|
+| `AuthenticatedSessionController` | `GET/POST /login`, `POST /logout` | Implementado |
+| `RegisteredUserController` | `GET/POST /register` | Implementado (customizado: crea User + Admin + Categorias) |
+| `PasswordResetLinkController` | `GET/POST /forgot-password` | Implementado (Breeze default) |
+| `NewPasswordController` | `GET /reset-password/{token}`, `POST /reset-password` | Implementado (Breeze default) |
+| `PasswordController` | `PUT /password` | Implementado (Breeze default) |
+| `ConfirmablePasswordController` | `GET/POST /confirm-password` | Implementado (Breeze default) |
+| `EmailVerificationPromptController` | `GET /verify-email` | Implementado (Breeze default) |
+| `VerifyEmailController` | `GET /verify-email/{id}/{hash}` | Implementado (Breeze default) |
+
 ## Conventions that differ from defaults
 
 - Models use **snake_case class names** (`Admin_Categoria`, not `AdminCategoria`) — non-standard for Laravel
