@@ -3,9 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MensajeController;
-use App\Models\Mensaje_Clasificado;
 use App\Http\Controllers\MensajeClasificadoController;
-use Inertia\Inertia;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\TipoController;
 
@@ -13,10 +11,9 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/dashboard', function () {
-    $mensajes = Mensaje_Clasificado::all();
-    return Inertia::render('Dashboard', ['mensajes' => $mensajes]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', \App\Http\Controllers\DashboardController::class)
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 
 Route::resource('mensajes-clasificados', MensajeClasificadoController::class)

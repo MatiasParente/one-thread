@@ -23,7 +23,7 @@ class Mensaje extends Model
 
     public function admin_mensajes(): HasMany
     {
-        return $this->hasMany(Admin_Mensaje::class);
+        return $this->hasMany(Admin_Mensaje::class, 'id_mensaje');
     }
     
 }
