@@ -51,7 +51,7 @@ export default function Sidebar({ show, onClose }) {
         },
         {
             label: 'Usuarios',
-            href: '#',
+            href: route('mensajeros.index'),
             active: false,
             icon: Users,
         },

@@ -6,6 +6,7 @@ use App\Http\Controllers\MensajeController;
 use App\Http\Controllers\MensajeClasificadoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\TipoController;
+use App\Http\Controllers\MensajeroController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -22,7 +23,11 @@ Route::resource('mensajes-clasificados', MensajeClasificadoController::class)
 
 Route::resource('mensajes-simples', MensajeController::class)
     ->only(['index','create', 'store', 'edit', 'update', 'destroy','show'])
-    ->middleware(['auth', 'verified']);  
+    ->middleware(['auth', 'verified']);
+    
+Route::resource('mensajeros', MensajeroController::class)
+    ->only(['index'])
+    ->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
