@@ -11,7 +11,7 @@ class MensajeClasificadoSeeder extends Seeder
     public function run(): void
     {
         $mensajes = Mensaje::all();
-        
+
         $clasificados = [
             1 => ['resumen' => 'Cliente reporta producto dañado en pedido #12345', 'prioridad' => 'Alta'],
             2 => ['resumen' => 'Solicitud de información y precios del producto X-200', 'prioridad' => 'Baja'],
@@ -114,26 +114,26 @@ class MensajeClasificadoSeeder extends Seeder
             99 => ['resumen' => 'Queja grave: Factura de otro cliente en su paquete', 'prioridad' => 'Alta'],
             100 => ['resumen' => 'Felicitación a Juan de soporte técnico', 'prioridad' => 'Baja'],
         ];
-        
+
         foreach ($mensajes as $index => $mensaje) {
             $id = $index + 1;
-            
-            if (!isset($clasificados[$id])) {
+
+            if (! isset($clasificados[$id])) {
                 continue;
             }
-            
+
             $datos = $clasificados[$id];
             $puntajeConfianza = ($datos['prioridad'] === 'Alta') ? 0.92 : (($datos['prioridad'] === 'Media') ? 0.85 : 0.78);
-            
+
             Mensaje_Clasificado::create([
                 'id_mensaje' => $mensaje->id,
                 'resumen' => $datos['resumen'],
                 'prioridad' => $datos['prioridad'],
                 'puntaje_confianza' => $puntajeConfianza,
-                'requiere_revision' => ($datos['prioridad'] === 'Alta'),
+                'estado' => ($datos['prioridad'] === 'Alta'),
             ]);
         }
-        
-        $this->command->info("✅ Creados " . Mensaje_Clasificado::count() . " mensajes clasificados");
+
+        $this->command->info('✅ Creados '.Mensaje_Clasificado::count().' mensajes clasificados');
     }
 }

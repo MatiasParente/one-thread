@@ -27,7 +27,7 @@ class TipoSeeder extends Seeder
                 ['id' => $tipo['id']],
                 [
                     'nombre' => $tipo['nombre'],
-                    'id_categoria' => $tipo['id_categoria']
+                    'id_categoria' => $tipo['id_categoria'],
                 ]
             );
         }

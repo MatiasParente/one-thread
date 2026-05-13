@@ -10,14 +10,14 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('tipos', function (Blueprint $table) {
-        $table->id();
-        $table->string('nombre', 40);
-        $table->foreignId('id_categoria')->constrained('categorias')->cascadeOnUpdate()->restrictOnDelete();
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('tipos', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre', 40);
+            $table->foreignId('id_categoria')->constrained('categorias')->cascadeOnUpdate()->restrictOnDelete();
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

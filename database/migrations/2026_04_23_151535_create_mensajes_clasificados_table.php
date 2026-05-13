@@ -10,17 +10,18 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('mensajes_clasificados', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('id_mensaje')->unique()->constrained('mensajes')->cascadeOnUpdate()->cascadeOnDelete();
-        $table->text('resumen')->nullable();
-        $table->enum('prioridad', ['Baja', 'Media', 'Alta']);
-        $table->unsignedTinyInteger('puntaje_confianza')->default(0);
-        $table->boolean('requiere_revision')->default(false);
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('mensajes_clasificados', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_mensaje')->unique()->constrained('mensajes')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->text('resumen')->nullable();
+            $table->enum('prioridad', ['Baja', 'Media', 'Alta']);
+            $table->unsignedTinyInteger('puntaje_confianza')->default(0);
+            $table->boolean('requiere_revision')->default(false);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable();
+        });
+    }
 
     /**
      * Reverse the migrations.

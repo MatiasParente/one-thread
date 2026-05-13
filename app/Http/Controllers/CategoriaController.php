@@ -11,41 +11,42 @@ class CategoriaController extends Controller
     public function index()
     {
         $categorias = Categoria::with('tipos')->get();
-        
+
         return Inertia::render('Categoria/Categoria', [
-            'categorias' => $categorias
+            'categorias' => $categorias,
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255'
+            'nombre' => 'required|string|max:255',
         ]);
-        
+
         Categoria::create([
-            'nombre' => $request->nombre
+            'nombre' => $request->nombre,
         ]);
-        
+
         return redirect()->back();
     }
 
     public function update(Request $request, Categoria $categoria)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255'
+            'nombre' => 'required|string|max:255',
         ]);
-        
+
         $categoria->update([
-            'nombre' => $request->nombre
+            'nombre' => $request->nombre,
         ]);
-        
+
         return redirect()->back();
     }
 
     public function destroy(Categoria $categoria)
     {
         $categoria->delete();
+
         return redirect()->back();
     }
 }

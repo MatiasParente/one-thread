@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mensaje;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Mensaje;
 
 class MensajeController extends Controller
 {
     //
-    public function index(){
+    public function index()
+    {
 
-    $mensajes = Mensaje::all();
+        $mensajes = Mensaje::all();
 
-    return Inertia::render('Mensaje/Mensaje',[
-        'mensajes' => $mensajes,
-    ]);
+        return Inertia::render('Mensaje/Mensaje', [
+            'mensajes' => $mensajes,
+        ]);
     }
 
     public function create()
@@ -23,13 +24,12 @@ class MensajeController extends Controller
         return Inertia::render('Mensaje/Create');
     }
 
-    
     public function store(Request $request)
     {
         $validated = $request->validate([
             'contenido' => 'required|string|max:255',
             'origen' => 'required|string',
-            'id_mensajero' => 'required|integer'
+            'id_mensajero' => 'required|integer',
         ]);
 
         Mensaje::create($validated);
@@ -37,17 +37,14 @@ class MensajeController extends Controller
         return redirect()->route('mensajes-simples.index')->with('success', 'Mensaje creado correctamente.');
     }
 
-    
-
-    
     public function edit($id)
     {
         $mensaje = Mensaje::findOrFail($id);
+
         return Inertia::render('Mensaje/Edit', [
             'mensaje' => $mensaje,
         ]);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -55,7 +52,7 @@ class MensajeController extends Controller
 
         $validated = $request->validate([
             'contenido' => 'required|string|max:255',
-            'origen' => 'required|string'
+            'origen' => 'required|string',
         ]);
 
         $mensaje->update($validated);

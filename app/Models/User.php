@@ -32,8 +32,8 @@ class User extends Authenticatable
 
     // App\Models\User.php
 
-public function admin()
-{
-    return $this->hasOne(Admin::class, 'id_user');
-}
+    public function admin()
+    {
+        return $this->hasOne(Admin::class, 'id_user');
+    }
 }

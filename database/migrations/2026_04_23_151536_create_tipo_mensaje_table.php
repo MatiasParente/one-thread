@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tipo_mensaje', function (Blueprint $table) {
             $table->foreignId('id_mensaje')->constrained('mensajes_clasificados')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('id_tipo')->constrained('tipos')->cascadeOnUpdate()->restrictOnDelete();
-            $table->primary(['id_mensaje','id_tipo']);
+            $table->primary(['id_mensaje', 'id_tipo']);
             $table->timestamps();
         });
     }

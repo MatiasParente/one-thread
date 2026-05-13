@@ -115,16 +115,16 @@ class MensajeSeeder extends Seeder
             ['contenido' => 'La contraseña que me enviaron no funciona. No puedo acceder.', 'origen' => 'Instagram', 'id_mensajero' => 12],
             ['contenido' => 'El producto llegó en perfecto estado y antes de lo previsto. Gracias.', 'origen' => 'Telegram', 'id_mensajero' => 13],
         ];
-        
+
         $fechas = [];
         for ($i = 0; $i < count($mensajes); $i++) {
             $fechas[] = now()->subDays(rand(0, 60))->subHours(rand(0, 23))->subMinutes(rand(0, 59));
         }
         sort($fechas);
-        
+
         foreach ($mensajes as $index => $mensaje) {
             $fecha = $fechas[$index];
-            
+
             Mensaje::create([
                 'contenido' => $mensaje['contenido'],
                 'origen' => $mensaje['origen'],
@@ -134,7 +134,7 @@ class MensajeSeeder extends Seeder
                 'updated_at' => $fecha,
             ]);
         }
-        
-        $this->command->info("✅ Creados " . count($mensajes) . " mensajes");
+
+        $this->command->info('✅ Creados '.count($mensajes).' mensajes');
     }
 }
