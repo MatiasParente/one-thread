@@ -143,8 +143,8 @@ FK convention: `id_{referenced_table}` (e.g. `id_user`, `id_admin`, `id_categori
 |---|---|---|---|---|
 | `MensajeController` | `Mensaje` | index, create, store, edit, update, destroy | `mensajes-simples.*` | Falta `show` (ruta registrada pero método no existe) |
 | `MensajeClasificadoController` | `Mensaje_Clasificado` | create, store, show, edit, update, destroy | `mensajes-clasificados.*` | `index` no está en `only()` pero existe en el controller |
-| `CategoriaController` | `Categoria` | index, store, update, destroy | `categorias.*` (resource completo) | Faltan `create`, `show`, `edit` (ruta registrada, método no existe) |
-| `TipoController` | `Tipo` | index, store, update, destroy | `tipos.*` (resource completo) | Faltan `create`, `show`, `edit` (ruta registrada, método no existe) |
+| `CategoriaController` | `Categoria` | index, store, update, destroy, create, show, edit | `categorias.*` (resource completo) | (ruta registrada, método no existe) |
+| `TipoController` | `Tipo` | index, store, update, destroy, create, show, edit | `tipos.*` (resource completo) | (ruta registrada, método no existe) |
 | `ProfileController` | `User` / `Admin` | edit, update, destroy | `GET/PATCH/DELETE /profile` | Implementado completamente |
 | `AdminController` | `Admin` | index | **Sin ruta** | Implementado pero no expuesto en `web.php` |
 

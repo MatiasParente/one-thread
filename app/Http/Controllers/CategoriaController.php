@@ -16,6 +16,27 @@ class CategoriaController extends Controller
             'categorias' => $categorias
         ]);
     }
+    public function create()
+{
+    $categorias = Categoria::all();
+    return Inertia::render('Categoria/Create', [
+        'categorias' => $categorias
+    ]);
+}
+
+public function show(Categoria $categoria)
+{
+    return Inertia::render('Categoria/Show', [
+        'categoria' => $categoria->load('tipos')
+    ]);
+}
+
+public function edit(Categoria $categoria)
+{
+    return Inertia::render('Categoria/Edit', [
+        'categoria' => $categoria
+    ]);
+}
 
     public function store(Request $request)
     {
