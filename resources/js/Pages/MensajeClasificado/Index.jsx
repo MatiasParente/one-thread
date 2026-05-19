@@ -11,7 +11,6 @@ export default function Index({ mensajes, clientes, categorias, filters }) {
     const [idCategoria, setIdCategoria] = useState(filters.id_categoria || '');
     const [prioridad, setPrioridad] = useState(filters.prioridad || '');
 
-    // Trigger filters update when state changes
     const applyFilters = () => {
         const queryParams = {};
         if (idMensajero) queryParams.id_mensajero = idMensajero;
@@ -50,7 +49,6 @@ export default function Index({ mensajes, clientes, categorias, filters }) {
             <Head title="Mensajes Clasificados" />
 
             <div className="space-y-6">
-                {/* Action Header bar */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white p-4 rounded-md border border-gray-200 shadow-sm">
                     <div className="flex items-center gap-2 text-[#226583]">
                         <Sparkles className="h-5 w-5" />

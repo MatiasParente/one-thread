@@ -1,11 +1,21 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import StatsCards from '@/Components/StatsCards';
 import ChannelDistribution from '@/Components/ChannelDistribution';
 import MessagesByDay from '@/Components/MessagesByDay';
 import QuickSummary from '@/Components/QuickSummary';
+import MensajeTable from '@/Components/MensajesClasificados/MensajeTable';
 
 export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesPorDia, resumenRapido }) {
+    // Declaramos handleDelete para que la tabla pueda borrar registros en el dashboard
+    const handleDelete = (id, resumen) => {
+        if (confirm(`¿Estás seguro de que deseas eliminar el mensaje clasificado: "${resumen}"?`)) {
+            router.delete(route('mensajes-clasificados.destroy', id), {
+                onSuccess: () => router.reload()
+            });
+        }
+    };
+
     return (
         <AuthenticatedLayout
             title="Dashboard"
@@ -16,15 +26,24 @@ export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesP
             <StatsCards stats={stats} />
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+                {/* Tabla de Mensajes Recientes */}
                 <div className="lg:col-span-3">
-                    <div className="rounded-md border border-gray-200 bg-white p-4 shadow-sm">
-                        <h3 className="mb-3 text-sm font-semibold text-gray-900">
-                            Mensajes
-                        </h3>
-                        <p className="text-sm text-gray-400">Para el siguiente sprint profe se lo juramos</p>
+                    <div className="rounded-md border border-gray-200 bg-white p-4 shadow-sm space-y-3">
+                        <div>
+                            <h3 className="text-sm font-bold text-gray-900">
+                                Consultas Recientes Clasificadas
+                            </h3>
+                            <p className="text-xs text-gray-400">Últimos mensajes procesados en tiempo real por la IA</p>
+                        </div>
+                        
+                        <MensajeTable 
+                            mensajes={mensajes} 
+                            handleDelete={handleDelete}
+                        />
                     </div>
                 </div>
 
+                {/* Gráficos y Métricas */}
                 <div className="flex flex-col gap-6">
                     <ChannelDistribution mensajesPorCanal={mensajesPorCanal} />
                     <MessagesByDay mensajesPorDia={mensajesPorDia} />
