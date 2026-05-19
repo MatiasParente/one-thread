@@ -44,11 +44,10 @@ function AdminCard({ admin, isSelected, onSelectPanel, activePanel }) {
 
     return (
         <div
-            className={`flex min-w-[280px] flex-col items-center gap-3 rounded-md border border-t-4 bg-white p-5 shadow-sm transition-all ${
-                isSelected
+            className={`flex min-w-[280px] flex-col items-center gap-3 rounded-md border border-t-4 bg-white p-5 shadow-sm transition-all ${isSelected
                     ? 'border-primary border-t-primary bg-primary-light'
                     : 'border-gray-200 border-t-primary'
-            }`}
+                }`}
         >
             {/* Menú 3 puntos (top-left) */}
             <div className="flex w-full justify-start">
@@ -124,11 +123,10 @@ function AdminCard({ admin, isSelected, onSelectPanel, activePanel }) {
                         key={key}
                         onClick={() => onSelectPanel(key, admin)}
                         title={label}
-                        className={`flex items-center gap-1 rounded-sm px-2 py-1 text-xs font-medium transition-colors ${
-                            isSelected && activePanel === key
+                        className={`flex items-center gap-1 rounded-sm px-2 py-1 text-xs font-medium transition-colors ${isSelected && activePanel === key
                                 ? 'bg-primary text-white'
                                 : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
-                        }`}
+                            }`}
                     >
                         <Icon size={14} />
                         <span className="hidden xl:inline">{label}</span>

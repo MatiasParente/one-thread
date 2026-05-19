@@ -51,8 +51,14 @@ export default function Sidebar({ show, onClose }) {
         },
         {
             label: 'Usuarios',
-            href: route('usuarios.index'),
-            active: route().current('usuarios.*'),
+            href: route('mensajeros.index'),
+            active: false,
+            icon: Users,
+        },
+        {
+            label: 'Agentes',
+            href: route('agentes.index'),
+            active: route().current('agentes.*'),
             icon: Users,
         },
         {

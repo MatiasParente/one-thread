@@ -38,11 +38,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tipos', TipoController::class);
 
     // Rutas de detalle para paneles de agente (deben ir antes del resource)
-    Route::get('usuarios/{admin}/mensajes', [AdminController::class, 'mensajes'])->name('usuarios.mensajes');
-    Route::get('usuarios/{admin}/metricas', [AdminController::class, 'metricas'])->name('usuarios.metricas');
-    Route::get('usuarios/{admin}/carga', [AdminController::class, 'carga'])->name('usuarios.carga');
+    Route::get('agentes/{admin}/mensajes', [AdminController::class, 'mensajes'])->name('agentes.mensajes');
+    Route::get('agentes/{admin}/metricas', [AdminController::class, 'metricas'])->name('agentes.metricas');
+    Route::get('agentes/{admin}/carga', [AdminController::class, 'carga'])->name('agentes.carga');
 
-    Route::resource('usuarios', AdminController::class);
+    Route::resource('agentes', AdminController::class);
 });
 
 require __DIR__.'/auth.php';

@@ -22,7 +22,7 @@ class AdminController extends Controller
      */
     public function index(): Response
     {
-        return Inertia::render('Usuarios/Index', [
+        return Inertia::render('Agentes/Index', [
             'admins' => Admin::with(['user', 'categorias'])->get(),
             'allCategorias' => Categoria::all(['id', 'nombre']),
         ]);
