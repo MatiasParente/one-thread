@@ -3,18 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Mensaje_Clasificado extends Model
 {
     protected $table = 'mensajes_clasificados';
-    protected $fillable = ['id','id_mensaje','resumen','prioridad','puntaje_confianza','estado','created_at','updated_at'];
+
+    protected $fillable = ['id', 'id_mensaje', 'resumen', 'prioridad', 'puntaje_confianza', 'estado', 'created_at', 'updated_at'];
+
     protected $appends = ['estado_label'];
 
     const ESTADO_PENDIENTE = 0;
+
     const ESTADO_EN_PROCESO = 1;
+
     const ESTADO_EN_PAUSA = 2;
+
     const ESTADO_RESUELTO = 3;
 
     const ESTADOS = [
@@ -32,11 +37,11 @@ class Mensaje_Clasificado extends Model
     //
     public function tipo_mensaje(): HasMany
     {
-        return $this->hasMany(Tipo_Mensaje::class);
+        return $this->hasMany(Tipo_Mensaje::class, 'id_mensaje');
     }
 
     public function mensaje(): BelongsTo
     {
-        return $this->belongsTo(Mensaje::class);
+        return $this->belongsTo(Mensaje::class, 'id_mensaje');
     }
 }

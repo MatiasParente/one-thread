@@ -4,6 +4,7 @@ import Button from '@/Components/Button';
 import TextInput from '@/Components/TextInput';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
+import { User, Mail, Phone, FolderHeart } from 'lucide-react';
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, admin, allCategorias, className = '' }) {
     const user = usePage().props.auth.user;
@@ -20,7 +21,6 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, admi
         patch(route('profile.update'));
     };
 
-    // Manejador manual para los checkboxes (React no tiene v-model)
     const handleCategoryChange = (id) => {
         let newIds = [...data.categorias_ids];
         if (newIds.includes(id)) {
@@ -33,36 +33,41 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, admi
 
     return (
         <section className={className}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    Profile Information
+            <header className="pb-4 border-b border-gray-100 mb-6">
+                <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <User className="h-5 w-5 text-[#226583]" />
+                    Información del Perfil
                 </h2>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    Update your account's profile information and email address.
+                <p className="mt-1 text-sm text-gray-500">
+                    Actualiza los datos personales, de contacto y áreas de atención asignadas a tu cuenta.
                 </p>
             </header>
 
-            <form onSubmit={submit} className="mt-6 space-y-6">
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
-                    <TextInput
-                        id="name"
-                        className="mt-1 block w-full"
-                        value={data.name}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                        isFocused
-                        autoComplete="name"
-                    />
+            <form onSubmit={submit} className="space-y-6">
+                {/* Name */}
+                <div className="space-y-1.5">
+                    <InputLabel htmlFor="name" value="Nombre Completo" className="text-xs font-semibold text-gray-600 uppercase" />
+                    <div className="relative">
+                        <TextInput
+                            id="name"
+                            className="block w-full pl-3"
+                            value={data.name}
+                            onChange={(e) => setData('name', e.target.value)}
+                            required
+                            isFocused
+                            autoComplete="name"
+                        />
+                    </div>
                     <InputError className="mt-2" message={errors.name} />
                 </div>
 
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
+                {/* Email */}
+                <div className="space-y-1.5">
+                    <InputLabel htmlFor="email" value="Correo Electrónico" className="text-xs font-semibold text-gray-600 uppercase" />
                     <TextInput
                         id="email"
                         type="email"
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         value={data.email}
                         onChange={(e) => setData('email', e.target.value)}
                         required
@@ -72,42 +77,45 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, admi
                 </div>
 
                 {mustVerifyEmail && user.email_verified_at === null && (
-                    <div>
-                        <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
-                            Your email address is unverified.
-                            <Link
-                                href={route('verification.send')}
-                                method="post"
-                                as="button"
-                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                            >
-                                Click here to re-send the verification email.
-                            </Link>
-                        </p>
+                    <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-md text-sm text-yellow-800">
+                        <p className="font-semibold">Tu dirección de correo no está verificada.</p>
+                        <Link
+                            href={route('verification.send')}
+                            method="post"
+                            as="button"
+                            className="mt-1 text-xs font-bold underline hover:text-yellow-950 focus:outline-none"
+                        >
+                            Haz clic aquí para reenviar el correo de verificación.
+                        </Link>
                         {status === 'verification-link-sent' && (
-                            <div className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
-                                A new verification link has been sent to your email address.
+                            <div className="mt-2 text-xs font-semibold text-green-600">
+                                Se ha enviado un nuevo enlace de verificación a tu correo.
                             </div>
                         )}
                     </div>
                 )}
 
-                <div>
-                    <InputLabel htmlFor="telefono" value="Teléfono" />
+                {/* Phone */}
+                <div className="space-y-1.5">
+                    <InputLabel htmlFor="telefono" value="Teléfono / Celular" className="text-xs font-semibold text-gray-600 uppercase" />
                     <TextInput
                         id="telefono"
                         type="text"
-                        className="mt-1 block w-full"
+                        className="block w-full"
                         value={data.telefono}
                         onChange={(e) => setData('telefono', e.target.value)}
                         required
+                        placeholder="Ej. +598 99 123 456"
                     />
                     <InputError className="mt-2" message={errors.telefono} />
                 </div>
 
-                <div>
-                    <InputLabel value="Mis Categorías" />
-                    <div className="grid grid-cols-2 gap-2 mt-2">
+                {/* Assigned Categories */}
+                <div className="space-y-2 pt-2 border-t border-gray-100">
+                    <InputLabel value="Mis Categorías / Áreas Asignadas" className="text-xs font-semibold text-gray-600 uppercase flex items-center gap-1.5" />
+                    <p className="text-xs text-gray-400">Recibirás y podrás gestionar las consultas asociadas a las siguientes áreas marcadas:</p>
+                    
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 mt-2 bg-gray-50 p-4 rounded-md border border-gray-200">
                         {allCategorias?.map((cat) => (
                             <div key={cat.id} className="flex items-center">
                                 <input
@@ -116,11 +124,11 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, admi
                                     value={cat.id}
                                     checked={data.categorias_ids.includes(cat.id)}
                                     onChange={() => handleCategoryChange(cat.id)}
-                                    className="rounded dark:bg-gray-900 border-gray-300 text-indigo-600 shadow-sm"
+                                    className="rounded border-gray-300 text-[#226583] focus:ring-[#226583] shadow-sm h-4 w-4"
                                 />
                                 <label 
                                     htmlFor={`edit-cat-${cat.id}`} 
-                                    className="ml-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer"
+                                    className="ml-2 text-sm text-gray-700 font-medium cursor-pointer selection:bg-transparent"
                                 >
                                     {cat.nombre}
                                 </label>
@@ -130,18 +138,22 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, admi
                     <InputError className="mt-2" message={errors.categorias_ids} />
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <Button type="submit" disabled={processing}>Save</Button>
+                {/* Actions */}
+                <div className="flex items-center gap-4 pt-4 border-t border-gray-100">
+                    <Button type="submit" disabled={processing} className="min-w-[140px]">
+                        Guardar Cambios
+                    </Button>
 
                     <Transition
                         show={recentlySuccessful}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
+                        enter="transition ease-in-out duration-300"
+                        enterFrom="opacity-0 translate-x-2"
+                        enterTo="opacity-100 translate-x-0"
+                        leave="transition ease-in-out duration-300"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                            Saved.
+                        <p className="text-sm text-green-600 font-semibold">
+                            ¡Guardado con éxito!
                         </p>
                     </Transition>
                 </div>

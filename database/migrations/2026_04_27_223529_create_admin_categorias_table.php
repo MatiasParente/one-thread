@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_admin')->constrained('admins')->cascadeOnDelete();
             $table->foreignId('id_categoria')->constrained('categorias')->cascadeOnDelete();
-            });
+        });
     }
 
     /**

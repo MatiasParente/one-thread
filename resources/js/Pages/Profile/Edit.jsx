@@ -8,29 +8,29 @@ export default function Edit({ mustVerifyEmail, status, admin, allCategorias }) 
     return (
         <AuthenticatedLayout
             title="Mi Perfil"
-            subtitle="Configuración de tu cuenta"
+            subtitle="Configuración y datos personales de tu cuenta"
         >
-            <Head title="Profile" />
+            <Head title="Mi Perfil" />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        <UpdateProfileInformationForm
-                            mustVerifyEmail={mustVerifyEmail}
-                            status={status}
-                            admin={admin}
-                            allCategorias={allCategorias}
-                            className="max-w-xl"
-                        />
-                    </div>
+            <div className="space-y-6 max-w-3xl">
+                {/* Profile Info Form Section */}
+                <div className="bg-white p-6 rounded-md border border-gray-200 shadow-sm">
+                    <UpdateProfileInformationForm
+                        mustVerifyEmail={mustVerifyEmail}
+                        status={status}
+                        admin={admin}
+                        allCategorias={allCategorias}
+                    />
+                </div>
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        <UpdatePasswordForm className="max-w-xl" />
-                    </div>
+                {/* Password Update Form Section */}
+                <div className="bg-white p-6 rounded-md border border-gray-200 shadow-sm">
+                    <UpdatePasswordForm />
+                </div>
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        <DeleteUserForm className="max-w-xl" />
-                    </div>
+                {/* Delete Account Form Section */}
+                <div className="bg-white p-6 rounded-md border border-gray-200 border-red-100 shadow-sm bg-red-50/20">
+                    <DeleteUserForm />
                 </div>
             </div>
         </AuthenticatedLayout>

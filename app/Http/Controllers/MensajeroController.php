@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Mensajero;
+use Inertia\Inertia;
 
 class MensajeroController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
-    $mensajes = Mensajero::all();
+        $mensajes = Mensajero::all();
 
-    return Inertia::render('Mensajero/Mensajero',[
-        'mensajeros' => $mensajes,
-    ]);
+        return Inertia::render('Mensajero/Mensajero', [
+            'mensajeros' => $mensajes,
+        ]);
     }
 }

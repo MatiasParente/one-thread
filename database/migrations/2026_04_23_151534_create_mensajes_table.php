@@ -10,16 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('mensajes', function (Blueprint $table) {
-        $table->id();
-        $table->text('contenido');
-        $table->enum('origen', ['Whatsapp', 'Instagram', 'Telegram', 'Gmail']);
-        $table->dateTime('fecha_envio');
-        $table->foreignId('id_mensajero')->constrained('mensajeros')->cascadeOnUpdate()->restrictOnDelete();
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('mensajes', function (Blueprint $table) {
+            $table->id();
+            $table->text('contenido');
+            $table->enum('origen', ['Whatsapp', 'Instagram', 'Telegram', 'Gmail']);
+            $table->dateTime('fecha_envio');
+            $table->foreignId('id_mensajero')->constrained('mensajeros')->cascadeOnUpdate()->restrictOnDelete();
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

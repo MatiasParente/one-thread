@@ -10,13 +10,13 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('admin_mensaje', function (Blueprint $table) {
-        $table->foreignId('id_admin')->constrained('admins')->cascadeOnUpdate()->restrictOnDelete();
-        $table->foreignId('id_mensaje')->constrained('mensajes')->cascadeOnUpdate()->cascadeOnDelete();
-        $table->primary(['id_admin', 'id_mensaje']);
-    });
-}
+    {
+        Schema::create('admin_mensaje', function (Blueprint $table) {
+            $table->foreignId('id_admin')->constrained('admins')->cascadeOnUpdate()->restrictOnDelete();
+            $table->foreignId('id_mensaje')->constrained('mensajes')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->primary(['id_admin', 'id_mensaje']);
+        });
+    }
 
     /**
      * Reverse the migrations.

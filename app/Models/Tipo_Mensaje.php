@@ -9,11 +9,12 @@ class Tipo_Mensaje extends Model
 {
     //
     protected $table = 'tipo_mensaje';
-    protected $fillable = ['id_mensaje','id_tipo','created_at','updated_at']; 
+
+    protected $fillable = ['id_mensaje', 'id_tipo', 'created_at', 'updated_at'];
 
     public function tipos(): BelongsTo
     {
-        return $this->belongsTo(Tipo::class);
+        return $this->belongsTo(Tipo::class, 'id_tipo');
     }
 
     public function mensajes(): BelongsTo

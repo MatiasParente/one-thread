@@ -7,23 +7,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Categoria extends Model
 {
-    protected $fillable = ['id','nombre','created_at','updated_at'];
-    public function admin_categorias(): HasMany{
+    protected $fillable = ['id', 'nombre', 'created_at', 'updated_at'];
+
+    public function admin_categorias(): HasMany
+    {
         return $this->hasMany(Admin_Categoria::class);
 
     }
 
-public function admins()
-{
-    return $this->belongsToMany(
-        Admin::class, 
-        'admin_categorias', 
-        'id_categoria', 
-        'id_admin'
-    );
-}
+    public function admins()
+    {
+        return $this->belongsToMany(
+            Admin::class,
+            'admin_categorias',
+            'id_categoria',
+            'id_admin'
+        );
+    }
 
-    public function tipos(): HasMany{
+    public function tipos(): HasMany
+    {
         return $this->hasMany(Tipo::class, 'id_categoria');
     }
 }

@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Admin extends Model
 {
     // Laravel por defecto buscará 'admins', así que esto está bien:
-    protected $table = 'admins'; 
+    protected $table = 'admins';
 
     protected $fillable = [
-        'id_user', 
-        'nombre', 
+        'id_user',
+        'nombre',
         'telefono',
         // NO incluyas id_categoria aquí porque no existe en esta tabla
     ];
@@ -25,7 +25,7 @@ class Admin extends Model
     public function categorias()
     {
         return $this->belongsToMany(
-            Categoria::class, 
+            Categoria::class,
             'admin_categorias', // nombre de la tabla pivote
             'id_admin',         // FK en la pivote que apunta a admins
             'id_categoria'      // FK en la pivote que apunta a categorias
