@@ -4,6 +4,8 @@ import './css/mensajes.css';
 
 export default function MensajeTable({ mensajes = [], handleDelete }) {
     
+    // aca tomamos todas las categorias relacionadas con el mensaje, tambien filtramos para que
+    // no se repitan las categorias si tiene mas de una relacion
     const getCategories = (msg) => {
         if (!msg.tipo_mensaje) return [];
         const seenIds = new Set();
@@ -18,7 +20,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                 return true;
             });
     };
-
+ // pa los css
     const getPriorityBadgeClass = (priority) => {
         switch (priority) {
             case 'Alta':
@@ -41,7 +43,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
             default: return 'bg-gray-100 text-gray-800';
         }
     };
-
+// como usamos num para los estados le ponemos nombre aca
     const getEstadoLabel = (estado) => {
         switch (parseInt(estado)) {
             case 0: return 'Pendiente';
@@ -52,6 +54,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
         }
     };
 
+    // colores segun el origen del mensaje
     const getChannelBadgeClass = (origen) => {
         switch (origen?.toLowerCase()) {
             case 'telegram':
@@ -80,6 +83,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
+                        {/*Usamos .map para recorrer los mensajes clasificados*/}
                         {mensajes?.length > 0 ? (
                             mensajes.map((mensajeClasificado) => {
                                 const cliente = mensajeClasificado.mensaje?.mensajeros;
@@ -91,7 +95,6 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                         key={mensajeClasificado.id}
                                         className="hover:bg-gray-50/75 transition-colors"
                                     >
-                                        {/* Messenger / Client & Channel info */}
                                         <td className="px-6 py-4">
                                             <div className="font-semibold text-gray-900">
                                                 {cliente ? `${cliente.nombre} ${cliente.apellido}` : 'Cliente Desconocido'}
@@ -103,7 +106,6 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                             )}
                                         </td>
 
-                                        {/* AI Summary and Confidence index */}
                                         <td className="px-6 py-4 max-w-xs md:max-w-md">
                                             <div className="font-medium text-gray-800 line-clamp-2">
                                                 {mensajeClasificado.resumen || 'Sin resumen'}
@@ -112,13 +114,13 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                                 <span>Confianza:</span>
                                                 <span className="font-mono font-semibold text-gray-500">
                                                     {mensajeClasificado.puntaje_confianza <= 1 
+                                                    // si es menor o igual a 1 lo multiplicamos por 100 para que sea un porcentaje
                                                         ? Math.round(mensajeClasificado.puntaje_confianza * 100) 
                                                         : Math.round(mensajeClasificado.puntaje_confianza)}%
                                                 </span>
                                             </div>
                                         </td>
 
-                                        {/* Categories / Areas */}
                                         <td className="px-6 py-4">
                                             {categories.length > 0 ? (
                                                 <div className="flex flex-wrap gap-1">
@@ -136,21 +138,18 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                             )}
                                         </td>
 
-                                        {/* Priority Badge */}
                                         <td className="px-6 py-4 text-center">
                                             <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${getPriorityBadgeClass(mensajeClasificado.prioridad)}`}>
                                                 {mensajeClasificado.prioridad}
                                             </span>
                                         </td>
 
-                                        {/* Status Badge */}
                                         <td className="px-6 py-4 text-center">
                                             <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${getEstadoBadgeClass(mensajeClasificado.estado)}`}>
                                                 {getEstadoLabel(mensajeClasificado.estado)}
                                             </span>
                                         </td>
-
-                                        {/* Action Buttons */}
+                                        {/*Aca van los botones de acciones*/}
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-1">
                                                 <Link href={route('mensajes-clasificados.show', mensajeClasificado.id)}>

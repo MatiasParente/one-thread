@@ -35,7 +35,7 @@ export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesP
                             </h3>
                             <p className="text-xs text-gray-400">Últimos mensajes procesados en tiempo real por la IA</p>
                         </div>
-                        
+{/*ACa iria el componente de los filtros pero como se necesitan una banda de datos no lo puse, por ahora solo esta el que tiene los datos del mensaje clasificado */}
                         <MensajeTable 
                             mensajes={mensajes} 
                             handleDelete={handleDelete}
