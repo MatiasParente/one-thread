@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './MessengerList.css';
 import Button from './Button';
 
 export default function MessengerList({ mensajeros }) {
@@ -40,7 +39,14 @@ export default function MessengerList({ mensajeros }) {
                     src={canal.icon}
                     alt={canal.name}
                     title={canal.name}
-                    className="canal-icon"
+                    style={{
+                        width: '1.8rem',
+                        height: '1.8rem',
+                        objectFit: 'contain',
+                        verticalAlign: 'middle',
+                        display: 'inline-block',
+                        marginRight: index < canales.filter(c => c.condition).length - 1 ? '4px' : 0
+                    }}
                 />
             ));
     };
@@ -48,24 +54,24 @@ export default function MessengerList({ mensajeros }) {
     return (
 
         <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Telefono</th>
-                        <th>Correo</th>
-                        <th>Canales</th>
+            <table className="w-full">
+                <thead >
+                    <tr className="text-sm font-semibold text-gray-100" >
+                        <th className="p-3 text-left">Nombre</th>
+                        <th className="p-3 text-left">Apellido</th>
+                        <th className="p-3 text-left">Telefono</th>
+                        <th className="p-3 text-left">Correo</th>
+                        <th className="p-3 text-left">Canales</th>
                     </tr>
                 </thead>
                 <tbody>
                     {mensajeros.length > 0 ? (
                         mensajerosPagina.map(mensajero => (
-                            <tr key={mensajero.id}>
-                                <td >{mensajero.nombre}</td>
-                                <td>{mensajero.apellido}</td>
-                                <td>{mensajero.telefono}</td>
-                                <td>{mensajero.correo}</td>
+                            <tr key={mensajero.id} className="border-t border-gray-100 hover:bg-gray-50">
+                                <td className="p-3 font-medium text-gray-800">{mensajero.nombre}</td>
+                                <td className="p-3 font-medium text-gray-800">{mensajero.apellido}</td>
+                                <td className="p-3 font-medium text-gray-800">{mensajero.telefono}</td>
+                                <td className="p-3 font-medium text-gray-800">{mensajero.correo}</td>
                                 <td className='canales'>
                                     {getCanales(mensajero)}
                                 </td>

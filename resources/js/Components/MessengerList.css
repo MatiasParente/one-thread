@@ -45,7 +45,7 @@ tr:hover{
 
 .canales{
     vertical-align: middle;
-    white-space: nowrap;  /* Evita que las imágenes pasen a nueva línea */
+    white-space: nowrap;  
 }
 
 .canal-icon {
@@ -53,12 +53,12 @@ tr:hover{
     height: 1.8rem;
     object-fit: contain;
     vertical-align: middle;
-    display: inline-block;  /* Fuerza comportamiento inline-block */
-    margin-right: 4px;      /* Espacio entre iconos (space-1) */
+    display: inline-block;  
+    margin-right: 4px;      
 }
 
 .canal-icon:last-child {
-    margin-right: 0;        /* Elimina margen del último icono */
+    margin-right: 0;        
 }
 
 .botones{
