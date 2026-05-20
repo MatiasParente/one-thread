@@ -52,7 +52,7 @@ export default function Sidebar({ show, onClose }) {
         {
             label: 'Usuarios',
             href: route('mensajeros.index'),
-            active: false,
+            active: route().current('mensajeros.*'),
             icon: Users,
         },
         {

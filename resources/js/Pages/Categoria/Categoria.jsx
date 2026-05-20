@@ -24,7 +24,7 @@ export default function Index({ categorias }) {
                 <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
                     <table className="w-full">
                         <thead className="bg-gray-50">
-                            <tr className="text-sm font-semibold text-gray-100">
+                            <tr className="text-sm font-semibold text-gray-100" style={{ backgroundColor: "#226583" }}>
                                 <th className="p-3 text-left">ID</th>
                                 <th className="p-3 text-left">Nombre</th>
                                 <th className="p-3 text-left">Acciones</th>
