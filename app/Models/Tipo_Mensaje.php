@@ -14,7 +14,7 @@ class Tipo_Mensaje extends Model
 
     public function tipos(): BelongsTo
     {
-        return $this->belongsTo(Tipo::class);
+        return $this->belongsTo(Tipo::class, 'id_tipo');
     }
 
     public function mensajes(): BelongsTo

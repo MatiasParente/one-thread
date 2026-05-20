@@ -1,102 +1,30 @@
-import { useState } from "react";
-import { useForm, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import Button from '@/Components/Button';
 
-export default function Index({ tipos, categorias }) {
-    const [editing, setEditing] = useState(null);
-    const { data, setData, post, put, reset } = useForm({
-        nombre: '',
-        id_categoria: ''
-    });
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editing) {
-            put(route('tipos.update', editing), {
-                onSuccess: () => {
-                    setEditing(null);
-                    reset();
-                }
-            });
-        } else {
-            post(route('tipos.store'), {
-                onSuccess: () => reset()
-            });
-        }
-    };
-
+export default function Index({ tipos }) {
     const handleDelete = (id) => {
         if (confirm('¿Eliminar este tipo?')) {
             router.delete(route('tipos.destroy', id));
         }
     };
 
-    const handleEdit = (tipo) => {
-        setEditing(tipo.id);
-        setData({
-            nombre: tipo.nombre,
-            id_categoria: tipo.id_categoria
-        });
-    };
-
     return (
-        <AuthenticatedLayout
-            title="Tipos"
-            subtitle="Subcategorías de consultas"
-        >
-            <div className="p-6">
-                <h1 className="text-2xl font-bold mb-6 text-white">Gestión de Tipos</h1>
+        <AuthenticatedLayout title="Tipos" subtitle="Lista de tipos de mensajes">
+            <div className="p-6 bg-gray-50 min-h-screen">
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-[30px] font-bold text-gray-900 tracking-tight">
+                        Tipos
+                    </h1>
+                    <Button href={route('tipos.create')}>
+                        + Nuevo Tipo
+                    </Button>
+                </div>
 
-                {/* Formulario */}
-                <form onSubmit={handleSubmit} className="mb-8 dark:bg-gray-800 p-4 rounded shadow">
-                    <div className="flex gap-4 ">
-                        <input
-                            type="text"
-                            placeholder="Nombre del tipo"
-                            value={data.nombre}
-                            onChange={e => setData('nombre', e.target.value)}
-                            className="border rounded px-3 py-2 flex-1 dark:bg-gray-700 dark:text-white"
-                            required
-                        />
-                        <select
-                            value={data.id_categoria}
-                            onChange={e => setData('id_categoria', e.target.value)}
-                            className="border rounded px-3 py-2 flex-1 dark:bg-gray-800 text-white "
-                            required
-                        >
-                            <option value="">Seleccionar categoría</option>
-                            {categorias.map(cat => (
-                                <option key={cat.id} value={cat.id}>
-                                    {cat.nombre}
-                                </option>
-                            ))}
-                        </select>
-                        <Button
-                            type="submit"
-                        >
-                            {editing ? 'Actualizar' : 'Guardar'}
-                        </Button>
-                        {editing && (
-                            <Button
-                                variant="secondary"
-                                type="button"
-                                onClick={() => {
-                                    setEditing(null);
-                                    reset();
-                                }}
-                            >
-                                Cancelar
-                            </Button>
-                        )}
-                    </div>
-                </form>
-
-                {/* Tabla de tipos */}
-                <div className="bg-white rounded shadow overflow-hidden">
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
                     <table className="w-full">
-                        <thead className="bg-gray-100">
-                            <tr>
+                        <thead className="bg-gray-50">
+                            <tr className="text-sm font-semibold text-gray-100">
                                 <th className="p-3 text-left">ID</th>
                                 <th className="p-3 text-left">Nombre</th>
                                 <th className="p-3 text-left">Categoría</th>
@@ -105,31 +33,32 @@ export default function Index({ tipos, categorias }) {
                         </thead>
                         <tbody>
                             {tipos.map(tipo => (
-                                <tr key={tipo.id} className="border-t">
-                                    <td className="p-3">{tipo.id}</td>
-                                    <td className="p-3">{tipo.nombre}</td>
-                                    <td className="p-3">{tipo.categoria?.nombre}</td>
+                                <tr key={tipo.id} className="border-t border-gray-100 hover:bg-gray-50">
+                                    <td className="p-3 text-gray-600">{tipo.id}</td>
+                                    <td className="p-3 font-medium text-gray-800">{tipo.nombre}</td>
+                                    <td className="p-3 text-gray-600">{tipo.categoria?.nombre}</td>
                                     <td className="p-3">
-                                        <Button
-                                            size="sm"
-                                            onClick={() => handleEdit(tipo)}
-                                            className="mr-2"
-                                        >
-                                            Editar
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="danger"
-                                            onClick={() => handleDelete(tipo.id)}
-                                        >
-                                            Eliminar
-                                        </Button>
+                                        <div className="flex gap-2">
+                                            <Button size="sm" variant='ghost' href={route('tipos.show', tipo.id)}>
+                                                Ver
+                                            </Button>
+                                            <Button size="sm" href={route('tipos.edit', tipo.id)}>
+                                                Editar
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="danger"
+                                                onClick={() => handleDelete(tipo.id)}
+                                            >
+                                                Eliminar
+                                            </Button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
                             {tipos.length === 0 && (
                                 <tr>
-                                    <td colSpan="4" className="p-3 text-center text-gray-500">
+                                    <td colSpan="4" className="p-8 text-center text-gray-400">
                                         No hay tipos registrados
                                     </td>
                                 </tr>

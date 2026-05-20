@@ -37,11 +37,11 @@ class Mensaje_Clasificado extends Model
     //
     public function tipo_mensaje(): HasMany
     {
-        return $this->hasMany(Tipo_Mensaje::class);
+        return $this->hasMany(Tipo_Mensaje::class, 'id_mensaje');
     }
 
     public function mensaje(): BelongsTo
     {
-        return $this->belongsTo(Mensaje::class);
+        return $this->belongsTo(Mensaje::class, 'id_mensaje');
     }
 }

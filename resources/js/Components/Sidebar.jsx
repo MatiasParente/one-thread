@@ -33,7 +33,7 @@ export default function Sidebar({ show, onClose }) {
         },
         {
             label: 'Clasificados',
-            href: route('mensajes-clasificados.create'),
+            href: route('mensajes-clasificados.index'),
             active: route().current('mensajes-clasificados.*'),
             icon: Sparkles,
         },
@@ -63,14 +63,14 @@ export default function Sidebar({ show, onClose }) {
         },
         {
             label: 'Reportes',
-            href: '#',
-            active: false,
+            href: route('reportes'),
+            active: route().current('reportes'),
             icon: BarChart3,
         },
         {
             label: 'Configuración',
-            href: '#',
-            active: false,
+            href: route('configuracion'),
+            active: route().current('configuracion'),
             icon: Settings,
         },
     ];

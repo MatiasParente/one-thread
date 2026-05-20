@@ -1,0 +1,199 @@
+import { Link } from '@inertiajs/react';
+import { Eye, Edit2, Trash2, AlertTriangle } from 'lucide-react';
+import './css/mensajes.css';
+
+export default function MensajeTable({ mensajes = [], handleDelete }) {
+    
+    // aca tomamos todas las categorias relacionadas con el mensaje, tambien filtramos para que
+    // no se repitan las categorias si tiene mas de una relacion
+    const getCategories = (msg) => {
+        if (!msg.tipo_mensaje) return [];
+        const seenIds = new Set();
+        return msg.tipo_mensaje
+            .map(tm => tm.tipos?.categoria)
+            .filter(Boolean)
+            .filter(cat => {
+                if (seenIds.has(cat.id)) {
+                    return false;
+                }
+                seenIds.add(cat.id);
+                return true;
+            });
+    };
+ // pa los css
+    const getPriorityBadgeClass = (priority) => {
+        switch (priority) {
+            case 'Alta':
+                return 'badge-priority-alta';
+            case 'Media':
+                return 'badge-priority-media';
+            case 'Baja':
+                return 'badge-priority-baja';
+            default:
+                return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    const getEstadoBadgeClass = (estado) => {
+        switch (parseInt(estado)) {
+            case 0: return 'badge-status-pendiente';
+            case 1: return 'badge-status-proceso';
+            case 2: return 'badge-status-pausa';
+            case 3: return 'badge-status-resuelto';
+            default: return 'bg-gray-100 text-gray-800';
+        }
+    };
+// como usamos num para los estados le ponemos nombre aca
+    const getEstadoLabel = (estado) => {
+        switch (parseInt(estado)) {
+            case 0: return 'Pendiente';
+            case 1: return 'En proceso';
+            case 2: return 'En pausa';
+            case 3: return 'Resuelto';
+            default: return 'Desconocido';
+        }
+    };
+
+    // colores segun el origen del mensaje
+    const getChannelBadgeClass = (origen) => {
+        switch (origen?.toLowerCase()) {
+            case 'telegram':
+                return 'badge-channel-telegram';
+            case 'whatsapp':
+                return 'badge-channel-whatsapp';
+            case 'email':
+                return 'badge-channel-email';
+            default:
+                return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    return (
+        <div className="overflow-hidden bg-white rounded-md border border-gray-200 shadow-sm">
+            <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                    <thead>
+                        <tr className="border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th className="px-6 py-3">Cliente / Canal</th>
+                            <th className="px-6 py-3">Resumen de IA</th>
+                            <th className="px-6 py-3">Áreas / Categorías</th>
+                            <th className="px-6 py-3 text-center">Prioridad</th>
+                            <th className="px-6 py-3 text-center">Estado</th>
+                            <th className="px-6 py-3 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
+                        {/*Usamos .map para recorrer los mensajes clasificados*/}
+                        {mensajes?.length > 0 ? (
+                            mensajes.map((mensajeClasificado) => {
+                                const cliente = mensajeClasificado.mensaje?.mensajeros;
+                                const originalMessage = mensajeClasificado.mensaje;
+                                const categories = getCategories(mensajeClasificado);
+
+                                return (
+                                    <tr
+                                        key={mensajeClasificado.id}
+                                        className="hover:bg-gray-50/75 transition-colors"
+                                    >
+                                        <td className="px-6 py-4">
+                                            <div className="font-semibold text-gray-900">
+                                                {cliente ? `${cliente.nombre} ${cliente.apellido}` : 'Cliente Desconocido'}
+                                            </div>
+                                            {originalMessage?.origen && (
+                                                <span className={`mt-1 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold uppercase ${getChannelBadgeClass(originalMessage.origen)}`}>
+                                                    {originalMessage.origen}
+                                                </span>
+                                            )}
+                                        </td>
+
+                                        <td className="px-6 py-4 max-w-xs md:max-w-md">
+                                            <div className="font-medium text-gray-800 line-clamp-2">
+                                                {mensajeClasificado.resumen || 'Sin resumen'}
+                                            </div>
+                                            <div className="mt-1 flex items-center gap-1.5 text-xs text-gray-400">
+                                                <span>Confianza:</span>
+                                                <span className="font-mono font-semibold text-gray-500">
+                                                    {mensajeClasificado.puntaje_confianza <= 1 
+                                                    // si es menor o igual a 1 lo multiplicamos por 100 para que sea un porcentaje
+                                                        ? Math.round(mensajeClasificado.puntaje_confianza * 100) 
+                                                        : Math.round(mensajeClasificado.puntaje_confianza)}%
+                                                </span>
+                                            </div>
+                                        </td>
+
+                                        <td className="px-6 py-4">
+                                            {categories.length > 0 ? (
+                                                <div className="flex flex-wrap gap-1">
+                                                    {categories.map((cat, idx) => (
+                                                        <span
+                                                            key={idx}
+                                                            className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold badge-category-pill"
+                                                        >
+                                                            {cat.nombre}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <span className="text-gray-400 text-xs italic">Sin categoría</span>
+                                            )}
+                                        </td>
+
+                                        <td className="px-6 py-4 text-center">
+                                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${getPriorityBadgeClass(mensajeClasificado.prioridad)}`}>
+                                                {mensajeClasificado.prioridad}
+                                            </span>
+                                        </td>
+
+                                        <td className="px-6 py-4 text-center">
+                                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${getEstadoBadgeClass(mensajeClasificado.estado)}`}>
+                                                {getEstadoLabel(mensajeClasificado.estado)}
+                                            </span>
+                                        </td>
+                                        {/*Aca van los botones de acciones*/}
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex items-center justify-end gap-1">
+                                                <Link href={route('mensajes-clasificados.show', mensajeClasificado.id)}>
+                                                    <button
+                                                        title="Ver detalle"
+                                                        className="p-1 text-gray-500 hover:text-[#226583] hover:bg-gray-100 rounded transition-colors"
+                                                    >
+                                                        <Eye className="h-4.5 w-4.5" />
+                                                    </button>
+                                                </Link>
+                                                <Link href={route('mensajes-clasificados.edit', mensajeClasificado.id)}>
+                                                    <button
+                                                        title="Editar"
+                                                        className="p-1 text-gray-500 hover:text-[#B8860B] hover:bg-gray-100 rounded transition-colors"
+                                                    >
+                                                        <Edit2 className="h-4.5 w-4.5" />
+                                                    </button>
+                                                </Link>
+                                                <button
+                                                    title="Eliminar"
+                                                    onClick={() => handleDelete(mensajeClasificado.id, mensajeClasificado.resumen)}
+                                                    className="p-1 text-gray-500 hover:text-[#C41E3A] hover:bg-gray-100 rounded transition-colors"
+                                                >
+                                                    <Trash2 className="h-4.5 w-4.5" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <tr>
+                                <td colSpan="6" className="text-center py-12 px-6">
+                                    <div className="flex flex-col items-center justify-center text-gray-400">
+                                        <AlertTriangle className="h-8 w-8 text-gray-300 mb-2" />
+                                        <p className="font-semibold text-gray-500">No se encontraron mensajes clasificados</p>
+                                        <p className="text-xs text-gray-400 mt-1">Prueba a cambiar los filtros de búsqueda o registra uno nuevo.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}

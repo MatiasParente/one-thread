@@ -17,6 +17,6 @@ class Tipo extends Model
 
     public function tipo_mensaje(): HasMany
     {
-        return $this->hasMany(Tipo_Mensaje::class);
+        return $this->hasMany(Tipo_Mensaje::class, 'id_tipo');
     }
 }

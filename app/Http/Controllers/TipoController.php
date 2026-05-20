@@ -11,7 +11,6 @@ class TipoController extends Controller
 {
     public function index()
     {
-
         $tipos = Tipo::with('categoria')->get();
 
         $categorias = Categoria::all();
@@ -51,6 +50,32 @@ class TipoController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    public function create()
+    {
+        $categorias = Categoria::all();
+
+        return Inertia::render('Tipo/Create', [
+            'categorias' => $categorias,
+        ]);
+    }
+
+    public function show(Tipo $tipo)
+    {
+        return Inertia::render('Tipo/Show', [
+            'tipo' => $tipo->load('categoria'),
+        ]);
+    }
+
+    public function edit(Tipo $tipo)
+    {
+        $categorias = Categoria::all();
+
+        return Inertia::render('Tipo/Edit', [
+            'tipo' => $tipo->load('categoria'),
+            'categorias' => $categorias,
+        ]);
     }
 
     public function destroy(Tipo $tipo)

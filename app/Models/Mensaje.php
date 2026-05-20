@@ -14,12 +14,12 @@ class Mensaje extends Model
     //
     public function mensaje_clasificado(): HasOne
     {
-        return $this->HasOne(Mensaje_Clasificado::class);
+        return $this->hasOne(Mensaje_Clasificado::class, 'id_mensaje');
     }
 
     public function mensajeros(): BelongsTo
     {
-        return $this->belongsTo(Mensajero::class);
+        return $this->belongsTo(Mensajero::class, 'id_mensajero');
     }
 
     public function admin_mensajes(): HasMany
