@@ -1,24 +1,15 @@
 <?php
 
-<<<<<<< HEAD
 use App\Http\Controllers\AdminController;
-=======
->>>>>>> ac237aee942a14638a1d3f29eb941e9b0e30d312
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MensajeClasificadoController;
 use App\Http\Controllers\MensajeController;
-<<<<<<< HEAD
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TipoController;
 use Illuminate\Support\Facades\Route;
-=======
 use App\Http\Controllers\MensajeroController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TipoController;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
->>>>>>> ac237aee942a14638a1d3f29eb941e9b0e30d312
 
 Route::get('/', function () {
     return redirect()->route('login');
