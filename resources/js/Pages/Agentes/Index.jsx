@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
@@ -44,9 +44,9 @@ function AdminCard({ admin, isSelected, onSelectPanel, activePanel }) {
 
     return (
         <div
-            className={`flex flex-col items-center gap-3 rounded-md border border-t-4 bg-white p-5 shadow-sm transition-all ${isSelected
-                    ? 'border-primary border-t-primary bg-primary-light'
-                    : 'border-gray-200 border-t-primary'
+            className={`flex shrink-0 min-w-[280px] flex-col items-center gap-3 rounded-md border border-t-4 bg-white p-5 shadow-sm transition-all ${isSelected
+                ? 'border-primary border-t-primary bg-primary-light'
+                : 'border-gray-200 border-t-primary'
                 }`}
         >
             {/* Menú 3 puntos (top-left) */}
@@ -124,8 +124,8 @@ function AdminCard({ admin, isSelected, onSelectPanel, activePanel }) {
                         onClick={() => onSelectPanel(key, admin)}
                         title={label}
                         className={`flex items-center gap-1 rounded-sm px-2 py-1 text-xs font-medium transition-colors ${isSelected && activePanel === key
-                                ? 'bg-primary text-white'
-                                : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                            ? 'bg-primary text-white'
+                            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
                             }`}
                     >
                         <Icon size={14} />
@@ -466,6 +466,15 @@ export default function Index({ admins, allCategorias }) {
     // Admin seleccionado para editar/categorías/eliminar (del menú 3 puntos)
     const [contextAdmin, setContextAdmin] = useState(null);
 
+    // Scroll horizontal con rueda del mouse
+    const scrollRef = useRef(null);
+    const handleWheel = (e) => {
+        if (scrollRef.current) {
+            e.preventDefault();
+            scrollRef.current.scrollLeft += e.deltaY;
+        }
+    };
+
     // Maneja clicks en botones de acción y menú 3 puntos
     const handlePanelAction = (action, admin) => {
         switch (action) {
@@ -558,9 +567,9 @@ export default function Index({ admins, allCategorias }) {
                 </Button>
             </div>
 
-            {/* Grid de cards de agentes */}
-            <div className="mb-6">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {/* Fila horizontal scrolleable de cards */}
+            <div ref={scrollRef} onWheel={handleWheel} className="mb-6 max-w-full overflow-x-auto overflow-y-hidden">
+                <div className="flex gap-4 pb-2">
                     {admins.map((admin) => (
                         <AdminCard
                             key={admin.id}
@@ -572,7 +581,7 @@ export default function Index({ admins, allCategorias }) {
                     ))}
 
                     {admins.length === 0 && (
-                        <div className="col-span-full flex items-center justify-center rounded-md border border-dashed border-gray-300 bg-white py-8 text-center text-sm text-gray-400">
+                        <div className="flex items-center justify-center rounded-md border border-dashed border-gray-300 bg-white py-8 text-center text-sm text-gray-400" style={{ minWidth: '100%' }}>
                             No hay agentes registrados
                         </div>
                     )}
