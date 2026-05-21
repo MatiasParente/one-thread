@@ -44,7 +44,7 @@ function AdminCard({ admin, isSelected, onSelectPanel, activePanel }) {
 
     return (
         <div
-            className={`flex min-w-[280px] flex-col items-center gap-3 rounded-md border border-t-4 bg-white p-5 shadow-sm transition-all ${isSelected
+            className={`flex flex-col items-center gap-3 rounded-md border border-t-4 bg-white p-5 shadow-sm transition-all ${isSelected
                     ? 'border-primary border-t-primary bg-primary-light'
                     : 'border-gray-200 border-t-primary'
                 }`}
@@ -164,14 +164,14 @@ function AgentModal({ show, onClose, mode, admin, allCategorias }) {
     const submit = (e) => {
         e.preventDefault();
         if (isEdit) {
-            put(route('usuarios.update', admin.id), {
+            put(route('agentes.update', admin.id), {
                 onSuccess: () => {
                     reset();
                     onClose();
                 },
             });
         } else {
-            post(route('usuarios.store'), {
+            post(route('agentes.store'), {
                 onSuccess: () => {
                     reset();
                     onClose();
@@ -336,7 +336,7 @@ function CategoriasModal({ show, onClose, admin, allCategorias }) {
     const handleSave = () => {
         setSaving(true);
         router.put(
-            route('usuarios.update', admin.id),
+            route('agentes.update', admin.id),
             {
                 name: admin.nombre,
                 email: admin.user?.email,
@@ -406,7 +406,7 @@ function DeleteConfirmModal({ show, onClose, admin }) {
 
     const handleDelete = () => {
         setDeleting(true);
-        router.delete(route('usuarios.destroy', admin.id), {
+        router.delete(route('agentes.destroy', admin.id), {
             onSuccess: () => {
                 setDeleting(false);
                 onClose();
@@ -534,10 +534,10 @@ export default function Index({ admins, allCategorias }) {
 
     return (
         <AuthenticatedLayout
-            title="Usuarios"
+            title="Agentes"
             subtitle="Gestión de agentes"
         >
-            <Head title="Usuarios" />
+            <Head title="Agentes" />
 
             {/* Header con contador y botón crear */}
             <div className="mb-6 flex items-center justify-between">
@@ -558,9 +558,9 @@ export default function Index({ admins, allCategorias }) {
                 </Button>
             </div>
 
-            {/* Fila horizontal de cards */}
-            <div className="mb-6 overflow-x-auto pb-2">
-                <div className="flex gap-4">
+            {/* Grid de cards de agentes */}
+            <div className="mb-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {admins.map((admin) => (
                         <AdminCard
                             key={admin.id}
@@ -572,10 +572,7 @@ export default function Index({ admins, allCategorias }) {
                     ))}
 
                     {admins.length === 0 && (
-                        <div
-                            className="flex items-center justify-center rounded-md border border-dashed border-gray-300 bg-white py-8 text-center text-sm text-gray-400"
-                            style={{ minWidth: '100%' }}
-                        >
+                        <div className="col-span-full flex items-center justify-center rounded-md border border-dashed border-gray-300 bg-white py-8 text-center text-sm text-gray-400">
                             No hay agentes registrados
                         </div>
                     )}

@@ -50,7 +50,7 @@ export default function AdminCargaTrabajo({ adminId }) {
     useEffect(() => {
         if (!adminId) return;
         setLoading(true);
-        fetch(route('usuarios.carga', adminId))
+        fetch(route('agentes.carga', adminId))
             .then((res) => res.json())
             .then((d) => {
                 setData(d);

@@ -63,7 +63,7 @@ export default function AdminMetricas({ adminId }) {
     useEffect(() => {
         if (!adminId) return;
         setLoading(true);
-        fetch(route('usuarios.metricas', adminId))
+        fetch(route('agentes.metricas', adminId))
             .then((res) => res.json())
             .then((d) => {
                 setData(d);

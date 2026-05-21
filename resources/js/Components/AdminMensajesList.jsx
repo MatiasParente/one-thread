@@ -28,7 +28,7 @@ export default function AdminMensajesList({ adminId }) {
     useEffect(() => {
         if (!adminId) return;
         setLoading(true);
-        fetch(route('usuarios.mensajes', adminId))
+        fetch(route('agentes.mensajes', adminId))
             .then((res) => res.json())
             .then((data) => {
                 setMensajes(data);
