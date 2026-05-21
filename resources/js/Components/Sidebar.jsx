@@ -8,6 +8,7 @@ import {
     FolderTree,
     Tags,
     Users,
+    UserCog,
     BarChart3,
     Settings,
     User,
@@ -59,7 +60,7 @@ export default function Sidebar({ show, onClose }) {
             label: 'Agentes',
             href: route('agentes.index'),
             active: route().current('agentes.*'),
-            icon: Users,
+            icon: UserCog,
         },
         {
             label: 'Reportes',
