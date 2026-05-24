@@ -18,8 +18,18 @@ import {
 
 export default function Sidebar({ show, onClose }) {
     const user = usePage().props.auth.user;
-
-    const navItems = [
+    const { props } = usePage();
+    const categories = props.auth.user.admin.categorias;
+    let esAdmin = false;
+    categories.forEach(categoria => {
+        if(categoria.nombre == 'General'){
+            esAdmin = true;
+        }
+    });
+    
+    let navItems;
+   if(esAdmin){
+    navItems = [
         {
             label: 'Dashboard',
             href: route('dashboard'),
@@ -75,6 +85,35 @@ export default function Sidebar({ show, onClose }) {
             icon: Settings,
         },
     ];
+   }else{
+    navItems = [
+        {
+            label: 'Dashboard',
+            href: route('dashboard'),
+            active: route().current('dashboard'),
+            icon: LayoutDashboard,
+        },
+        {
+            label: 'Mensajes',
+            href: route('mensajes-simples.index'),
+            active: route().current('mensajes-simples.*'),
+            icon: MessageSquare,
+        },
+        {
+            label: 'Clasificados',
+            href: route('mensajes-clasificados.index'),
+            active: route().current('mensajes-clasificados.*'),
+            icon: Sparkles,
+        },
+        {
+            label: 'Usuarios',
+            href: route('mensajeros.index'),
+            active: route().current('mensajeros.*'),
+            icon: Users,
+        },
+    ];
+   }
+    
 
     return (
         <>
