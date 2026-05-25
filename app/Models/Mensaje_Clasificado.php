@@ -44,4 +44,16 @@ class Mensaje_Clasificado extends Model
     {
         return $this->belongsTo(Mensaje::class, 'id_mensaje');
     }
+
+    // Relación con Tipo a través de tipo_mensaje
+    // Obtiene todos los tipos que están asociados a este mensaje clasificado.
+    public function tipos()
+    {
+        return $this->belongsToMany(
+            Tipo::class,
+            'tipo_mensaje',
+            'id_mensaje',
+            'id_tipo'
+        );
+    }
 }

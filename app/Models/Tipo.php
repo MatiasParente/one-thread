@@ -19,4 +19,15 @@ class Tipo extends Model
     {
         return $this->hasMany(Tipo_Mensaje::class, 'id_tipo');
     }
+    // Relación con Mensaje_Clasificado a través de tipo_mensaje
+    // Obtiene todos los mensajes clasificados que tienen asociado este tipo.
+    public function mensajes()
+    {
+        return $this->belongsToMany(
+            Mensaje_Clasificado::class,
+            'tipo_mensaje',
+            'id_tipo',
+            'id_mensaje'
+        );
+    }
 }

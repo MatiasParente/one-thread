@@ -27,6 +27,7 @@ export default function Index({ categorias }) {
                             <tr className="text-sm font-semibold text-gray-100" style={{ backgroundColor: "#226583" }}>
                                 <th className="p-3 text-left">ID</th>
                                 <th className="p-3 text-left">Nombre</th>
+                                <th className='p-3 text-left'>Cantidad de Mensajes</th>
                                 <th className="p-3 text-left">Acciones</th>
                             </tr>
                         </thead>
@@ -35,6 +36,7 @@ export default function Index({ categorias }) {
                                 <tr key={categoria.id} className="border-t border-gray-100 hover:bg-gray-50">
                                     <td className="p-3 text-gray-600">{categoria.id}</td>
                                     <td className="p-3 font-medium text-gray-800">{categoria.nombre}</td>
+                                    <td className="p-3 text-gray-600">{categoria.cantidad_mensajes ?? 0}</td>
                                     <td className="p-3">
                                         <div className="flex gap-2">
                                             <Button size="sm" variant='ghost' href={route('categorias.show', categoria.id)}>
