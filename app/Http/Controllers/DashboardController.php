@@ -38,7 +38,7 @@ class DashboardController extends Controller
             return $query;
         };
 
-        $mensajesQuery = Mensaje_Clasificado::with(['mensaje', 'tipo_mensaje.tipos.categoria']);
+        $mensajesQuery = Mensaje_Clasificado::with(['mensaje.mensajeros', 'tipo_mensaje.tipos.categoria']);
         $mensajes = $applyFilterToClasificado($mensajesQuery)
             ->latest('mensajes_clasificados.created_at')
             ->get();

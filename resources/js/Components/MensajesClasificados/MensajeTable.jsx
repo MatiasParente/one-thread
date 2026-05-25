@@ -1,5 +1,4 @@
 import { Link } from '@inertiajs/react';
-import { useState } from 'react';
 import Button from '../Button';
 import { Eye, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 import './css/mensajes.css';
