@@ -90,7 +90,9 @@ export default function MessengerList({ mensajeros }) {
             </div>
             {mensajeros.length > 0 && (
                 <div className="pagination-container">
-                    <div className="pagination-controls">
+                    <div className="pagination-controls" style={{display: 'flex',
+                                    justifyContent: 'space-between'
+                                }}>
                         {/* Botón Anterior */}
                         <Button
                             onClick={paginaAnterior}

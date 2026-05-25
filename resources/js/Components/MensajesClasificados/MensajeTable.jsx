@@ -1,4 +1,6 @@
 import { Link } from '@inertiajs/react';
+import { useState } from 'react';
+import Button from '../Button';
 import { Eye, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 import './css/mensajes.css';
 import React, { useState } from 'react';
@@ -6,6 +8,27 @@ import Modal from '@/Components/Modal';
 
 export default function MensajeTable({ mensajes = [], handleDelete }) {
 
+    const [paginaActual, setPaginaActual] = useState(1);
+        const itemsPorPagina = 10;
+    
+        const indiceUltimoItem = paginaActual * itemsPorPagina;
+        const indicePrimerItem = indiceUltimoItem - itemsPorPagina;
+        const mensajesPagina = mensajes.slice(indicePrimerItem, indiceUltimoItem);
+    
+        const totalPaginas = Math.ceil(mensajes.length / itemsPorPagina);
+    
+        const paginaAnterior = () => {
+            if (paginaActual > 1) {
+                setPaginaActual(paginaActual - 1);
+            }
+        }
+    
+        const paginaSiguiente = () => {
+            if (paginaActual < totalPaginas) {
+                setPaginaActual(paginaActual + 1);
+            }
+        }
+    
     // aca tomamos todas las categorias relacionadas con el mensaje, tambien filtramos para que
     // no se repitan las categorias si tiene mas de una relacion
     const getCategories = (msg) => {
@@ -101,7 +124,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                     <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
                         {/*Usamos .map para recorrer los mensajes clasificados*/}
                         {mensajes?.length > 0 ? (
-                            mensajes.map((mensajeClasificado) => {
+                            mensajesPagina.map((mensajeClasificado) => {
                                 const cliente = mensajeClasificado.mensaje?.mensajeros;
                                 const originalMessage = mensajeClasificado.mensaje;
                                 const categories = getCategories(mensajeClasificado);
@@ -269,6 +292,34 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                 )}
             </div>
         </Modal>
+            {mensajes.length > 0 && (
+                            <div className="pagination-container">
+                                <div className="pagination-controls" style={{display: 'flex',
+                                    justifyContent: 'space-between'
+                                }}>
+                                    {/* Botón Anterior */}
+                                    <Button
+                                        onClick={paginaAnterior}
+                                        disabled={paginaActual === 1}
+                                        className="pagination-btn"
+                                        aria-label="Página anterior"
+                                    >
+                                        ← Anterior
+                                    </Button>
+            
+            
+                                    {/* Botón Siguiente */}
+                                    <Button
+                                        onClick={paginaSiguiente}
+                                        disabled={paginaActual === totalPaginas}
+                                        className="pagination-btn"
+                                        aria-label="Página siguiente"
+                                    >
+                                        Siguiente →
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
         </div>
     );
 }

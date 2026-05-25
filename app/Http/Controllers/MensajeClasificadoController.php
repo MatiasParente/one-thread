@@ -7,6 +7,7 @@ use App\Models\Mensaje_Clasificado;
 use App\Models\Mensajero;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class MensajeClasificadoController extends Controller
 {
@@ -14,10 +15,25 @@ class MensajeClasificadoController extends Controller
 
     public function index(Request $request)
     {
+
+        $user = Auth::user();
+        $user->load('admin.categorias');
+
+        $categorias = $user->admin?->categorias;
+        $categoriaIds = $categorias->pluck('id')->toArray();
+
+        $general = in_array(32, $categoriaIds); 
+
         $query = Mensaje_Clasificado::with([
             'mensaje.mensajeros',
             'tipo_mensaje.tipos.categoria',
         ]);
+
+        if (!$general) {
+            $query->whereHas('tipo_mensaje.tipos.categoria', function ($q) use ($categoriaIds) {
+                $q->whereIn('categorias.id', $categoriaIds);
+            });
+        }
 
         // Filter by Client (id_mensajero)
         if ($request->filled('id_mensajero')) {
@@ -116,5 +132,40 @@ class MensajeClasificadoController extends Controller
         $mensaje->delete();
 
         return redirect()->route('dashboard')->with('success', 'Mensaje eliminado.');
+    }
+
+    public function mensajeClasificadosAdmin(){
+        $user = Auth::user();
+        $user->load('admin.categorias'); 
+
+        $categorias = $user->admin?->categorias; 
+
+        $categoriaIds = $categorias->pluck('id')->toArray();
+
+        $general = false;
+
+        foreach($categoriaIds as $cat){
+            if($cat == 32){
+                $general = true;
+                break;
+            }
+        }
+
+        $query = Mensaje_Clasificado::query()
+        ->leftJoin('tipo_mensaje', 'mensajes_clasificados.id_mensaje', '=', 'tipo_mensaje.id_mensaje')
+        ->leftJoin('tipos', 'tipo_mensaje.id_tipo', '=', 'tipos.id')
+        ->leftJoin('categorias', 'tipos.id_categoria', '=', 'categorias.id')
+        ->select('mensajes_clasificados.id','mensajes_clasificados.id_mensaje', 'mensajes_clasificados.resumen', 'mensajes_clasificados.prioridad','mensajes_clasificados.puntaje_confianza','mensajes_clasificados.estado');
+
+        if ($general) {
+            $mensajes = $query->distinct()->get();
+        } else {
+            $mensajes = $query->whereIn('categorias.id', $categoriaIds)
+                            ->distinct()
+                            ->get();
+        }
+
+        return $mensajes;
+
     }
 }
