@@ -1,9 +1,11 @@
 import { Link } from '@inertiajs/react';
 import { Eye, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 import './css/mensajes.css';
+import React, { useState } from 'react';
+import Modal from '@/Components/Modal'; 
 
 export default function MensajeTable({ mensajes = [], handleDelete }) {
-    
+
     // aca tomamos todas las categorias relacionadas con el mensaje, tambien filtramos para que
     // no se repitan las categorias si tiene mas de una relacion
     const getCategories = (msg) => {
@@ -20,7 +22,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                 return true;
             });
     };
- // pa los css
+    // pa los css
     const getPriorityBadgeClass = (priority) => {
         switch (priority) {
             case 'Alta':
@@ -43,7 +45,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
             default: return 'bg-gray-100 text-gray-800';
         }
     };
-// como usamos num para los estados le ponemos nombre aca
+    // como usamos num para los estados le ponemos nombre aca
     const getEstadoLabel = (estado) => {
         switch (parseInt(estado)) {
             case 0: return 'Pendiente';
@@ -68,6 +70,19 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
         }
     };
 
+    const [ modalOpen, setModalOpen ] = useState(false);
+    const [ selectedMessage, setSelectedMessage ] = useState(null);
+    
+    const openModal = (mensaje) => {
+        setSelectedMessage(mensaje);
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setSelectedMessage(null);
+        setModalOpen(false);
+    };
+
     return (
         <div className="overflow-hidden bg-white rounded-md border border-gray-200 shadow-sm">
             <div className="overflow-x-auto">
@@ -76,7 +91,8 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                         <tr className="border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             <th className="px-6 py-3">Cliente / Canal</th>
                             <th className="px-6 py-3">Resumen de IA</th>
-                            <th className="px-6 py-3">Áreas / Categorías</th>
+                            <th className="px-6 py-3">Mensaje Original</th>
+                            <th className="px-6 py-3">Categorías / Áreas</th>
                             <th className="px-6 py-3 text-center">Prioridad</th>
                             <th className="px-6 py-3 text-center">Estado</th>
                             <th className="px-6 py-3 text-right">Acciones</th>
@@ -89,6 +105,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                 const cliente = mensajeClasificado.mensaje?.mensajeros;
                                 const originalMessage = mensajeClasificado.mensaje;
                                 const categories = getCategories(mensajeClasificado);
+
 
                                 return (
                                     <tr
@@ -113,14 +130,25 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                             <div className="mt-1 flex items-center gap-1.5 text-xs text-gray-400">
                                                 <span>Confianza:</span>
                                                 <span className="font-mono font-semibold text-gray-500">
-                                                    {mensajeClasificado.puntaje_confianza <= 1 
-                                                    // si es menor o igual a 1 lo multiplicamos por 100 para que sea un porcentaje
-                                                        ? Math.round(mensajeClasificado.puntaje_confianza * 100) 
+                                                    {mensajeClasificado.puntaje_confianza <= 1
+                                                        // si es menor o igual a 1 lo multiplicamos por 100 para que sea un porcentaje
+                                                        ? Math.round(mensajeClasificado.puntaje_confianza * 100)
                                                         : Math.round(mensajeClasificado.puntaje_confianza)}%
                                                 </span>
                                             </div>
                                         </td>
-
+                                         <td className="px-6 py-4">
+                                                {originalMessage ? (
+                                                    <button
+                                                        onClick={() => openModal(originalMessage)}
+                                                        className="text-primary hover:text-primary-hover text-sm font-medium inline-flex items-center gap-1"
+                                                    >
+                                                        Ver original
+                                                    </button>
+                                                ) : (
+                                                    <span className="text-gray-400 text-xs italic">No disponible</span>
+                                                )}
+                                            </td>
                                         <td className="px-6 py-4">
                                             {categories.length > 0 ? (
                                                 <div className="flex flex-wrap gap-1">
@@ -194,6 +222,53 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                     </tbody>
                 </table>
             </div>
+            
+        {/* Modal para mostrar el mensaje original */}
+        <Modal show={modalOpen} onClose={closeModal} maxWidth="2xl">
+            <div className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Mensaje Original
+                </h3>
+                
+                {selectedMessage && (
+                    <div className="space-y-4">
+                        {/* Datos del cliente */}
+                        <div className="bg-gray-50 rounded-lg p-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <span className="text-xs text-gray-400">Cliente</span>
+                                    <p className="font-medium text-gray-800">
+                                        {selectedMessage.mensajeros?.nombre} {selectedMessage.mensajeros?.apellido}
+                                    </p>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-400">Canal</span>
+                                    <p className="font-medium text-gray-800">{selectedMessage.origen}</p>
+                                </div>
+                                <div>
+                                    <span className="text-xs text-gray-400">Fecha</span>
+                                    <p className="font-medium text-gray-800">
+                                        {new Date(selectedMessage.fecha_envio).toLocaleString()}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Contenido del mensaje */}
+                        <div>
+                            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                Contenido
+                            </h4>
+                            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+                                    {selectedMessage.contenido}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </Modal>
         </div>
     );
 }

@@ -10,7 +10,19 @@ class CategoriaController extends Controller
 {
     public function index()
     {
-        $categorias = Categoria::with('tipos')->get();
+        // Obtener todas las categorías con sus tipos y mensajes relacionados
+        // Luego, calcular la cantidad total de mensajes clasificados por categoría
+        $categorias = Categoria::with(['tipos.mensajes'])->get();
+        $categorias = $categorias->map(function ($categoria) {
+
+            $cantidadMensajes = $categoria->tipos->sum(function ($tipo) {
+                return $tipo->mensajes->count();
+            });
+
+            $categoria->cantidad_mensajes = $cantidadMensajes;
+
+            return $categoria;
+        });
 
         return Inertia::render('Categoria/Categoria', [
             'categorias' => $categorias,
