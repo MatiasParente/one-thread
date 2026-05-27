@@ -13,6 +13,7 @@ class Admin_Mensaje extends Model
         'id_admin',
         'id_mensaje',
         'respuesta',
+        'canal_envio',
         'puntaje',
         'comentarios_cliente',
         'fecha_respuesta',

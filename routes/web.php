@@ -10,6 +10,7 @@ use App\Http\Controllers\TipoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MensajeroController;
 use Inertia\Inertia;
+use App\Http\Controllers\AdminMensajeController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -58,9 +59,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('agentes', AdminController::class);
 
-    Route::get('mensajes-clasificados/{id}/respuesta', [MensajeClasificadoController::class, 'respuestaAgente'])
-    ->middleware(['auth', 'verified'])
-    ->name('mensajes-clasificados.respuesta');
+    Route::get('mensajes-clasificados/{id}/respuesta', [AdminMensajeController::class, 'create'])
+        ->name('mensajes-clasificados.respuesta');
+
+    Route::post('/mensajes/responder', [AdminMensajeController::class, 'store'])
+        ->name('mensajes.responder');
+        
+    Route::resource('admin-mensajes', AdminMensajeController::class)->only(['index', 'update', 'destroy']);
 });
 
 require __DIR__.'/auth.php';

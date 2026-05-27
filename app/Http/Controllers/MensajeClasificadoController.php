@@ -166,21 +166,4 @@ class MensajeClasificadoController extends Controller
 
     }
     
-    public function respuestaAgente($id)
-    {
-        $mensajeClasificado = Mensaje_Clasificado::with(['mensaje.mensajeros', 'tipo_mensaje.tipos.categoria'])
-            ->findOrFail($id);
-
-        $mensajeroId = $mensajeClasificado->mensaje->id_mensajero;
-
-        $historialMensajes = Mensaje::where('id_mensajero', $mensajeroId)
-            ->with('mensaje_clasificado') 
-            ->orderBy('fecha_envio', 'asc')
-            ->get();
-
-        return Inertia::render('Respuesta/RespuestaAgente', [
-            'mensajeClasificado' => $mensajeClasificado,
-            'historialMensajes' => $historialMensajes
-        ]);
-    }
 }

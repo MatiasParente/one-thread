@@ -66,8 +66,8 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
         switch (parseInt(estado)) {
             case 0: return 'Pendiente';
             case 1: return 'En proceso';
-            case 2: return 'En pausa';
-            case 3: return 'Resuelto';
+            case 2: return 'Resuelto';
+            case 3: return 'Eliminado';
             default: return 'Desconocido';
         }
     };

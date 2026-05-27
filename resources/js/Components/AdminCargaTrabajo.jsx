@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import {
     Clock,
     RefreshCw,
-    Pause,
     CheckCircle2,
     Loader2,
     AlertTriangle,
+    Trash2
 } from 'lucide-react';
 
 const estadoCards = [
@@ -27,19 +27,19 @@ const estadoCards = [
     },
     {
         key: 2,
-        label: 'En pausa',
-        icon: Pause,
-        bg: 'bg-gray-100',
-        iconColor: 'text-gray-400',
-        borderColor: 'border-l-gray-300',
-    },
-    {
-        key: 3,
-        label: 'Resueltos',
+        label: 'Resuelto',
         icon: CheckCircle2,
         bg: 'bg-emerald-100',
         iconColor: 'text-success',
         borderColor: 'border-l-success',
+    },
+    {
+        key: 3,
+        label: 'Eliminados',
+        icon: Trash2,
+        bg: 'bg-red-100',
+        iconColor: 'text-error',
+        borderColor: 'border-l-error',
     },
 ];
 

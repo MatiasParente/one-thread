@@ -16,8 +16,8 @@ const prioridadColors = {
 const estadoLabels = {
     0: { name: 'Pendiente', bar: 'bg-primary', label: 'text-primary' },
     1: { name: 'En proceso', bar: 'bg-warning', label: 'text-warning' },
-    2: { name: 'En pausa', bar: 'bg-gray-300', label: 'text-gray-500' },
-    3: { name: 'Resuelto', bar: 'bg-success', label: 'text-success' },
+    2: { name: 'Resuelto', bar: 'bg-success', label: 'text-success' },
+    3: { name: 'Eliminado', bar: 'bg-error', label: 'text-error' },
 };
 
 function StatMiniCard({ icon: Icon, iconBg, iconColor, value, label }) {
