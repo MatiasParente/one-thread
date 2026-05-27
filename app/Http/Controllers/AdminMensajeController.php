@@ -27,10 +27,15 @@ class AdminMensajeController extends Controller
 
     $mensajeroId = $mensajeClasificado->mensaje->id_mensajero;
 
+    $tiposIds = $mensajeClasificado->tipo_mensaje->pluck('id_tipo')->toArray();
+
     $historialMensajes = Mensaje::where('id_mensajero', $mensajeroId)
+        ->whereHas('mensaje_clasificado.tipo_mensaje', function ($query) use ($tiposIds) {
+            $query->whereIn('id_tipo', $tiposIds);
+        })
         ->with(['mensaje_clasificado', 'admin_mensajes.admin'])
         ->orderBy('fecha_envio', 'asc')
-        ->get();
+    ->get();
 
     return Inertia::render('Respuesta/RespuestaAgente', [
         'mensajeClasificado' => $mensajeClasificado,
