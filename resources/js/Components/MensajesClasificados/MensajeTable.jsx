@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react'; // 1. Importamos router para la navegación manual
 import Button from '../Button';
 import { Eye, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 import './css/mensajes.css';
@@ -8,28 +8,26 @@ import Modal from '@/Components/Modal';
 export default function MensajeTable({ mensajes = [], handleDelete }) {
 
     const [paginaActual, setPaginaActual] = useState(1);
-        const itemsPorPagina = 10;
+    const itemsPorPagina = 10;
     
-        const indiceUltimoItem = paginaActual * itemsPorPagina;
-        const indicePrimerItem = indiceUltimoItem - itemsPorPagina;
-        const mensajesPagina = mensajes.slice(indicePrimerItem, indiceUltimoItem);
-    
-        const totalPaginas = Math.ceil(mensajes.length / itemsPorPagina);
-    
-        const paginaAnterior = () => {
-            if (paginaActual > 1) {
-                setPaginaActual(paginaActual - 1);
-            }
+    const indiceUltimoItem = paginaActual * itemsPorPagina;
+    const indicePrimerItem = indiceUltimoItem - itemsPorPagina;
+    const mensajesPagina = mensajes.slice(indicePrimerItem, indiceUltimoItem);
+
+    const totalPaginas = Math.ceil(mensajes.length / itemsPorPagina);
+
+    const paginaAnterior = () => {
+        if (paginaActual > 1) {
+            setPaginaActual(paginaActual - 1);
         }
-    
-        const paginaSiguiente = () => {
-            if (paginaActual < totalPaginas) {
-                setPaginaActual(paginaActual + 1);
-            }
+    }
+
+    const paginaSiguiente = () => {
+        if (paginaActual < totalPaginas) {
+            setPaginaActual(paginaActual + 1);
         }
-    
-    // aca tomamos todas las categorias relacionadas con el mensaje, tambien filtramos para que
-    // no se repitan las categorias si tiene mas de una relacion
+    }
+
     const getCategories = (msg) => {
         if (!msg.tipo_mensaje) return [];
         const seenIds = new Set();
@@ -44,17 +42,13 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                 return true;
             });
     };
-    // pa los css
+
     const getPriorityBadgeClass = (priority) => {
         switch (priority) {
-            case 'Alta':
-                return 'badge-priority-alta';
-            case 'Media':
-                return 'badge-priority-media';
-            case 'Baja':
-                return 'badge-priority-baja';
-            default:
-                return 'bg-gray-100 text-gray-800';
+            case 'Alta': return 'badge-priority-alta';
+            case 'Media': return 'badge-priority-media';
+            case 'Baja': return 'badge-priority-baja';
+            default: return 'bg-gray-100 text-gray-800';
         }
     };
 
@@ -67,7 +61,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
             default: return 'bg-gray-100 text-gray-800';
         }
     };
-    // como usamos num para los estados le ponemos nombre aca
+
     const getEstadoLabel = (estado) => {
         switch (parseInt(estado)) {
             case 0: return 'Pendiente';
@@ -78,17 +72,12 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
         }
     };
 
-    // colores segun el origen del mensaje
     const getChannelBadgeClass = (origen) => {
         switch (origen?.toLowerCase()) {
-            case 'telegram':
-                return 'badge-channel-telegram';
-            case 'whatsapp':
-                return 'badge-channel-whatsapp';
-            case 'email':
-                return 'badge-channel-email';
-            default:
-                return 'bg-gray-100 text-gray-800';
+            case 'telegram': return 'badge-channel-telegram';
+            case 'whatsapp': return 'badge-channel-whatsapp';
+            case 'email': return 'badge-channel-email';
+            default: return 'bg-gray-100 text-gray-800';
         }
     };
 
@@ -104,6 +93,14 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
         setSelectedMessage(null);
         setModalOpen(false);
     };
+
+    const handleRowClick = (e, id) => {
+    if (e.target.closest('button') || e.target.closest('a')) {
+        return;
+    }
+    
+    router.visit(route('mensajes-clasificados.respuesta', id)); 
+};
 
     return (
         <div className="overflow-hidden bg-white rounded-md border border-gray-200 shadow-sm">
@@ -121,18 +118,18 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
-                        {/*Usamos .map para recorrer los mensajes clasificados*/}
                         {mensajes?.length > 0 ? (
                             mensajesPagina.map((mensajeClasificado) => {
                                 const cliente = mensajeClasificado.mensaje?.mensajeros;
                                 const originalMessage = mensajeClasificado.mensaje;
                                 const categories = getCategories(mensajeClasificado);
 
-
                                 return (
                                     <tr
                                         key={mensajeClasificado.id}
-                                        className="hover:bg-gray-50/75 transition-colors"
+                                        //evento onClick y la clase cursor-pointer
+                                        onClick={(e) => handleRowClick(e, mensajeClasificado.id)}
+                                        className="hover:bg-gray-50/75 transition-colors cursor-pointer"
                                     >
                                         <td className="px-6 py-4">
                                             <div className="font-semibold text-gray-900">
@@ -153,24 +150,23 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                                 <span>Confianza:</span>
                                                 <span className="font-mono font-semibold text-gray-500">
                                                     {mensajeClasificado.puntaje_confianza <= 1
-                                                        // si es menor o igual a 1 lo multiplicamos por 100 para que sea un porcentaje
                                                         ? Math.round(mensajeClasificado.puntaje_confianza * 100)
                                                         : Math.round(mensajeClasificado.puntaje_confianza)}%
                                                 </span>
                                             </div>
                                         </td>
-                                         <td className="px-6 py-4">
-                                                {originalMessage ? (
-                                                    <button
-                                                        onClick={() => openModal(originalMessage)}
-                                                        className="text-primary hover:text-primary-hover text-sm font-medium inline-flex items-center gap-1"
-                                                    >
-                                                        Ver original
-                                                    </button>
-                                                ) : (
-                                                    <span className="text-gray-400 text-xs italic">No disponible</span>
-                                                )}
-                                            </td>
+                                        <td className="px-6 py-4">
+                                            {originalMessage ? (
+                                                <button
+                                                    onClick={() => openModal(originalMessage)}
+                                                    className="text-primary hover:text-primary-hover text-sm font-medium inline-flex items-center gap-1"
+                                                >
+                                                    Ver original
+                                                </button>
+                                            ) : (
+                                                <span className="text-gray-400 text-xs italic">No disponible</span>
+                                            )}
+                                        </td>
                                         <td className="px-6 py-4">
                                             {categories.length > 0 ? (
                                                 <div className="flex flex-wrap gap-1">
@@ -199,7 +195,6 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                                 {getEstadoLabel(mensajeClasificado.estado)}
                                             </span>
                                         </td>
-                                        {/*Aca van los botones de acciones*/}
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-1">
                                                 <Link href={route('mensajes-clasificados.show', mensajeClasificado.id)}>
@@ -232,7 +227,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                             })
                         ) : (
                             <tr>
-                                <td colSpan="6" className="text-center py-12 px-6">
+                                <td colSpan="7" className="text-center py-12 px-6">
                                     <div className="flex flex-col items-center justify-center text-gray-400">
                                         <AlertTriangle className="h-8 w-8 text-gray-300 mb-2" />
                                         <p className="font-semibold text-gray-500">No se encontraron mensajes clasificados</p>
@@ -245,80 +240,73 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                 </table>
             </div>
             
-        {/* Modal para mostrar el mensaje original */}
-        <Modal show={modalOpen} onClose={closeModal} maxWidth="2xl">
-            <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Mensaje Original
-                </h3>
-                
-                {selectedMessage && (
-                    <div className="space-y-4">
-                        {/* Datos del cliente */}
-                        <div className="bg-gray-50 rounded-lg p-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <span className="text-xs text-gray-400">Cliente</span>
-                                    <p className="font-medium text-gray-800">
-                                        {selectedMessage.mensajeros?.nombre} {selectedMessage.mensajeros?.apellido}
-                                    </p>
-                                </div>
-                                <div>
-                                    <span className="text-xs text-gray-400">Canal</span>
-                                    <p className="font-medium text-gray-800">{selectedMessage.origen}</p>
-                                </div>
-                                <div>
-                                    <span className="text-xs text-gray-400">Fecha</span>
-                                    <p className="font-medium text-gray-800">
-                                        {new Date(selectedMessage.fecha_envio).toLocaleString()}
-                                    </p>
+            {/* Modal para mostrar el mensaje original */}
+            <Modal show={modalOpen} onClose={closeModal} maxWidth="2xl">
+                <div className="p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                        Mensaje Original
+                    </h3>
+                    
+                    {selectedMessage && (
+                        <div className="space-y-4">
+                            <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <span className="text-xs text-gray-400">Cliente</span>
+                                        <p className="font-medium text-gray-800">
+                                            {selectedMessage.mensajeros?.nombre} {selectedMessage.mensajeros?.apellido}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <span className="text-xs text-gray-400">Canal</span>
+                                        <p className="font-medium text-gray-800">{selectedMessage.origen}</p>
+                                    </div>
+                                    <div>
+                                        <span className="text-xs text-gray-400">Fecha</span>
+                                        <p className="font-medium text-gray-800">
+                                            {new Date(selectedMessage.fecha_envio).toLocaleString()}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Contenido del mensaje */}
-                        <div>
-                            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                                Contenido
-                            </h4>
-                            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
-                                    {selectedMessage.contenido}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-        </Modal>
-            {mensajes.length > 0 && (
-                            <div className="pagination-container">
-                                <div className="pagination-controls" style={{display: 'flex',
-                                    justifyContent: 'space-between'
-                                }}>
-                                    {/* Botón Anterior */}
-                                    <Button
-                                        onClick={paginaAnterior}
-                                        disabled={paginaActual === 1}
-                                        className="pagination-btn"
-                                        aria-label="Página anterior"
-                                    >
-                                        ← Anterior
-                                    </Button>
-            
-            
-                                    {/* Botón Siguiente */}
-                                    <Button
-                                        onClick={paginaSiguiente}
-                                        disabled={paginaActual === totalPaginas}
-                                        className="pagination-btn"
-                                        aria-label="Página siguiente"
-                                    >
-                                        Siguiente →
-                                    </Button>
+                            <div>
+                                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                                    Contenido
+                                </h4>
+                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                    <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+                                        {selectedMessage.contenido}
+                                    </p>
                                 </div>
                             </div>
-                        )}
+                        </div>
+                    )}
+                </div>
+            </Modal>
+
+            {mensajes.length > 0 && (
+                <div className="pagination-container">
+                    <div className="pagination-controls" style={{display: 'flex', justifyContent: 'space-between'}}>
+                        <Button
+                            onClick={paginaAnterior}
+                            disabled={paginaActual === 1}
+                            className="pagination-btn"
+                            aria-label="Página anterior"
+                        >
+                            &larr; Anterior
+                        </Button>
+                        <Button
+                            onClick={paginaSiguiente}
+                            disabled={paginaActual === totalPaginas}
+                            className="pagination-btn"
+                            aria-label="Página siguiente"
+                        >
+                            Siguiente &rarr;
+                        </Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

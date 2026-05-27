@@ -9,16 +9,27 @@ class Admin_Mensaje extends Model
 {
     protected $table = 'admin_mensaje';
 
-    protected $fillable = ['id_admin', 'id_mensaje'];
+    protected $fillable = [
+        'id_admin',
+        'id_mensaje',
+        'respuesta',
+        'puntaje',
+        'comentarios_cliente',
+        'fecha_respuesta',
+    ];
 
-    //
+    protected $casts = [
+        'fecha_respuesta' => 'datetime',
+        'puntaje' => 'integer',
+    ];
+
     public function mensaje(): BelongsTo
     {
-        return $this->belongsTo(Mensaje::class);
+        return $this->belongsTo(Mensaje::class, 'id_mensaje');
     }
 
-    public function Admins(): BelongsTo
+    public function admin(): BelongsTo
     {
-        return $this->belongsTo(Admin::class);
+        return $this->belongsTo(Admin::class, 'id_admin');
     }
 }

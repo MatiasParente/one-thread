@@ -15,7 +15,6 @@ export default function Index({ mensajes }) {
 
     const [paginaActual, setPaginaActual] = useState(1);
     const itemsPorPagina = 10;
-
     const indiceUltimoItem = paginaActual * itemsPorPagina;
     const indicePrimerItem = indiceUltimoItem - itemsPorPagina;
     const mensajesPagina = mensajes.slice(indicePrimerItem, indiceUltimoItem);

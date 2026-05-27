@@ -57,6 +57,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('agentes/{admin}/carga', [AdminController::class, 'carga'])->name('agentes.carga');
 
     Route::resource('agentes', AdminController::class);
+
+    Route::get('mensajes-clasificados/{id}/respuesta', [MensajeClasificadoController::class, 'respuestaAgente'])
+    ->middleware(['auth', 'verified'])
+    ->name('mensajes-clasificados.respuesta');
 });
 
 require __DIR__.'/auth.php';

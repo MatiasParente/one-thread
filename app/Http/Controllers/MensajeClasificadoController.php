@@ -7,6 +7,7 @@ use App\Models\Mensaje_Clasificado;
 use App\Models\Mensajero;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Mensaje;
 use Illuminate\Support\Facades\Auth;
 
 class MensajeClasificadoController extends Controller
@@ -35,28 +36,24 @@ class MensajeClasificadoController extends Controller
             });
         }
 
-        // Filter by Client (id_mensajero)
         if ($request->filled('id_mensajero')) {
             $query->whereHas('mensaje', function ($q) use ($request) {
                 $q->where('id_mensajero', $request->id_mensajero);
             });
         }
 
-        // Filter by Category (id_categoria)
         if ($request->filled('id_categoria')) {
             $query->whereHas('tipo_mensaje.tipos', function ($q) use ($request) {
                 $q->where('id_categoria', $request->id_categoria);
             });
         }
 
-        // Filter by Priority
         if ($request->filled('prioridad')) {
             $query->where('prioridad', $request->prioridad);
         }
 
         $mensajes = $query->latest()->get();
 
-        // Fetch messengers and categories for filter dropdowns
         $clientes = Mensajero::orderBy('nombre')->get()->map(function ($m) {
             return [
                 'id' => $m->id,
@@ -167,5 +164,23 @@ class MensajeClasificadoController extends Controller
 
         return $mensajes;
 
+    }
+    
+    public function respuestaAgente($id)
+    {
+        $mensajeClasificado = Mensaje_Clasificado::with(['mensaje.mensajeros', 'tipo_mensaje.tipos.categoria'])
+            ->findOrFail($id);
+
+        $mensajeroId = $mensajeClasificado->mensaje->id_mensajero;
+
+        $historialMensajes = Mensaje::where('id_mensajero', $mensajeroId)
+            ->with('mensaje_clasificado') 
+            ->orderBy('fecha_envio', 'asc')
+            ->get();
+
+        return Inertia::render('Respuesta/RespuestaAgente', [
+            'mensajeClasificado' => $mensajeClasificado,
+            'historialMensajes' => $historialMensajes
+        ]);
     }
 }
