@@ -20,7 +20,9 @@ class MensajeClasificadoController extends Controller
         $user = Auth::user();
         $user->load('admin.categorias');
 
+
         $categorias = $user->admin?->categorias;
+        $adminCategoriaIds = $categorias->pluck('id')->toArray();
         $categoriaIds = $categorias->pluck('id')->toArray();
 
         $general = in_array(32, $categoriaIds); 
@@ -54,14 +56,36 @@ class MensajeClasificadoController extends Controller
 
         $mensajes = $query->latest()->get();
 
-        $clientes = Mensajero::orderBy('nombre')->get()->map(function ($m) {
+        $mensajerosQuery = Mensajero::query();
+
+
+        if (!$general) {
+            $mensajerosQuery->whereHas('mensaje', function ($q) use ($categoriaIds) {
+                $q->whereHas('mensaje_clasificado', function ($sub) use ($categoriaIds) {
+                    // Y desde mensaje_clasificado accedemos a tipo_mensaje -> tipos -> categoria
+                    $sub->whereHas('tipo_mensaje.tipos.categoria', function ($sub2) use ($categoriaIds) {
+                        $sub2->whereIn('categorias.id', $categoriaIds);
+                    });
+                });
+            });
+        }else{
+            $categorias = Categoria::orderBy('nombre')->get();
+        }
+
+
+
+        $clientes = $mensajerosQuery
+        ->orderBy('nombre')
+        ->get()
+        ->map(function ($m) {
             return [
                 'id' => $m->id,
                 'nombre_completo' => trim("{$m->nombre} {$m->apellido}"),
             ];
         });
+        
 
-        $categorias = Categoria::orderBy('nombre')->get();
+        
 
         return Inertia::render('MensajeClasificado/Index', [
             'mensajes' => $mensajes,

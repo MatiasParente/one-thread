@@ -12,6 +12,6 @@ class Mensajero extends Model
 
     public function mensaje(): HasMany
     {
-        return $this->hasMany(Mensaje::class);
+        return $this->hasMany(Mensaje::class,'id_mensajero');
     }
 }

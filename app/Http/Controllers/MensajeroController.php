@@ -35,6 +35,8 @@ class MensajeroController extends Controller
         ->leftJoin('categorias', 'tipos.id_categoria', '=', 'categorias.id')
         ->select('mensajeros.id','mensajeros.nombre', 'mensajeros.apellido', 'mensajeros.telefono','mensajeros.correo','mensajeros.whatsapp_id','mensajeros.telegram_id','mensajeros.instagram_id');
 
+        $mensajeros = $query->orderBy('mensajeros.nombre');
+
         if ($general) {
             $mensajes = $query->distinct()->get();
         } else {
