@@ -8,6 +8,7 @@ use App\Models\Mensaje_Clasificado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Http;
 
 class AdminMensajeController extends Controller
 {
@@ -43,7 +44,7 @@ class AdminMensajeController extends Controller
     ]);
 }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $request->validate([
             'respuesta' => 'required|string',
@@ -72,6 +73,33 @@ class AdminMensajeController extends Controller
                 ]);
             }
         });
+
+        try {
+            $mensajesSeleccionados = Mensaje::whereIn('id', $request->seleccionados)->get();
+    
+            $mensajeOriginalTexto = $mensajesSeleccionados->map(function ($msg) {
+                return "- " . $msg->contenido;
+            })->implode("\n");
+
+            $primerMensaje = $mensajesSeleccionados->first();
+            $mensajeConCliente = Mensaje::with('mensajeros')->findOrFail($primerMensaje->id);
+            $cliente = $mensajeConCliente->mensajeros;
+            $nombreAdmin = auth()->user()->name;
+
+            Http::withoutVerifying()->timeout(5)->post('https://n8njhong.ddns.net/webhook/enviar-respuesta', [
+                'respuesta'                => $request->respuesta,
+                'canal_envio'              => $request->canal_seleccionado, 
+                'agente_nombre'            => $nombreAdmin,
+                'cliente_nombre'           => $cliente->nombre . ' ' . $cliente->apellido,
+                'telefono'                 => $cliente->telefono ?? null,
+                'email'                    => $cliente->correo ?? null,
+                'telegram_id'              => $cliente->telegram_id ?? null,
+                'mensaje_original_cliente' => $mensajeOriginalTexto, 
+                'mensajes_respondidos_ids' => $request->seleccionados
+                ]);
+            } catch (\Exception $e) {
+                logger("Error enviando Webhook a n8n: " . $e->getMessage());
+            }
 
         return redirect()->back()->with('success', 'Mensajes respondidos correctamente.');
     }
