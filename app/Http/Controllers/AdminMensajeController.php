@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 class AdminMensajeController extends Controller
 {
@@ -22,29 +23,43 @@ class AdminMensajeController extends Controller
     }
 
     public function create($id)
-{
-    $mensajeClasificado = Mensaje_Clasificado::with(['mensaje.mensajeros', 'tipo_mensaje.tipos.categoria'])
-        ->findOrFail($id);
+    {
+        $mensajeClasificado = Mensaje_Clasificado::with(['mensaje.mensajeros', 'tipo_mensaje.tipos.categoria'])
+            ->findOrFail($id);
 
-    $mensajeroId = $mensajeClasificado->mensaje->id_mensajero;
+        $mensajeroId = $mensajeClasificado->mensaje->id_mensajero;
+        
+        $admin = auth()->user()->admin;
+        $adminCategorias = $admin ? $admin->categorias : collect();
+        $adminCategoriasIds = $adminCategorias->pluck('id')->toArray();
+        $esGeneral = $adminCategorias->contains(function ($cat) {
+            return strtolower($cat->nombre) === 'general';
+        });
 
-    $tiposIds = $mensajeClasificado->tipo_mensaje->pluck('id_tipo')->toArray();
+        $query = Mensaje::where('id_mensajero', $mensajeroId);
 
-    $historialMensajes = Mensaje::where('id_mensajero', $mensajeroId)
-        ->whereHas('mensaje_clasificado.tipo_mensaje', function ($query) use ($tiposIds) {
-            $query->whereIn('id_tipo', $tiposIds);
-        })
-        ->with(['mensaje_clasificado', 'admin_mensajes.admin'])
-        ->orderBy('fecha_envio', 'asc')
-    ->get();
+        if (!$esGeneral) {
+            $query->where(function ($q) use ($adminCategoriasIds) {
+                // Mostrar mensajes sin clasificar (charla activa)
+                $q->doesntHave('mensaje_clasificado')
+                    // O mostrar mensajes clasificados que pertenezcan a las categorías del admin
+                    ->orWhereHas('mensaje_clasificado.tipo_mensaje.tipos', function ($q2) use ($adminCategoriasIds) {
+                        $q2->whereIn('id_categoria', $adminCategoriasIds);
+                    });
+            });
+        }
 
-    return Inertia::render('Respuesta/RespuestaAgente', [
-        'mensajeClasificado' => $mensajeClasificado,
-        'historialMensajes' => $historialMensajes
-    ]);
-}
+        $historialMensajes = $query->with(['mensaje_clasificado', 'admin_mensajes.admin'])
+            ->orderBy('fecha_envio', 'asc')
+            ->get();
 
-   public function store(Request $request)
+        return Inertia::render('Respuesta/RespuestaAgente', [
+            'mensajeClasificado' => $mensajeClasificado,
+            'historialMensajes' => $historialMensajes
+        ]);
+    }
+
+    public function store(Request $request)
     {
         $request->validate([
             'respuesta' => 'required|string',
@@ -55,11 +70,28 @@ class AdminMensajeController extends Controller
 
         $adminId = auth()->id(); 
 
+        // Buscamos el último mensaje ANTES de la transacción para evaluar la inactividad real
+        $primerMensajeId = $request->seleccionados[0];
+        $primerMensajeOriginal = Mensaje::findOrFail($primerMensajeId);
+        
+        // Buscamos la última respuesta que ESTE admin le envió a ESTE cliente (mensajero)
+        $mensajeroId = $primerMensajeOriginal->id_mensajero;
+        
+        $ultimoAdminMensaje = Admin_Mensaje::where('id_admin', $adminId)
+            ->whereHas('mensaje', function ($q) use ($mensajeroId) {
+                $q->where('id_mensajero', $mensajeroId);
+            })
+            ->latest('fecha_respuesta')
+            ->first();
+
+        // Evaluamos si el chat venía activo en las últimas 24 horas (ahora 1 min para pruebas)
+        $esCharlaActiva = false;
+        if ($ultimoAdminMensaje && Carbon::parse($ultimoAdminMensaje->fecha_respuesta)->diffInMinutes(now()) < 1) {
+            $esCharlaActiva = true;
+        }
+
         DB::transaction(function () use ($request, $adminId) {
             foreach ($request->seleccionados as $idMensaje) {
-                
-                $mensajeOriginal = Mensaje::findOrFail($idMensaje);
-                
                 Admin_Mensaje::create([
                     'id_admin' => $adminId,
                     'id_mensaje' => $idMensaje,
@@ -76,34 +108,39 @@ class AdminMensajeController extends Controller
 
         try {
             $mensajesSeleccionados = Mensaje::whereIn('id', $request->seleccionados)->get();
-    
-            $mensajeOriginalTexto = $mensajesSeleccionados->map(function ($msg) {
-                return "- " . $msg->contenido;
-            })->implode("\n");
 
-            $primerMensaje = $mensajesSeleccionados->first();
-            $mensajeConCliente = Mensaje::with('mensajeros')->findOrFail($primerMensaje->id);
+            $mensajeOriginalTexto = "";
+            if (!$esCharlaActiva) {
+                $mensajeOriginalTexto = $mensajesSeleccionados->map(function ($msg) {
+                    return "- " . $msg->contenido;
+                })->implode("\n");
+            }
+
+            $mensajeConCliente = Mensaje::with('mensajeros')->findOrFail($primerMensajeId);
             $cliente = $mensajeConCliente->mensajeros;
             $nombreAdmin = auth()->user()->name;
 
-            Http::withoutVerifying()->timeout(5)->post('https://n8njhong.ddns.net/webhook/enviar-respuesta', [
-                'respuesta'                => $request->respuesta,
-                'canal_envio'              => $request->canal_seleccionado, 
-                'agente_nombre'            => $nombreAdmin,
-                'cliente_nombre'           => $cliente->nombre . ' ' . $cliente->apellido,
-                'telefono'                 => $cliente->telefono ?? null,
-                'email'                    => $cliente->correo ?? null,
-                'telegram_id'              => $cliente->telegram_id ?? null,
-                'mensaje_original_cliente' => $mensajeOriginalTexto, 
-                'mensajes_respondidos_ids' => $request->seleccionados
+            Http::withoutVerifying()
+                ->connectTimeout(1)
+                ->timeout(2)
+                ->post('https://n8njhong.ddns.net/webhook/enviar-respuesta', [
+                    'respuesta'                => $request->respuesta,
+                    'canal_envio'              => $request->canal_seleccionado, 
+                    'agente_nombre'            => $nombreAdmin,
+                    'cliente_id'               => $cliente->id,
+                    'cliente_nombre'           => $cliente->nombre . ' ' . $cliente->apellido,
+                    'telefono'                 => $cliente->telefono ?? null,
+                    'email'                    => $cliente->correo ?? null,
+                    'telegram_id'              => $cliente->telegram_id ?? null,
+                    'es_charla_activa'         => $esCharlaActiva,
+                    'mensaje_original_cliente' => $mensajeOriginalTexto,
                 ]);
-            } catch (\Exception $e) {
-                logger("Error enviando Webhook a n8n: " . $e->getMessage());
-            }
+        } catch (\Exception $e) {
+            logger("Error enviando Webhook a n8n: " . $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Mensajes respondidos correctamente.');
     }
-
 
     public function update(Request $request, Admin_Mensaje $admin_mensaje)
     {
@@ -121,7 +158,6 @@ class AdminMensajeController extends Controller
     public function destroy(Admin_Mensaje $admin_mensaje)
     {
         $admin_mensaje->delete();
-
         return redirect()->back()->with('success', 'Respuesta eliminada.');
     }
 }

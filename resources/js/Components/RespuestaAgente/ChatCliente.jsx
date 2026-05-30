@@ -7,10 +7,15 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
     const cliente = msgOriginal?.mensajeros;
     const messagesEndRef = useRef(null);
 
+    const canUseTelegram = !!cliente?.telegram_id;
+    let defaultCanal = (msgOriginal?.origen?.toLowerCase() === 'telegram' && canUseTelegram) ? 'Telegram' : 'Email';
+
+    const [respuestaResaltada, setRespuestaResaltada] = React.useState(null);
+
     const { data, setData, post, processing, reset, errors } = useForm({
         respuesta: '',
         seleccionados: [],
-        canal_seleccionado: msgOriginal?.origen || 'WhatsApp', 
+        canal_seleccionado: defaultCanal, 
     });
 
     const toggleSeleccion = (id) => {
@@ -69,7 +74,8 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
                         respuestasAdminGlobales.push({
                             ...resp,
                             es_admin: true,
-                            fecha_orden: resp.fecha_respuesta ? new Date(resp.fecha_respuesta).getTime() : 0
+                            fecha_orden: resp.fecha_respuesta ? new Date(resp.fecha_respuesta).getTime() : 0,
+                            claveUnica: claveUnica
                         });
                     }
                 });
@@ -85,14 +91,15 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
         switch (canal) {
             case 'whatsapp': return { bgBubble: 'bg-white', borderColor: 'border-l-4 border-l-[#25D366]', badge: 'bg-[#25D366] text-white', icon: <MessageSquare className="h-3 w-3" /> };
             case 'telegram': return { bgBubble: 'bg-white', borderColor: 'border-l-4 border-l-[#32afed]', badge: 'bg-[#32afed] text-white', icon: <SendHorizontal className="h-3 w-3" /> };
-            case 'email': return { bgBubble: 'bg-white', borderColor: 'border-l-4 border-l-[#EA4335]', badge: 'bg-[#EA4335] text-white', icon: <Mail className="h-3 w-3" /> };
+            case 'email':
+            case 'gmail': return { bgBubble: 'bg-white', borderColor: 'border-l-4 border-l-[#EA4335]', badge: 'bg-[#EA4335] text-white', icon: <Mail className="h-3 w-3" /> };
             default: return { bgBubble: 'bg-white', borderColor: 'border-l-4 border-l-gray-300', badge: 'bg-gray-500 text-white', icon: <MessageSquare className="h-3 w-3" /> };
         }
     };
 
     const headerConfig = msgOriginal?.origen?.toLowerCase() === 'whatsapp' ? 'bg-[#075E54]' : 
                         msgOriginal?.origen?.toLowerCase() === 'telegram' ? 'bg-[#0088cc]' : 
-                        msgOriginal?.origen?.toLowerCase() === 'email' ? 'bg-[#EA4335]' : 'bg-gray-700';
+                        (msgOriginal?.origen?.toLowerCase() === 'email' || msgOriginal?.origen?.toLowerCase() === 'gmail') ? 'bg-[#EA4335]' : 'bg-gray-700';
 
     return (
         <div className="flex flex-col h-[calc(100vh-4rem)] max-w-4xl mx-auto bg-gray-100 rounded-lg shadow-md overflow-hidden border border-gray-200 my-4">
@@ -100,9 +107,9 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
             {/* Header */}
             <div className={`px-6 py-3 flex items-center justify-between shadow-sm text-white ${headerConfig}`}>
                 <div className="flex items-center gap-3">
-                    <Link href={route('mensajes-clasificados.index')} className="hover:opacity-80 transition-opacity">
+                    <button type="button" onClick={() => window.history.back()} className="hover:opacity-80 transition-opacity">
                         <ArrowLeft className="h-6 w-6" />
-                    </Link>
+                    </button>
                     <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-lg uppercase border border-white/10">
                         {cliente?.nombre?.[0] || 'C'}{cliente?.apellido?.[0] || 'D'}
                     </div>
@@ -128,12 +135,17 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
                     chatConversacion.map((item, index) => {
                         
                         if (item.es_admin) {
+                            const esEstaResaltada = respuestaResaltada === item.claveUnica;
                             return (
-                                <div key={`admin-${item.id}-${index}`} className="flex flex-col w-full max-w-[85%] sm:max-w-[75%] ml-auto items-end animate-fade-in">
-                                    <div className="relative p-3.5 rounded-xl rounded-tr-none shadow-sm bg-[#D9FDD3] border border-[#a3e49b] text-gray-900 min-w-[200px]">
+                                <div 
+                                    key={`admin-${item.id}-${index}`} 
+                                    onClick={() => setRespuestaResaltada(esEstaResaltada ? null : item.claveUnica)}
+                                    className={`flex flex-col w-full max-w-[85%] sm:max-w-[75%] ml-auto items-end animate-fade-in cursor-pointer transition-transform ${esEstaResaltada ? 'scale-[1.02]' : ''}`}
+                                >
+                                    <div className={`relative p-3.5 rounded-xl rounded-tr-none shadow-sm border text-gray-900 min-w-[200px] transition-colors ${esEstaResaltada ? 'bg-[#c2f3ba] border-[#89d67f] shadow-md ring-2 ring-emerald-400' : 'bg-[#D9FDD3] border-[#a3e49b]'}`}>
                                         <div className="flex justify-between items-center mb-1">
                                             <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-700">
-                                                <User className="h-3 w-3" /> {item.admin?.name || 'Yo'}
+                                                <User className="h-3 w-3" /> {item.admin?.nombre || 'Yo'}
                                             </span>
                                             <span className="text-[10px] font-semibold text-gray-500 uppercase">
                                                 Vía {item.canal_envio}
@@ -155,14 +167,21 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
                         const config = getCanalConfig(msg.origen);
                         const yaRespondido = msg.admin_mensajes && msg.admin_mensajes.length > 0;
 
+                        const estaResaltadoPorClick = respuestaResaltada && msg.admin_mensajes?.some(resp => {
+                            const fechaMinuto = resp.fecha_respuesta ? resp.fecha_respuesta.substring(0, 16) : '';
+                            return `${resp.respuesta}_${fechaMinuto}` === respuestaResaltada;
+                        });
+
                         return (
                             <div 
                                 key={`cliente-${msg.id}`} 
                                 onClick={() => toggleSeleccion(msg.id)}
                                 className={`flex flex-col w-full max-w-[85%] sm:max-w-[75%] animate-fade-in cursor-pointer transition-all ${
-                                    yaRespondido ? 'opacity-70 hover:opacity-100' : ''
+                                    yaRespondido && !estaResaltadoPorClick ? 'opacity-70 hover:opacity-100' : ''
                                 } ${
                                     estaSeleccionado ? 'ring-2 ring-blue-500 scale-[1.01] rounded-xl' : ''
+                                } ${
+                                    estaResaltadoPorClick && !estaSeleccionado ? 'ring-2 ring-emerald-400 scale-[1.02] shadow-lg rounded-xl' : ''
                                 }`}
                             >
                                 <div className={`relative p-3.5 rounded-xl rounded-tl-none shadow-sm ${config.bgBubble} ${config.borderColor}`}>
@@ -235,9 +254,8 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
                             onChange={e => setData('canal_seleccionado', e.target.value)}
                             className="w-full py-2 px-2.5 rounded-lg bg-white border border-gray-300 focus:outline-none focus:border-emerald-500 text-xs font-medium shadow-2xs cursor-pointer h-[40px]"
                         >
-                            <option value="WhatsApp">WhatsApp</option>
-                            <option value="Telegram">Telegram</option>
-                            <option value="Email">Email</option>
+                            {canUseTelegram && <option value="Telegram">Telegram</option>}
+                            <option value="Email">Gmail</option>
                         </select>
                     </div>
 

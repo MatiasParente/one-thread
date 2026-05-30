@@ -11,6 +11,10 @@ class Mensaje extends Model
 {
     protected $fillable = ['id', 'contenido', 'origen', 'fecha_envio', 'id_mensajero', 'created_at', 'updated_at'];
 
+    protected $casts = [
+        'fecha_envio' => 'datetime',
+    ];
+
     //
     public function mensaje_clasificado(): HasOne
     {

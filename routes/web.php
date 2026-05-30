@@ -66,6 +66,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('mensajes.responder');
         
     Route::resource('admin-mensajes', AdminMensajeController::class)->only(['index', 'update', 'destroy']);
+    Route::post('/verificar-cierre-chat', [AdminMensajeController::class, 'verificarCierreChat']);
 });
 
 require __DIR__.'/auth.php';
