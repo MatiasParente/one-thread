@@ -144,7 +144,7 @@ class MensajeClasificadoController extends Controller
 
         $mensaje->update($validated);
 
-        return redirect('dashboard')->with('success', 'Mensaje actualizado.');
+        return redirect()->back()->with('success', 'Mensaje actualizado.');
     }
 
     public function destroy($id)

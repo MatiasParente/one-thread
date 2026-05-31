@@ -18,15 +18,15 @@ class Mensaje_Clasificado extends Model
 
     const ESTADO_EN_PROCESO = 1;
 
-    const ESTADO_EN_PAUSA = 2;
+    const ESTADO_RESUELTO = 2;
 
-    const ESTADO_RESUELTO = 3;
+    const ESTADO_ELIMINADO = 3;
 
     const ESTADOS = [
         self::ESTADO_PENDIENTE => 'Pendiente',
         self::ESTADO_EN_PROCESO => 'En proceso',
-        self::ESTADO_EN_PAUSA => 'En pausa',
         self::ESTADO_RESUELTO => 'Resuelto',
+        self::ESTADO_ELIMINADO => 'Eliminado',
     ];
 
     public function getEstadoLabelAttribute(): string
