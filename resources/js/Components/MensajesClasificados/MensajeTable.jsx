@@ -3,13 +3,14 @@ import Button from '../Button';
 import { Eye, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 import './css/mensajes.css';
 import React, { useState } from 'react';
-import Modal from '@/Components/Modal'; 
+import EditMensajeModal from './EditMensajeModal';
+import ViewMensajeOriginalModal from './ViewMensajeOriginalModal';
 
 export default function MensajeTable({ mensajes = [], handleDelete }) {
 
     const [paginaActual, setPaginaActual] = useState(1);
     const itemsPorPagina = 10;
-    
+
     const indiceUltimoItem = paginaActual * itemsPorPagina;
     const indicePrimerItem = indiceUltimoItem - itemsPorPagina;
     const mensajesPagina = mensajes.slice(indicePrimerItem, indiceUltimoItem);
@@ -81,26 +82,41 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
         }
     };
 
-    const [ modalOpen, setModalOpen ] = useState(false);
-    const [ selectedMessage, setSelectedMessage ] = useState(null);
-    
-    const openModal = (mensaje) => {
-        setSelectedMessage(mensaje);
-        setModalOpen(true);
+    // Para el modal de "Ver mensaje original"
+    const [viewModalOpen, setViewModalOpen] = useState(false);
+    const [selectedViewMessage, setSelectedViewMessage] = useState(null);
+
+    const openViewModal = (mensaje) => {
+        setSelectedViewMessage(mensaje);
+        setViewModalOpen(true);
     };
 
-    const closeModal = () => {
-        setSelectedMessage(null);
-        setModalOpen(false);
+    const closeViewModal = () => {
+        setSelectedViewMessage(null);
+        setViewModalOpen(false);
     };
 
     const handleRowClick = (e, id) => {
-    if (e.target.closest('button') || e.target.closest('a')) {
-        return;
-    }
-    
-    router.visit(route('mensajes-clasificados.respuesta', id)); 
-};
+        if (e.target.closest('button') || e.target.closest('a')) {
+            return;
+        }
+
+        router.visit(route('mensajes-clasificados.respuesta', id));
+    };
+
+    // Para el modal de "Editar"
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedEditMessage, setSelectedEditMessage] = useState(null);
+    const openEditModal = (mensaje) => {
+        setSelectedEditMessage(mensaje);
+        setEditModalOpen(true);
+    };
+
+    const closeEditModal = () => {
+        setSelectedEditMessage(null);
+        setEditModalOpen(false);
+    };
+
 
     return (
         <div className="overflow-hidden bg-white rounded-md border border-gray-200 shadow-sm">
@@ -158,7 +174,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                         <td className="px-6 py-4">
                                             {originalMessage ? (
                                                 <button
-                                                    onClick={() => openModal(originalMessage)}
+                                                    onClick={() => openViewModal(originalMessage)}
                                                     className="text-primary hover:text-primary-hover text-sm font-medium inline-flex items-center gap-1"
                                                 >
                                                     Ver original
@@ -205,14 +221,13 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                                         <Eye className="h-4.5 w-4.5" />
                                                     </button>
                                                 </Link>
-                                                <Link href={route('mensajes-clasificados.edit', mensajeClasificado.id)}>
-                                                    <button
-                                                        title="Editar"
-                                                        className="p-1 text-gray-500 hover:text-[#B8860B] hover:bg-gray-100 rounded transition-colors"
-                                                    >
-                                                        <Edit2 className="h-4.5 w-4.5" />
-                                                    </button>
-                                                </Link>
+                                                <button
+                                                    title="Editar"
+                                                    onClick={() => openEditModal(mensajeClasificado)}
+                                                    className="p-1 text-gray-500 hover:text-[#B8860B] hover:bg-gray-100 rounded transition-colors"
+                                                >
+                                                    <Edit2 className="h-4.5 w-4.5" />
+                                                </button>
                                                 <button
                                                     title="Eliminar"
                                                     onClick={() => handleDelete(mensajeClasificado.id, mensajeClasificado.resumen)}
@@ -239,55 +254,28 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                     </tbody>
                 </table>
             </div>
-            
-            {/* Modal para mostrar el mensaje original */}
-            <Modal show={modalOpen} onClose={closeModal} maxWidth="2xl">
-                <div className="p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                        Mensaje Original
-                    </h3>
-                    
-                    {selectedMessage && (
-                        <div className="space-y-4">
-                            <div className="bg-gray-50 rounded-lg p-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <span className="text-xs text-gray-400">Cliente</span>
-                                        <p className="font-medium text-gray-800">
-                                            {selectedMessage.mensajeros?.nombre} {selectedMessage.mensajeros?.apellido}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <span className="text-xs text-gray-400">Canal</span>
-                                        <p className="font-medium text-gray-800">{selectedMessage.origen}</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-xs text-gray-400">Fecha</span>
-                                        <p className="font-medium text-gray-800">
-                                            {new Date(selectedMessage.fecha_envio).toLocaleString()}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div>
-                                <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                                    Contenido
-                                </h4>
-                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                    <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
-                                        {selectedMessage.contenido}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </Modal>
+            {/* Modal para ver mensaje original */}
+            <ViewMensajeOriginalModal
+                mensaje={selectedViewMessage}
+                isOpen={viewModalOpen}
+                onClose={closeViewModal}
+            />
+
+            {/* Modal para editar mensaje clasificado */}
+            <EditMensajeModal
+                mensaje={selectedEditMessage}
+                isOpen={editModalOpen}
+                onClose={closeEditModal}
+                onUpdate={() => {
+                    closeEditModal();
+                    router.reload();
+                }}
+            />
 
             {mensajes.length > 0 && (
                 <div className="pagination-container">
-                    <div className="pagination-controls" style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <div className="pagination-controls" style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Button
                             onClick={paginaAnterior}
                             disabled={paginaActual === 1}
