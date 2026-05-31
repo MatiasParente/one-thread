@@ -44,9 +44,9 @@ export default function Index({ mensajes }) {
                     <h1 className="text-[30px] font-bold text-gray-900 tracking-tight">
                         Mensajes
                     </h1>
-                    <Link href={route('mensajes-simples.create')}>
+                    {/* <Link href={route('mensajes-simples.create')}>
                         <Button>+ Nuevo Mensaje</Button>
-                    </Link>
+                    </Link> */}
                 </div>
 
                 <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
@@ -65,11 +65,11 @@ export default function Index({ mensajes }) {
                                     <tr key={mensaje.id} className="border-t border-gray-100 hover:bg-gray-50">
                                         <td className="p-3 text-gray-600">{mensaje.contenido}</td>
                                         <td className="p-3 font-medium text-gray-800">{mensaje.origen}</td>
-                                        <td className="p-3 font-medium text-gray-800">{mensaje.fecha_envio}</td>
+                                        <td className="p-3 font-medium text-gray-800">{new Date(mensaje.fecha_envio).toLocaleString()}</td>
                                         <td className="space-x-2">
-                                            <Link href={route('mensajes-simples.edit', mensaje.id)}>
+                                            {/* <Link href={route('mensajes-simples.edit', mensaje.id)}>
                                                 <Button size="sm" variant="secondary">Editar</Button>
-                                            </Link>
+                                            </Link> */}
                                             <Button
                                                 size="sm"
                                                 variant="danger"

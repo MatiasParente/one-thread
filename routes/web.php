@@ -21,11 +21,11 @@ Route::get('/dashboard', DashboardController::class)
     ->name('dashboard');
 
 Route::resource('mensajes-clasificados', MensajeClasificadoController::class)
-    ->only(['index', 'create', 'store', 'edit', 'update', 'destroy', 'show'])
+    ->only(['index', 'edit', 'update', 'destroy', 'show'])
     ->middleware(['auth', 'verified']);
 
 Route::resource('mensajes-simples', MensajeController::class)
-    ->only(['index', 'create', 'store', 'edit', 'update', 'destroy', 'show'])
+    ->only(['index', 'destroy', 'show'])
     ->middleware(['auth', 'verified']);
 
 Route::resource('mensajeros', MensajeroController::class)

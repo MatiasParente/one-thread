@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
-import Button from '@/Components/Button';
+// import Button from '@/Components/Button';
 import { Sparkles, Plus } from 'lucide-react';
 import MensajeFilterCard from '@/Components/MensajesClasificados/MensajeFilterCard';
 import MensajeTable from '@/Components/MensajesClasificados/MensajeTable';
@@ -54,11 +54,11 @@ export default function Index({ mensajes, clientes, categorias, filters }) {
                         <Sparkles className="h-5 w-5" />
                         <span className="font-semibold text-gray-800">Total clasificados: {mensajes?.length || 0}</span>
                     </div>
-                    <Link href={route('mensajes-clasificados.create')}>
+                    {/* <Link href={route('mensajes-clasificados.create')}>
                         <Button className="flex items-center gap-1">
                             <Plus className="h-4 w-4" /> Nuevo Registro
                         </Button>
-                    </Link>
+                    </Link> */}
                 </div>
 
                 <MensajeFilterCard
