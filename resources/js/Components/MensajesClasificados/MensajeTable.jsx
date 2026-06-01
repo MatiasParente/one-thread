@@ -1,6 +1,5 @@
 import { Link, router } from '@inertiajs/react'; // 1. Importamos router para la navegación manual
-import Button from '../Button';
-import { Eye, Edit2, Trash2, AlertTriangle } from 'lucide-react';
+import { Eye, Edit2, Trash2, AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react';
 import './css/mensajes.css';
 import React, { useState } from 'react';
 import EditMensajeModal from './EditMensajeModal';
@@ -9,6 +8,7 @@ import ViewMensajeOriginalModal from './ViewMensajeOriginalModal';
 export default function MensajeTable({ mensajes = [], handleDelete }) {
 
     const [paginaActual, setPaginaActual] = useState(1);
+    const [irAPagina, setIrAPagina] = useState('');
     const itemsPorPagina = 10;
 
     const indiceUltimoItem = paginaActual * itemsPorPagina;
@@ -27,6 +27,29 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
         if (paginaActual < totalPaginas) {
             setPaginaActual(paginaActual + 1);
         }
+    }
+
+    const irAPaginaEspecifica = (pagina) => {
+        if (pagina >= 1 && pagina <= totalPaginas) {
+            setPaginaActual(pagina);
+        }
+    }
+
+    const getPageNumbers = () => {
+        if (totalPaginas <= 5) {
+            return Array.from({ length: totalPaginas }, (_, i) => i + 1);
+        }
+
+        const pages = [1];
+        const left = Math.max(2, paginaActual - 1);
+        const right = Math.min(totalPaginas - 1, paginaActual + 1);
+
+        if (left > 2) pages.push('...');
+        for (let i = left; i <= right; i++) pages.push(i);
+        if (right < totalPaginas - 1) pages.push('...');
+
+        if (totalPaginas > 1) pages.push(totalPaginas);
+        return pages;
     }
 
     const getCategories = (msg) => {
@@ -274,24 +297,74 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
             />
 
             {mensajes.length > 0 && (
-                <div className="pagination-container">
-                    <div className="pagination-controls" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Button
-                            onClick={paginaAnterior}
-                            disabled={paginaActual === 1}
-                            className="pagination-btn"
-                            aria-label="Página anterior"
-                        >
-                            &larr; Anterior
-                        </Button>
-                        <Button
-                            onClick={paginaSiguiente}
-                            disabled={paginaActual === totalPaginas}
-                            className="pagination-btn"
-                            aria-label="Página siguiente"
-                        >
-                            Siguiente &rarr;
-                        </Button>
+                <div className="border-t border-gray-200 px-4 py-3">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <span className="text-sm text-gray-600">
+                            Página <span className="font-semibold text-gray-900">{paginaActual}</span> de{' '}
+                            <span className="font-semibold text-gray-900">{totalPaginas}</span>
+                        </span>
+
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={paginaAnterior}
+                                disabled={paginaActual === 1}
+                                className="p-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 disabled:text-gray-300 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors"
+                                aria-label="Página anterior"
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                            </button>
+
+                            {getPageNumbers().map((page, idx) =>
+                                page === '...' ? (
+                                    <span key={`ellipsis-${idx}`} className="px-2 py-1 text-sm text-gray-400 select-none">
+                                        ...
+                                    </span>
+                                ) : (
+                                    <button
+                                        key={page}
+                                        onClick={() => irAPaginaEspecifica(page)}
+                                        className={`min-w-[2rem] px-2 py-1 text-sm rounded-md transition-colors ${
+                                            page === paginaActual
+                                                ? 'bg-primary text-white font-semibold'
+                                                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        {page}
+                                    </button>
+                                )
+                            )}
+
+                            <button
+                                onClick={paginaSiguiente}
+                                disabled={paginaActual === totalPaginas}
+                                className="p-1.5 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 disabled:text-gray-300 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors"
+                                aria-label="Página siguiente"
+                            >
+                                <ChevronRight className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-500">Ir a:</span>
+                            <input
+                                type="number"
+                                min={1}
+                                max={totalPaginas}
+                                value={irAPagina}
+                                onChange={(e) => setIrAPagina(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        const page = parseInt(irAPagina);
+                                        if (page >= 1 && page <= totalPaginas) {
+                                            setPaginaActual(page);
+                                        }
+                                        setIrAPagina('');
+                                    }
+                                }}
+                                className="w-16 px-2 py-1 text-sm border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                                placeholder="Nº"
+                            />
+                        </div>
                     </div>
                 </div>
             )}

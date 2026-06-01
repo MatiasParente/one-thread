@@ -14,7 +14,7 @@ export default function AuthenticatedLayout({ title, subtitle, children }) {
         .slice(0, 2);
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex h-screen overflow-hidden bg-gray-50">
             <Sidebar
                 show={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
@@ -57,7 +57,7 @@ export default function AuthenticatedLayout({ title, subtitle, children }) {
                     </Link>
                 </header>
 
-                <main className="flex-1 p-4 lg:p-6">
+                <main className="flex-1 overflow-y-auto p-4 lg:p-6">
                     {children}
                 </main>
             </div>
