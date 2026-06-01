@@ -23,31 +23,27 @@ export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesP
         >
             <Head title="Dashboard" />
 
-            <StatsCards stats={stats} />
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-4 items-start">
+                <StatsCards stats={stats} />
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-                {/* Tabla de Mensajes Recientes */}
-                <div className="lg:col-span-3">
-                    <div className="rounded-md border border-gray-200 bg-white p-4 shadow-sm space-y-3">
-                        <div>
-                            <h3 className="text-sm font-bold text-gray-900">
-                                Consultas Recientes Clasificadas
-                            </h3>
-                            <p className="text-xs text-gray-400">Últimos mensajes procesados en tiempo real por la IA</p>
-                        </div>
-{/*ACa iria el componente de los filtros pero como se necesitan una banda de datos no lo puse, por ahora solo esta el que tiene los datos del mensaje clasificado */}
-                        <MensajeTable 
-                            mensajes={mensajes} 
-                            handleDelete={handleDelete}
-                        />
-                    </div>
-                </div>
-
-                {/* Gráficos y Métricas */}
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6 lg:row-span-2">
                     <ChannelDistribution mensajesPorCanal={mensajesPorCanal} />
                     <MessagesByDay mensajesPorDia={mensajesPorDia} />
                     <QuickSummary resumenRapido={resumenRapido} />
+                </div>
+
+                <div className="lg:col-span-3 rounded-md border border-gray-200 bg-white p-4 shadow-sm space-y-3">
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-900">
+                            Consultas Recientes Clasificadas
+                        </h3>
+                        <p className="text-xs text-gray-400">Últimos mensajes procesados en tiempo real por la IA</p>
+                    </div>
+{/*ACa iria el componente de los filtros pero como se necesitan una banda de datos no lo puse, por ahora solo esta el que tiene los datos del mensaje clasificado */}
+                    <MensajeTable 
+                        mensajes={mensajes} 
+                        handleDelete={handleDelete}
+                    />
                 </div>
             </div>
         </AuthenticatedLayout>

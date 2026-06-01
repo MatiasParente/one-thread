@@ -236,14 +236,7 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-1">
-                                                <Link href={route('mensajes-clasificados.show', mensajeClasificado.id)}>
-                                                    <button
-                                                        title="Ver detalle"
-                                                        className="p-1 text-gray-500 hover:text-[#226583] hover:bg-gray-100 rounded transition-colors"
-                                                    >
-                                                        <Eye className="h-4.5 w-4.5" />
-                                                    </button>
-                                                </Link>
+                                    
                                                 <button
                                                     title="Editar"
                                                     onClick={() => openEditModal(mensajeClasificado)}
