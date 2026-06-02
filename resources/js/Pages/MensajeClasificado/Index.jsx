@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 // import Button from '@/Components/Button';
@@ -10,6 +10,13 @@ export default function Index({ mensajes, clientes, categorias, filters }) {
     const [idMensajero, setIdMensajero] = useState(filters.id_mensajero || '');
     const [idCategoria, setIdCategoria] = useState(filters.id_categoria || '');
     const [prioridad, setPrioridad] = useState(filters.prioridad || '');
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            router.reload({ preserveScroll: true, preserveState: true });
+        }, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
     const applyFilters = () => {
         const queryParams = {};

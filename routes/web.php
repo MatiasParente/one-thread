@@ -65,6 +65,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/mensajes/responder', [AdminMensajeController::class, 'store'])
         ->name('mensajes.responder');
         
+    Route::post('mensajes-clasificados/{id}/finalizar', [AdminMensajeController::class, 'finalizar'])
+        ->name('mensajes-clasificados.finalizar');
+
     Route::resource('admin-mensajes', AdminMensajeController::class)->only(['index', 'update', 'destroy']);
     Route::post('/verificar-cierre-chat', [AdminMensajeController::class, 'verificarCierreChat']);
 });

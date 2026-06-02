@@ -1,8 +1,16 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import { useEffect } from 'react';
 import ChatCliente from '@/Components/RespuestaAgente/ChatCliente';
 
 export default function RespuestaAgente({mensajeClasificado, historialMensajes}) {
+    useEffect(() => {
+        const interval = setInterval(() => {
+            router.reload({ preserveScroll: true, preserveState: true });
+        }, 30000);
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <AuthenticatedLayout
             title="Respuesta"

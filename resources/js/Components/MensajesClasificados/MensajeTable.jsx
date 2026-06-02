@@ -80,8 +80,8 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
         switch (parseInt(estado)) {
             case 0: return 'badge-status-pendiente';
             case 1: return 'badge-status-proceso';
-            case 2: return 'badge-status-pausa';
-            case 3: return 'badge-status-resuelto';
+            case 2: return 'badge-status-resuelto';
+            case 3: return 'badge-status-eliminado bg-red-100 text-red-800'; // Fallback a Tailwind si no existe la clase CSS
             default: return 'bg-gray-100 text-gray-800';
         }
     };

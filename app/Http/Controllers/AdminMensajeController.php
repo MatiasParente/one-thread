@@ -70,25 +70,15 @@ class AdminMensajeController extends Controller
 
         $adminId = auth()->id(); 
 
-        // Buscamos el último mensaje ANTES de la transacción para evaluar la inactividad real
         $primerMensajeId = $request->seleccionados[0];
         $primerMensajeOriginal = Mensaje::findOrFail($primerMensajeId);
         
-        // Buscamos la última respuesta que ESTE admin le envió a ESTE cliente (mensajero)
         $mensajeroId = $primerMensajeOriginal->id_mensajero;
         
-        $ultimoAdminMensaje = Admin_Mensaje::where('id_admin', $adminId)
-            ->whereHas('mensaje', function ($q) use ($mensajeroId) {
-                $q->where('id_mensajero', $mensajeroId);
-            })
-            ->latest('fecha_respuesta')
-            ->first();
-
-        // Evaluamos si el chat venía activo en las últimas 24 horas (ahora 1 min para pruebas)
-        $esCharlaActiva = false;
-        if ($ultimoAdminMensaje && Carbon::parse($ultimoAdminMensaje->fecha_respuesta)->diffInMinutes(now()) < 1) {
-            $esCharlaActiva = true;
-        }
+        // Un chat se considera activo si el cliente ya tiene algún mensaje en estado 1 (En proceso)
+        $esCharlaActiva = Mensaje_Clasificado::whereHas('mensaje', function($q) use ($mensajeroId) {
+            $q->where('id_mensajero', $mensajeroId);
+        })->where('estado', 1)->exists();
 
         DB::transaction(function () use ($request, $adminId) {
             foreach ($request->seleccionados as $idMensaje) {
@@ -101,7 +91,7 @@ class AdminMensajeController extends Controller
                 ]);
 
                 Mensaje_Clasificado::where('id_mensaje', $idMensaje)->update([
-                    'estado' => 2 
+                    'estado' => 1 
                 ]);
             }
         });
@@ -159,5 +149,47 @@ class AdminMensajeController extends Controller
     {
         $admin_mensaje->delete();
         return redirect()->back()->with('success', 'Respuesta eliminada.');
+    }
+
+    public function finalizar(Request $request, $idMensajeClasificado)
+    {
+        $mensajeClasificado = Mensaje_Clasificado::with('mensaje.mensajeros')->findOrFail($idMensajeClasificado);
+        
+        $cliente = $mensajeClasificado->mensaje->mensajeros;
+        $mensajeroId = $cliente->id;
+
+        // Pasamos a 'Resuelto' (2) a TODOS los mensajes de este cliente que estén 'En proceso' (1)
+        Mensaje_Clasificado::whereHas('mensaje', function($q) use ($mensajeroId) {
+            $q->where('id_mensajero', $mensajeroId);
+        })
+        ->where('estado', 1)
+        ->update([
+            'estado' => 2
+        ]);
+
+        $canal = $mensajeClasificado->mensaje->origen;
+        
+        $canal_id = null;
+        if (strtolower($canal) === 'telegram') {
+            $canal_id = $cliente->telegram_id;
+        } elseif (strtolower($canal) === 'whatsapp') {
+            $canal_id = $cliente->telefono;
+        } else {
+            $canal_id = $cliente->correo;
+        }
+
+        try {
+            Http::withoutVerifying()
+                ->timeout(3)
+                ->post('https://n8njhong.ddns.net/webhook/encuesta', [
+                    'canal' => ucfirst($canal),
+                    'canal_id' => $canal_id,
+                    'nombre_cliente' => trim($cliente->nombre . ' ' . $cliente->apellido)
+                ]);
+        } catch (\Exception $e) {
+            logger("Error enviando Webhook encuesta a n8n: " . $e->getMessage());
+        }
+
+        return redirect()->back()->with('success', 'Conversación finalizada y encuesta enviada.');
     }
 }

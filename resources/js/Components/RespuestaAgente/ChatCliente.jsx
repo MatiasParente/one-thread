@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useMemo } from 'react';
-import { Send, ArrowLeft, MessageSquare, Mail, SendHorizontal, AlertTriangle, User } from 'lucide-react';
-import { Link, useForm } from '@inertiajs/react';
+import { Send, ArrowLeft, MessageSquare, Mail, SendHorizontal, AlertTriangle, User, CheckCircle } from 'lucide-react';
+import { Link, useForm, router } from '@inertiajs/react';
 
 export default function ChatCliente({ mensajeClasificado, historialMensajes = [] }) {
     const msgOriginal = mensajeClasificado?.mensaje;
@@ -119,6 +119,24 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
                         </h2>
                         <span className="text-xs opacity-75">Historial multicanal</span>
                     </div>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            if (confirm('¿Finalizar conversación? Todos los mensajes "En proceso" de este cliente serán marcados como resueltos.')) {
+                                router.post(route('mensajes-clasificados.finalizar', mensajeClasificado.id));
+                            }
+                        }}
+                        className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors border border-emerald-500 shadow-sm"
+                        title="Aviso: Todos los mensajes en proceso de este chat serán resueltos"
+                    >
+                        <CheckCircle className="h-4 w-4" />
+                        Finalizar y enviar encuesta
+                    </button>
+                    <span className="text-[10px] text-white-500 italic max-w-[220px] text-right leading-tight">
+                        * Todos los mensajes <span className="font-semibold">en proceso</span> se marcarán como resueltos.
+                    </span>
                 </div>
             </div>
 

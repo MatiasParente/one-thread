@@ -10,8 +10,8 @@ const prioridadBadge = {
 const estadoBadge = {
     0: { label: 'Pendiente', class: 'bg-primary-light text-primary' },
     1: { label: 'En proceso', class: 'bg-amber-100 text-amber-800' },
-    2: { label: 'En pausa', class: 'bg-gray-100 text-gray-600' },
-    3: { label: 'Resuelto', class: 'bg-emerald-100 text-emerald-800' },
+    2: { label: 'Resuelto', class: 'bg-emerald-100 text-emerald-800' },
+    3: { label: 'Eliminado', class: 'bg-red-100 text-red-800' },
 };
 
 const canalBadge = {

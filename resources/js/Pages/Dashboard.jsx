@@ -1,5 +1,6 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
+import { useEffect } from 'react';
 import StatsCards from '@/Components/StatsCards';
 import ChannelDistribution from '@/Components/ChannelDistribution';
 import MessagesByDay from '@/Components/MessagesByDay';
@@ -7,6 +8,13 @@ import QuickSummary from '@/Components/QuickSummary';
 import MensajeTable from '@/Components/MensajesClasificados/MensajeTable';
 
 export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesPorDia, resumenRapido }) {
+    useEffect(() => {
+        const interval = setInterval(() => {
+            router.reload({ preserveScroll: true, preserveState: true });
+        }, 30000);
+        return () => clearInterval(interval);
+    }, []);
+
     // Declaramos handleDelete para que la tabla pueda borrar registros en el dashboard
     const handleDelete = (id, resumen) => {
         if (confirm(`¿Estás seguro de que deseas eliminar el mensaje clasificado: "${resumen}"?`)) {
