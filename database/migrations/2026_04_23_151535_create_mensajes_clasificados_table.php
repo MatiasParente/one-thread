@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('id_mensaje')->unique()->constrained('mensajes')->cascadeOnUpdate()->cascadeOnDelete();
             $table->text('resumen')->nullable();
             $table->enum('prioridad', ['Baja', 'Media', 'Alta']);
-            $table->unsignedTinyInteger('puntaje_confianza')->default(0);
-            $table->boolean('requiere_revision')->default(false);
+            $table->decimal('puntaje_confianza', 5, 2)->default(0.00);
+            $table->tinyInteger('estado')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });

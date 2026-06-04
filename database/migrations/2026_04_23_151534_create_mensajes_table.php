@@ -17,7 +17,8 @@ return new class extends Migration
             $table->enum('origen', ['Whatsapp', 'Instagram', 'Telegram', 'Gmail']);
             $table->dateTime('fecha_envio');
             $table->foreignId('id_mensajero')->constrained('mensajeros')->cascadeOnUpdate()->restrictOnDelete();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

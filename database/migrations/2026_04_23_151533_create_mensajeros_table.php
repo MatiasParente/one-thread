@@ -23,7 +23,8 @@ return new class extends Migration
             $table->string('telegram_id')->nullable()->unique();
             $table->string('instagram_id')->nullable()->unique();
 
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

@@ -14,7 +14,7 @@ class CategoriaSeeder extends Seeder
     {
         $categorias = [
             ['id' => 20, 'nombre' => 'Ventas'],
-            ['id' => 21, 'nombre' => 'Marketing 101'],
+            ['id' => 21, 'nombre' => 'Marketing'],
             ['id' => 22, 'nombre' => 'Soporte Técnico'],
             ['id' => 23, 'nombre' => 'Facturación'],
             ['id' => 24, 'nombre' => 'Atención al Cliente'],
@@ -23,6 +23,7 @@ class CategoriaSeeder extends Seeder
             ['id' => 27, 'nombre' => 'Calidad'],
             ['id' => 28, 'nombre' => 'Producción'],
             ['id' => 29, 'nombre' => 'Investigación y Desarrollo'],
+            ['id' => 32, 'nombre' => 'General']
         ];
 
         foreach ($categorias as $categoria) {

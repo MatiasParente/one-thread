@@ -10,7 +10,7 @@ class TipoSeeder extends Seeder
     public function run(): void
     {
         $tipos = [
-            ['id' => 20, 'nombre' => 'Queja 101', 'id_categoria' => 24],      // Atención al Cliente
+            ['id' => 20, 'nombre' => 'Queja', 'id_categoria' => 24],      // Atención al Cliente
             ['id' => 21, 'nombre' => 'Reclamo', 'id_categoria' => 24],    // Atención al Cliente
             ['id' => 22, 'nombre' => 'Sugerencia', 'id_categoria' => 24], // Atención al Cliente
             ['id' => 23, 'nombre' => 'Cita', 'id_categoria' => 20],       // Ventas

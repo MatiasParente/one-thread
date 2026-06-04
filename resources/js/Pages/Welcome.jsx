@@ -43,9 +43,28 @@ export default function Welcome({ auth, canLogin, canRegister }) {
                         <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-400">
                             ONE THREAD
                         </h1>
-                        <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto mb-20 leading-relaxed font-light">
+                        <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto mb-10 leading-relaxed font-light">
                             Unificando tus comunicaciones de WhatsApp y Telegram con la potencia de la Inteligencia Artificial en un solo lugar.
                         </p>
+                        
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+                            <a 
+                                href="https://t.me/OneThread_bot" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 px-8 py-3.5 bg-[#0088cc] text-white font-semibold rounded-full hover:bg-[#0077b5] hover:scale-105 transition-all shadow-lg shadow-[#0088cc]/30"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                                Probar Bot Telegram
+                            </a>
+                            <a 
+                                href="mailto:soporte.onethread@gmail.com"
+                                className="flex items-center gap-2 px-8 py-3.5 bg-white text-slate-700 border border-slate-200 font-semibold rounded-full hover:bg-slate-50 hover:text-red-500 hover:border-red-200 hover:scale-105 transition-all shadow-sm"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                Contactar por Correo
+                            </a>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">

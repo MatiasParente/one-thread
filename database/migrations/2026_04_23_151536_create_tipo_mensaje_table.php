@@ -15,7 +15,8 @@ return new class extends Migration
             $table->foreignId('id_mensaje')->constrained('mensajes_clasificados')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('id_tipo')->constrained('tipos')->cascadeOnUpdate()->restrictOnDelete();
             $table->primary(['id_mensaje', 'id_tipo']);
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 

@@ -13,7 +13,10 @@ use Inertia\Inertia;
 use App\Http\Controllers\AdminMensajeController;
 
 Route::get('/', function () {
-    return redirect()->route('login');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
 });
 
 Route::get('/dashboard', DashboardController::class)
