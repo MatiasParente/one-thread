@@ -70,7 +70,6 @@ export default function Welcome({ auth, canLogin, canRegister }) {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
                         
                         <div className="bg-white/80 backdrop-blur-md p-8 rounded-3xl border border-blue-100 shadow-xl shadow-blue-900/5 hover:-translate-y-2 transition-transform duration-300">
-                            <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-2xl mb-6">💬</div>
                             <h2 className="text-2xl font-bold text-slate-800 mb-4">Solución Omnicanal</h2>
                             <p className="text-slate-600 leading-relaxed">
                                 Centralizamos los mensajes de diferentes plataformas, permitiéndote gestionar todas tus conversaciones desde una interfaz única y súper eficiente.
@@ -78,7 +77,6 @@ export default function Welcome({ auth, canLogin, canRegister }) {
                         </div>
 
                         <div className="bg-white/80 backdrop-blur-md p-8 rounded-3xl border border-green-100 shadow-xl shadow-green-900/5 hover:-translate-y-2 transition-transform duration-300">
-                            <div className="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-2xl mb-6">⚙️</div>
                             <h2 className="text-2xl font-bold text-slate-800 mb-4">Tecnologías</h2>
                             <ul className="space-y-3 text-slate-600 font-medium">
                                 <li className="flex items-center"><span className="text-green-500 mr-3">✔</span> Laravel (Backend)</li>
@@ -90,7 +88,6 @@ export default function Welcome({ auth, canLogin, canRegister }) {
                         </div>
 
                         <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-8 rounded-3xl shadow-xl shadow-blue-900/20 text-white hover:-translate-y-2 transition-transform duration-300 border border-blue-400">
-                            <div className="w-12 h-12 bg-white/20 text-white rounded-xl flex items-center justify-center text-2xl mb-6">🚀</div>
                             <h2 className="text-2xl font-bold mb-2">Nuestro Equipo</h2>
                             <p className="text-blue-100 mb-6 text-sm">Investigación y desarrollo por:</p>
                             <ul className="space-y-3 font-medium text-lg">
