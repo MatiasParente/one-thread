@@ -113,7 +113,7 @@ class AdminMensajeController extends Controller
             Http::withoutVerifying()
                 ->connectTimeout(1)
                 ->timeout(2)
-                ->post('https://n8njhong.ddns.net/webhook/enviar-respuesta', [
+                ->post('https://1689b3416f179237a92fb7aa79bbc6c4.tipyenaccion.net/webhook/enviar-respuesta', [
                     'respuesta'                => $request->respuesta,
                     'canal_envio'              => $request->canal_seleccionado, 
                     'agente_nombre'            => $nombreAdmin,
@@ -181,7 +181,7 @@ class AdminMensajeController extends Controller
         try {
             Http::withoutVerifying()
                 ->timeout(3)
-                ->post('https://n8njhong.ddns.net/webhook/encuesta', [
+                ->post('https://1689b3416f179237a92fb7aa79bbc6c4.tipyenaccion.net/webhook/encuesta', [
                     'canal' => ucfirst($canal),
                     'canal_id' => $canal_id,
                     'nombre_cliente' => trim($cliente->nombre . ' ' . $cliente->apellido)
