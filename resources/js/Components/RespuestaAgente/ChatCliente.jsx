@@ -20,7 +20,24 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
 
     const toggleSeleccion = (id) => {
         if (data.seleccionados.includes(id)) {
-            setData('seleccionados', data.seleccionados.filter(id_sel => id_sel !== id));
+            const nuevosSeleccionados = data.seleccionados.filter(id_sel => id_sel !== id);
+            let nuevoCanal = data.canal_seleccionado;
+
+            if (nuevosSeleccionados.length > 0) {
+                const ultimoId = nuevosSeleccionados[nuevosSeleccionados.length - 1];
+                const msgUltimo = historialMensajes.find(m => m.id === ultimoId);
+                if (msgUltimo && msgUltimo.origen) {
+                    const origenLower = msgUltimo.origen.toLowerCase();
+                    if (origenLower === 'telegram' && canUseTelegram) nuevoCanal = 'Telegram';
+                    else if (origenLower === 'email' || origenLower === 'gmail') nuevoCanal = 'Email';
+                }
+            }
+
+            setData({
+                ...data,
+                seleccionados: nuevosSeleccionados,
+                canal_seleccionado: nuevoCanal
+            });
         } else {
             const nuevosSeleccionados = [...data.seleccionados, id];
             const msg = historialMensajes.find(m => m.id === id);
@@ -52,9 +69,21 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
         }
     };
 
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const prevMensajesLength = useRef(0);
+
+    // Utilizamos chatConversacion (que ya incluye clientes y admin) para el scroll
+    const chatConversacionLength = useMemo(() => {
+        return historialMensajes.reduce((acc, msg) => acc + 1 + (msg.admin_mensajes ? msg.admin_mensajes.length : 0), 0);
     }, [historialMensajes]);
+
+    useEffect(() => {
+        if (chatConversacionLength > prevMensajesLength.current) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        } else if (prevMensajesLength.current === 0 && chatConversacionLength > 0) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+        }
+        prevMensajesLength.current = chatConversacionLength;
+    }, [chatConversacionLength]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -73,13 +102,29 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
         let combinados = [];
         let respuestasAdminGlobales = [];
         let llavesDeDuplicacion = new Set();
+        let lastClientMsg = null;
 
-        historialMensajes.forEach(msg => {
-            combinados.push({
-                ...msg,
-                es_admin: false,
-                fecha_orden: msg.fecha_envio ? new Date(msg.fecha_envio).getTime() : 0
-            });
+        const sortedHistorial = [...historialMensajes].sort((a, b) => 
+            (a.fecha_envio ? new Date(a.fecha_envio).getTime() : 0) - (b.fecha_envio ? new Date(b.fecha_envio).getTime() : 0)
+        );
+
+        sortedHistorial.forEach(msg => {
+            const fechaActual = msg.fecha_envio ? new Date(msg.fecha_envio).getTime() : 0;
+            
+            // Deduplicación: si es el mismo mensaje y fue enviado dentro de 3000ms
+            const esDuplicado = lastClientMsg 
+                && lastClientMsg.contenido === msg.contenido
+                && (fechaActual - lastClientMsg.fecha_orden) <= 3000;
+            
+            if (!esDuplicado) {
+                const nuevoItem = {
+                    ...msg,
+                    es_admin: false,
+                    fecha_orden: fechaActual
+                };
+                combinados.push(nuevoItem);
+                lastClientMsg = nuevoItem;
+            }
 
             if (msg.admin_mensajes && msg.admin_mensajes.length > 0) {
                 msg.admin_mensajes.forEach(resp => {

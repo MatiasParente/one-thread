@@ -6,21 +6,21 @@ import { Sparkles, Plus } from 'lucide-react';
 import MensajeFilterCard from '@/Components/MensajesClasificados/MensajeFilterCard';
 import MensajeTable from '@/Components/MensajesClasificados/MensajeTable';
 
-export default function Index({ mensajes, clientes, categorias, filters }) {
-    const [idMensajero, setIdMensajero] = useState(filters.id_mensajero || '');
+export default function Index({ mensajes, clientes, categorias, filters, is_general }) {
+    const [nombreCliente, setNombreCliente] = useState(filters.nombre_cliente || '');
     const [idCategoria, setIdCategoria] = useState(filters.id_categoria || '');
     const [prioridad, setPrioridad] = useState(filters.prioridad || '');
 
     useEffect(() => {
         const interval = setInterval(() => {
             router.reload({ preserveScroll: true, preserveState: true });
-        }, 30000);
+        }, 10000);
         return () => clearInterval(interval);
     }, []);
 
     const applyFilters = () => {
         const queryParams = {};
-        if (idMensajero) queryParams.id_mensajero = idMensajero;
+        if (nombreCliente) queryParams.nombre_cliente = nombreCliente;
         if (idCategoria) queryParams.id_categoria = idCategoria;
         if (prioridad) queryParams.prioridad = prioridad;
 
@@ -31,7 +31,7 @@ export default function Index({ mensajes, clientes, categorias, filters }) {
     };
 
     const handleClearFilters = () => {
-        setIdMensajero('');
+        setNombreCliente('');
         setIdCategoria('');
         setPrioridad('');
         router.get(route('mensajes-clasificados.index'), {}, {
@@ -69,10 +69,8 @@ export default function Index({ mensajes, clientes, categorias, filters }) {
                 </div>
 
                 <MensajeFilterCard
-                    clientes={clientes}
-                    categorias={categorias}
-                    idMensajero={idMensajero}
-                    setIdMensajero={setIdMensajero}
+                    nombreCliente={nombreCliente}
+                    setNombreCliente={setNombreCliente}
                     idCategoria={idCategoria}
                     setIdCategoria={setIdCategoria}
                     prioridad={prioridad}
@@ -84,6 +82,8 @@ export default function Index({ mensajes, clientes, categorias, filters }) {
                 <MensajeTable 
                     mensajes={mensajes} 
                     handleDelete={handleDelete}
+                    categorias={categorias}
+                    is_general={is_general}
                 />
             </div>
         </AuthenticatedLayout>

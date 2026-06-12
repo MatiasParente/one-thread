@@ -111,8 +111,14 @@ class AdminController extends Controller
      */
     public function destroy(Admin $admin)
     {
-        // Eliminar el User (cascade elimina Admin, admin_categorias, admin_mensaje)
-        $admin->user->delete();
+        // Detach related mensajes before deleting to satisfy restrictOnDelete
+        $admin->mensajes()->detach();
+
+        if ($admin->user) {
+            $admin->user->delete();
+        } else {
+            $admin->delete();
+        }
 
         return redirect()->back();
     }

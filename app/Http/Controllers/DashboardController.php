@@ -13,7 +13,7 @@ class DashboardController extends Controller
     {
 
         $user = Auth::user();
-        $user->load('admin.categorias');
+        $user->load('admin.categorias.tipos');
 
         $categorias = $user->admin?->categorias;
         $categoriaIds = $categorias->pluck('id')->toArray();
@@ -126,6 +126,6 @@ class DashboardController extends Controller
         ];
 
 
-        return Inertia::render('Dashboard', compact('stats', 'mensajes', 'mensajesPorCanal', 'mensajesPorDia', 'resumenRapido'));
+        return Inertia::render('Dashboard', compact('stats', 'mensajes', 'mensajesPorCanal', 'mensajesPorDia', 'resumenRapido', 'categorias', 'general'));
     }
 }

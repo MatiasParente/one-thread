@@ -1,9 +1,5 @@
 export default function ApplicationLogo({ className = '' }) {
     return (
-        <span
-            className={`text-3xl font-extrabold tracking-tighter text-primary ${className}`}
-        >
-            ONE THREAD
-        </span>
+        <img src="https://res.cloudinary.com/dp2oavkr0/image/upload/v1781278576/one-thread_pc0mgu.png" alt="One Thread" width="270" height="270" id="logo" className={className} />
     );
 }

@@ -6,10 +6,9 @@ import Button from '@/Components/Button';
 //las prioridades son fijas, por lo que no necesitamos obtenerlas de la base de datos
 //el estado es fijo, por lo que no necesitamos obtenerlo de la base de datos
 export default function MensajeFilterCard({
-    clientes = [],
+    nombreCliente,
+    setNombreCliente,
     categorias = [],
-    idMensajero,
-    setIdMensajero,
     idCategoria,
     setIdCategoria,
     prioridad,
@@ -27,19 +26,18 @@ export default function MensajeFilterCard({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4 items-end">
                 <div className="space-y-1">
                     <label className="text-xs font-medium text-gray-600">Cliente que envió</label>
-                    <select
-                        value={idMensajero}
-                        onChange={(e) => setIdMensajero(e.target.value)}
+                    <input
+                        type="text"
+                        value={nombreCliente}
+                        onChange={(e) => setNombreCliente(e.target.value)}
+                        placeholder="Buscar por nombre..."
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                applyFilters();
+                            }
+                        }}
                         className="w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-800 shadow-sm focus:border-[#226583] focus:ring-1 focus:ring-[#226583]"
-                    >
-                        <option value="">Todos los clientes</option>
-                        {/*aca recoremos todos los clientes y los mostramos en el select*/}
-                        {clientes.map((cli) => (
-                            <option key={cli.id} value={cli.id}>
-                                {cli.nombre_completo}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </div>
 
                 <div className="space-y-1">
@@ -79,7 +77,7 @@ export default function MensajeFilterCard({
                     <Button onClick={applyFilters} size="md" className="flex-1">
                         Filtrar
                     </Button>
-                    {(idMensajero || idCategoria || prioridad) && (
+                    {(nombreCliente || idCategoria || prioridad) && (
                         <Button
                             variant="secondary"
                             onClick={handleClearFilters}

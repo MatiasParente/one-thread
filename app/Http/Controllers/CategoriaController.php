@@ -80,6 +80,12 @@ class CategoriaController extends Controller
 
     public function destroy(Categoria $categoria)
     {
+        // Primero, por cada tipo en esta categoría, desvincular sus mensajes para satisfacer foreign keys
+        foreach ($categoria->tipos as $tipo) {
+            $tipo->mensajes()->detach();
+            $tipo->delete();
+        }
+
         $categoria->delete();
 
         return redirect()->back();

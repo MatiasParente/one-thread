@@ -7,7 +7,7 @@ export default function RespuestaAgente({mensajeClasificado, historialMensajes})
     useEffect(() => {
         const interval = setInterval(() => {
             router.reload({ preserveScroll: true, preserveState: true });
-        }, 30000);
+        }, 10000);
         return () => clearInterval(interval);
     }, []);
 

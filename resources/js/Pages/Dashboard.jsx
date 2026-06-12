@@ -7,11 +7,11 @@ import MessagesByDay from '@/Components/MessagesByDay';
 import QuickSummary from '@/Components/QuickSummary';
 import MensajeTable from '@/Components/MensajesClasificados/MensajeTable';
 
-export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesPorDia, resumenRapido }) {
+export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesPorDia, resumenRapido, categorias, general }) {
     useEffect(() => {
         const interval = setInterval(() => {
             router.reload({ preserveScroll: true, preserveState: true });
-        }, 30000);
+        }, 10000);
         return () => clearInterval(interval);
     }, []);
 
@@ -51,6 +51,8 @@ export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesP
                     <MensajeTable 
                         mensajes={mensajes} 
                         handleDelete={handleDelete}
+                        categorias={categorias}
+                        is_general={general}
                     />
                 </div>
             </div>

@@ -64,6 +64,11 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        if ($user->admin) {
+            // Detach messages to satisfy restrictOnDelete foreign key constraint
+            $user->admin->mensajes()->detach();
+        }
+
         Auth::logout();
 
         $user->delete();

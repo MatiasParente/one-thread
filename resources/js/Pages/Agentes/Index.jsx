@@ -1,7 +1,7 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import {
     UserPlus,
     MessageSquare,
@@ -41,6 +41,9 @@ function AdminCard({ admin, isSelected, onSelectPanel, activePanel }) {
         { key: 'metricas', label: 'Métricas', icon: BarChart3 },
         { key: 'carga', label: 'Carga', icon: ClipboardList },
     ];
+
+    const { auth } = usePage().props;
+    const isCurrentUser = auth?.user?.id === admin.user?.id;
 
     return (
         <div
@@ -99,8 +102,13 @@ function AdminCard({ admin, isSelected, onSelectPanel, activePanel }) {
             </div>
 
             {/* Avatar + nombre + email */}
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-hover text-base font-semibold text-white">
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-hover text-base font-semibold text-white">
                 {initials}
+                {isCurrentUser && (
+                    <span className="absolute -bottom-1 -right-2 rounded-full border border-white bg-emerald-500 px-1.5 py-0.5 text-[9px] font-bold uppercase text-white shadow-sm">
+                        Tú
+                    </span>
+                )}
             </div>
             <div className="text-center">
                 <p className="text-sm font-semibold text-gray-900">{name}</p>
@@ -320,10 +328,14 @@ function AgentModal({ show, onClose, mode, admin, allCategorias }) {
 // Modal de gestión de categorías (liviano)
 // ──────────────────────────────────────────────
 function CategoriasModal({ show, onClose, admin, allCategorias }) {
-    const [selected, setSelected] = useState(
-        admin?.categorias?.map((c) => c.id) ?? [],
-    );
+    const [selected, setSelected] = useState([]);
     const [saving, setSaving] = useState(false);
+
+    useEffect(() => {
+        if (show && admin) {
+            setSelected(admin?.categorias?.map((c) => c.id) ?? []);
+        }
+    }, [show, admin]);
 
     const toggle = (id) => {
         setSelected((prev) =>
@@ -621,6 +633,7 @@ export default function Index({ admins, allCategorias }) {
 
             {/* Modales */}
             <AgentModal
+                key={contextAdmin ? `edit-${contextAdmin.id}` : 'create'}
                 show={showAgentModal}
                 onClose={() => setShowAgentModal(false)}
                 mode={agentModalMode}

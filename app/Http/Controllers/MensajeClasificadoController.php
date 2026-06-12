@@ -18,7 +18,7 @@ class MensajeClasificadoController extends Controller
     {
 
         $user = Auth::user();
-        $user->load('admin.categorias');
+        $user->load('admin.categorias.tipos');
 
 
         $categorias = $user->admin?->categorias;
@@ -38,9 +38,10 @@ class MensajeClasificadoController extends Controller
             });
         }
 
-        if ($request->filled('id_mensajero')) {
-            $query->whereHas('mensaje', function ($q) use ($request) {
-                $q->where('id_mensajero', $request->id_mensajero);
+        if ($request->filled('nombre_cliente')) {
+            $query->whereHas('mensaje.mensajeros', function ($q) use ($request) {
+                $q->where('nombre', 'like', '%' . $request->nombre_cliente . '%')
+                  ->orWhere('apellido', 'like', '%' . $request->nombre_cliente . '%');
             });
         }
 
@@ -69,7 +70,7 @@ class MensajeClasificadoController extends Controller
                 });
             });
         }else{
-            $categorias = Categoria::orderBy('nombre')->get();
+            $categorias = Categoria::with('tipos')->orderBy('nombre')->get();
         }
 
 
@@ -89,9 +90,9 @@ class MensajeClasificadoController extends Controller
 
         return Inertia::render('MensajeClasificado/Index', [
             'mensajes' => $mensajes,
-            'clientes' => $clientes,
             'categorias' => $categorias,
-            'filters' => $request->only(['id_mensajero', 'id_categoria', 'prioridad']),
+            'is_general' => $general,
+            'filters' => $request->only(['nombre_cliente', 'id_categoria', 'prioridad']),
         ]);
     }
 
@@ -125,10 +126,12 @@ class MensajeClasificadoController extends Controller
 
     public function edit($id)
     {
-        $mensaje = Mensaje_Clasificado::findOrFail($id);
+        $mensaje = Mensaje_Clasificado::with('tipos')->findOrFail($id);
+        $categorias = Categoria::with('tipos')->get();
 
         return Inertia::render('MensajeClasificado/Edit', [
             'mensaje' => $mensaje,
+            'categorias' => $categorias,
         ]);
     }
 
@@ -140,9 +143,19 @@ class MensajeClasificadoController extends Controller
             'resumen' => 'required|string|max:255',
             'prioridad' => 'required|string|in:Alta,Media,Baja',
             'estado' => 'required|integer|in:0,1,2,3',
+            'tipos_ids' => 'nullable|array',
+            'tipos_ids.*' => 'exists:tipos,id',
         ]);
 
-        $mensaje->update($validated);
+        $mensaje->update([
+            'resumen' => $validated['resumen'],
+            'prioridad' => $validated['prioridad'],
+            'estado' => $validated['estado'],
+        ]);
+
+        if (array_key_exists('tipos_ids', $validated)) {
+            $mensaje->tipos()->sync($validated['tipos_ids'] ?? []);
+        }
 
         return redirect()->back()->with('success', 'Mensaje actualizado.');
     }

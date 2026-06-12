@@ -3,11 +3,19 @@ import Modal from '@/Components/Modal';
 import Button from '@/Components/Button';
 import { useEffect } from 'react';
 
-export default function EditMensajeModal({ mensaje, isOpen, onClose, onUpdate }) {
+export default function EditMensajeModal({ mensaje, isOpen, onClose, onUpdate, categorias, is_general }) {
+    const getInitialTipos = (msg) => {
+        if (!msg) return [];
+        if (msg.tipos) return msg.tipos.map(t => t.id); // From edit endpoint
+        if (msg.tipo_mensaje) return msg.tipo_mensaje.map(tm => tm.id_tipo || tm.tipos?.id).filter(Boolean); // From index/dashboard endpoint
+        return [];
+    };
+
     const { data, setData, put, processing, errors, reset } = useForm({
         resumen: '',
         prioridad: 'Media',
         estado: 0,
+        tipos_ids: [],
     });
 
     // Cuando se abre el modal con un mensaje nuevo, actualizar el formulario
@@ -18,9 +26,19 @@ export default function EditMensajeModal({ mensaje, isOpen, onClose, onUpdate })
                 resumen: mensaje.resumen || '',
                 prioridad: mensaje.prioridad || 'Media',
                 estado: mensaje.estado || 0,
+                tipos_ids: getInitialTipos(mensaje),
             });
         }
     }, [mensaje, reset, setData]);
+
+    const handleTipoChange = (tipoId) => {
+        const nextIds = [...data.tipos_ids];
+        if (nextIds.includes(tipoId)) {
+            setData('tipos_ids', nextIds.filter(id => id !== tipoId));
+        } else {
+            setData('tipos_ids', [...nextIds, tipoId]);
+        }
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -93,6 +111,38 @@ export default function EditMensajeModal({ mensaje, isOpen, onClose, onUpdate })
                             <option value={3}>Eliminado</option>
                         </select>
                     </div>
+
+                    {/* Categorías y Tipos */}
+                    {is_general && categorias && categorias.length > 0 && (
+                        <div className="border-t border-gray-200 pt-4 mt-2">
+                            <label className="block text-sm font-bold text-gray-900 mb-3">Categorías y Tipos</label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-48 overflow-y-auto pr-2">
+                                {categorias.map(categoria => (
+                                    <div key={categoria.id} className="rounded-md border border-gray-200 p-3 bg-gray-50">
+                                        <h4 className="font-semibold text-gray-800 mb-2 border-b border-gray-200 pb-1 text-sm">{categoria.nombre}</h4>
+                                        <div className="space-y-2">
+                                            {categoria.tipos && categoria.tipos.length > 0 ? (
+                                                categoria.tipos.map(tipo => (
+                                                    <label key={tipo.id} className="flex items-center space-x-2">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={data.tipos_ids.includes(tipo.id)}
+                                                            onChange={() => handleTipoChange(tipo.id)}
+                                                            className="rounded border-gray-300 text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                                                        />
+                                                        <span className="text-xs text-gray-700">{tipo.nombre}</span>
+                                                    </label>
+                                                ))
+                                            ) : (
+                                                <span className="text-xs text-gray-400 italic">No hay tipos</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            {errors.tipos_ids && <div className="mt-1 text-sm text-danger">{errors.tipos_ids}</div>}
+                        </div>
+                    )}
 
                     {/* Botones */}
                     <div className="flex justify-end gap-3 pt-4">

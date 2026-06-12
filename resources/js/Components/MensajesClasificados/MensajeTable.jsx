@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import EditMensajeModal from './EditMensajeModal';
 import ViewMensajeOriginalModal from './ViewMensajeOriginalModal';
 
-export default function MensajeTable({ mensajes = [], handleDelete }) {
+export default function MensajeTable({ mensajes = [], handleDelete, categorias = [], is_general }) {
 
     const [paginaActual, setPaginaActual] = useState(1);
     const [irAPagina, setIrAPagina] = useState('');
@@ -13,9 +13,41 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
 
     const indiceUltimoItem = paginaActual * itemsPorPagina;
     const indicePrimerItem = indiceUltimoItem - itemsPorPagina;
-    const mensajesPagina = mensajes.slice(indicePrimerItem, indiceUltimoItem);
+    const mensajesUnicos = React.useMemo(() => {
+        let unique = [];
+        let lastByClient = {};
 
-    const totalPaginas = Math.ceil(mensajes.length / itemsPorPagina);
+        // Ordenamos del más antiguo al más nuevo para detectar duplicados secuenciales,
+        // aunque el original viene ordenado por latest() desc.
+        // Lo invertimos para procesar, y luego lo volvemos a invertir para mantener el latest.
+        const sorted = [...mensajes].reverse();
+
+        sorted.forEach(mc => {
+            const clienteId = mc.mensaje?.mensajeros?.id;
+            const content = mc.mensaje?.contenido;
+            const fechaActual = mc.mensaje?.fecha_envio ? new Date(mc.mensaje.fecha_envio).getTime() : 0;
+
+            if (clienteId && content) {
+                const last = lastByClient[clienteId];
+                const esDuplicado = last 
+                    && last.content === content 
+                    && (fechaActual - last.fecha) <= 3000;
+
+                if (!esDuplicado) {
+                    unique.push(mc);
+                    lastByClient[clienteId] = { content, fecha: fechaActual };
+                }
+            } else {
+                unique.push(mc);
+            }
+        });
+
+        return unique.reverse();
+    }, [mensajes]);
+
+    const totalPaginas = Math.ceil(mensajesUnicos.length / itemsPorPagina);
+
+    const mensajesPagina = mensajesUnicos.slice(indicePrimerItem, indiceUltimoItem);
 
     const paginaAnterior = () => {
         if (paginaActual > 1) {
@@ -287,9 +319,11 @@ export default function MensajeTable({ mensajes = [], handleDelete }) {
                     closeEditModal();
                     router.reload();
                 }}
+                categorias={categorias}
+                is_general={is_general}
             />
 
-            {mensajes.length > 0 && (
+            {mensajesUnicos.length > 0 && (
                 <div className="border-t border-gray-200 px-4 py-3">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                         <span className="text-sm text-gray-600">
