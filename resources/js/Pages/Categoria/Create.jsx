@@ -4,8 +4,10 @@ import Button from '@/Components/Button';
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
-        nombre: ''
+        nombre: '',
     });
+
+    const dirty = data.nombre.trim() !== '';
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -13,46 +15,91 @@ export default function Create() {
     };
 
     return (
-        <AuthenticatedLayout title="Crear Categoría" subtitle="Nueva categoría de mensajes">
-            <div className="p-6 bg-gray-50 min-h-screen">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-[30px] font-bold text-gray-900 tracking-tight">
-                        Crear Categoría
-                    </h1>
-                    <Button href={route('categorias.index')} variant="secondary">
-                        Volver
-                    </Button>
-                </div>
+        <AuthenticatedLayout
+            title="Crear Categoría"
+            subtitle="Nueva categoría de mensajes"
+        >
+            <div className="min-h-screen bg-gray-50 p-6">
 
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 max-w-lg">
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Nombre *
-                            </label>
-                            <input
-                                type="text"
-                                value={data.nombre}
-                                onChange={e => setData('nombre', e.target.value)}
-                                className="w-full border border-gray-200 rounded-sm px-3 py-2 text-gray-800 focus:border-primary focus:ring-1 focus:ring-primary-light"
-                                placeholder="Ej: Ventas, Soporte, Administración"
-                                required
-                            />
-                            {errors.nombre && (
-                                <p className="text-danger text-sm mt-1">{errors.nombre}</p>
-                            )}
+
+                <div className="bg-white border border-gray-200 rounded-md shadow-sm p-6">
+                    <div className="border-b border-gray-200 pb-4 mb-6">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-semibold text-gray-900">
+                                Información de la Categoría
+                            </h2>
                         </div>
+                        <p className="text-sm text-gray-600 mt-1">
+                            Define el nombre de la nueva categoría que se utilizará para clasificar mensajes.
+                        </p>
+                    </div>
 
-                        <div className="flex gap-3">
-                            <Button type="submit" disabled={processing}>
-                                Guardar
-                            </Button>
-                            <Button href={route('categorias.index')} variant="secondary">
-                                Cancelar
-                            </Button>
+                    {dirty && (
+                        <div className="mb-6 rounded-md border border-warning/30 bg-yellow-50 px-4 py-3">
+                            <p className="text-sm text-warning">
+                                Hay información pendiente de guardar.
+                            </p>
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="space-y-6">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Nombre *
+                                </label>
+
+                                <input
+                                    type="text"
+                                    value={data.nombre}
+                                    onChange={(e) =>
+                                        setData('nombre', e.target.value)
+                                    }
+                                    placeholder="Ej: Ventas, Soporte, Administración"
+                                    className="
+                                        w-full
+                                        h-10
+                                        px-3
+                                        border
+                                        border-gray-200
+                                        rounded-md
+                                        text-gray-800
+                                        focus:outline-none
+                                        focus:ring-2
+                                        focus:ring-primary-light
+                                        focus:border-primary
+                                    "
+                                    required
+                                />
+
+                                {errors.nombre && (
+                                    <p className="text-danger text-sm mt-2">
+                                        {errors.nombre}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-2">
+                                <Button
+                                    href={route('categorias.index')}
+                                    variant="secondary"
+                                >
+                                    Cancelar
+                                </Button>
+
+                                <Button
+                                    type="submit"
+                                    disabled={processing}
+                                >
+                                    {processing
+                                        ? 'Guardando...'
+                                        : 'Guardar Categoría'}
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 </div>
+
             </div>
         </AuthenticatedLayout>
     );
