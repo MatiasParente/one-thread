@@ -22,7 +22,24 @@ export default function ChatCliente({ mensajeClasificado, historialMensajes = []
         if (data.seleccionados.includes(id)) {
             setData('seleccionados', data.seleccionados.filter(id_sel => id_sel !== id));
         } else {
-            setData('seleccionados', [...data.seleccionados, id]);
+            const nuevosSeleccionados = [...data.seleccionados, id];
+            const msg = historialMensajes.find(m => m.id === id);
+            let nuevoCanal = data.canal_seleccionado;
+            
+            if (msg && msg.origen) {
+                const origenLower = msg.origen.toLowerCase();
+                if (origenLower === 'telegram' && canUseTelegram) {
+                    nuevoCanal = 'Telegram';
+                } else if (origenLower === 'email' || origenLower === 'gmail') {
+                    nuevoCanal = 'Email';
+                }
+            }
+            
+            setData({
+                ...data,
+                seleccionados: nuevosSeleccionados,
+                canal_seleccionado: nuevoCanal
+            });
         }
     };
 
