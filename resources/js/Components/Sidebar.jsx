@@ -49,18 +49,6 @@ export default function Sidebar({ show, onClose }) {
             icon: Sparkles,
         },
         {
-            label: 'Categorías',
-            href: route('categorias.index'),
-            active: route().current('categorias.*'),
-            icon: FolderTree,
-        },
-        {
-            label: 'Tipos',
-            href: route('tipos.index'),
-            active: route().current('tipos.*'),
-            icon: Tags,
-        },
-        {
             label: 'Usuarios',
             href: route('mensajeros.index'),
             active: route().current('mensajeros.*'),
