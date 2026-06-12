@@ -132,9 +132,6 @@ export default function Index({ tipos }) {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                                    ID
-                                </th>
 
                                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                                     Nombre
@@ -157,9 +154,7 @@ export default function Index({ tipos }) {
                                         key={tipo.id}
                                         className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                                     >
-                                        <td className="px-4 py-4 text-gray-600">
-                                            #{tipo.id}
-                                        </td>
+    
 
                                         <td className="px-4 py-4">
                                             <span className="font-medium text-gray-900">

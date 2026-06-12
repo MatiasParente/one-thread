@@ -25,7 +25,7 @@ export default function Index({ categorias, totalMensajes = 0 }) {
             router.delete(route('categorias.destroy', id));
         }
     };
-    console.log(totalMensajes);
+
     return (
         <AuthenticatedLayout
             title="Categorías"
@@ -124,9 +124,6 @@ export default function Index({ categorias, totalMensajes = 0 }) {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
-                                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                                    ID
-                                </th>
 
                                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                                     Nombre
@@ -149,9 +146,7 @@ export default function Index({ categorias, totalMensajes = 0 }) {
                                         key={categoria.id}
                                         className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                                     >
-                                        <td className="px-4 py-4 text-gray-600">
-                                            #{categoria.id}
-                                        </td>
+
 
                                         <td className="px-4 py-4">
                                             <span className="font-medium text-gray-900">

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MensajeroController;
 use Inertia\Inertia;
 use App\Http\Controllers\AdminMensajeController;
+use App\Http\Controllers\ConfiguracionController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -39,9 +40,8 @@ Route::get('/reportes', function () {
     return Inertia::render('Reportes/Index');
 })->middleware(['auth', 'verified'])->name('reportes');
 
-Route::get('/configuracion', function () {
-    return Inertia::render('Configuracion/Index');
-})->middleware(['auth', 'verified'])->name('configuracion');
+Route::get('/configuracion', [ConfiguracionController::class, 'index']
+)->middleware(['auth', 'verified'])->name('configuracion');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

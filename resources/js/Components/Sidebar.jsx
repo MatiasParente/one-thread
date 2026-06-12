@@ -69,7 +69,10 @@ export default function Sidebar({ show, onClose }) {
         {
             label: 'Configuración',
             href: route('configuracion'),
-            active: route().current('configuracion'),
+            active: 
+                route().current('configuracion') ||
+                route().current('categorias.*') ||
+                route().current('tipos.*'),
             icon: Settings,
         },
     ];
