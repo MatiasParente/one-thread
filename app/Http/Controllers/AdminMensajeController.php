@@ -111,7 +111,7 @@ class AdminMensajeController extends Controller
             $nombreAdmin = auth()->user()->name;
 
             Http::withoutVerifying()
-                ->withToken(env('N8N_WEBHOOK_SECRET'))
+                ->withToken(config('services.n8n.webhook_secret'))
                 ->connectTimeout(1)
                 ->timeout(2)
                 ->post('https://1689b3416f179237a92fb7aa79bbc6c4.tipyenaccion.net/webhook/enviar-respuesta', [
@@ -181,7 +181,7 @@ class AdminMensajeController extends Controller
 
         try {
             Http::withoutVerifying()
-                ->withToken(env('N8N_WEBHOOK_SECRET'))
+                ->withToken(config('services.n8n.webhook_secret'))
                 ->timeout(3)
                 ->post('https://1689b3416f179237a92fb7aa79bbc6c4.tipyenaccion.net/webhook/encuesta', [
                     'canal' => ucfirst($canal),
