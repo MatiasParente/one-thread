@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 class CategoriaController extends Controller
 {
@@ -24,8 +25,15 @@ class CategoriaController extends Controller
             return $categoria;
         });
 
+
+        $totalMensajes = DB::table('tipo_mensaje')
+            ->distinct()
+            ->count('id_mensaje');
+
+
         return Inertia::render('Categoria/Categoria', [
             'categorias' => $categorias,
+            'totalMensajes' => $totalMensajes,
         ]);
     }
 
