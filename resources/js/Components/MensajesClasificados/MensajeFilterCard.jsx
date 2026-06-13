@@ -13,17 +13,19 @@ export default function MensajeFilterCard({
     setIdCategoria,
     prioridad,
     setPrioridad,
+    estado,
+    setEstado,
     applyFilters,
     handleClearFilters
 }) {
     return (
-        <div className="bg-white p-4 rounded-md border border-gray-200 shadow-sm">
+        <div className="bg-white p-4 rounded-md border-t-4 border-t-[#226583] border-x border-b border-gray-200 shadow-sm">
             <div className="mb-3 flex items-center gap-2 font-semibold text-gray-800">
                 <Filter className="h-4 w-4 text-[#226583]" />
                 <span>Filtros de búsqueda</span>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:grid-cols-4 items-end">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-5 items-end">
                 <div className="space-y-1">
                     <label className="text-xs font-medium text-gray-600">Cliente que envió</label>
                     <input
@@ -64,8 +66,6 @@ export default function MensajeFilterCard({
                         onChange={(e) => setPrioridad(e.target.value)}
                         className="w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-800 shadow-sm focus:border-[#226583] focus:ring-1 focus:ring-[#226583]"
                     >
-                        {/*aca definimos las prioridades que son fijas y no necesitamos obtenerlas de la base de datos*/}
-                        {/*Tiene que coincidir con la prioridad que le asigna la IA*/}
                         <option value="">Todas las prioridades</option>
                         <option value="Alta">Alta</option>
                         <option value="Media">Media</option>
@@ -73,11 +73,26 @@ export default function MensajeFilterCard({
                     </select>
                 </div>
 
+                <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-600">Estado</label>
+                    <select
+                        value={estado}
+                        onChange={(e) => setEstado(e.target.value)}
+                        className="w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-800 shadow-sm focus:border-[#226583] focus:ring-1 focus:ring-[#226583]"
+                    >
+                        <option value="">Todos los estados</option>
+                        <option value="0">Pendiente</option>
+                        <option value="1">En Proceso</option>
+                        <option value="2">Resuelto</option>
+                        <option value="3">Eliminado</option>
+                    </select>
+                </div>
+
                 <div className="flex gap-2">
                     <Button onClick={applyFilters} size="md" className="flex-1">
                         Filtrar
                     </Button>
-                    {(nombreCliente || idCategoria || prioridad) && (
+                    {(nombreCliente || idCategoria || prioridad || estado) && (
                         <Button
                             variant="secondary"
                             onClick={handleClearFilters}

@@ -113,7 +113,7 @@ export default function MensajeTable({ mensajes = [], handleDelete, categorias =
             case 0: return 'badge-status-pendiente';
             case 1: return 'badge-status-proceso';
             case 2: return 'badge-status-resuelto';
-            case 3: return 'badge-status-eliminado bg-red-100 text-red-800'; // Fallback a Tailwind si no existe la clase CSS
+            case 3: return 'badge-status-eliminado bg-red-100 text-red-800'; 
             default: return 'bg-gray-100 text-gray-800';
         }
     };
@@ -137,7 +137,6 @@ export default function MensajeTable({ mensajes = [], handleDelete, categorias =
         }
     };
 
-    // Para el modal de "Ver mensaje original"
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [selectedViewMessage, setSelectedViewMessage] = useState(null);
 
@@ -159,7 +158,6 @@ export default function MensajeTable({ mensajes = [], handleDelete, categorias =
         router.visit(route('mensajes-clasificados.respuesta', id));
     };
 
-    // Para el modal de "Editar"
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [selectedEditMessage, setSelectedEditMessage] = useState(null);
     const openEditModal = (mensaje) => {
@@ -174,19 +172,19 @@ export default function MensajeTable({ mensajes = [], handleDelete, categorias =
 
 
     return (
-        <div className="overflow-hidden bg-white rounded-md border border-gray-200 shadow-sm">
+        <div className="overflow-hidden bg-white rounded-md border-t-4 border-t-green-600 border-x border-b border-gray-200 shadow-sm">
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            <th className="px-6 py-3">Cliente / Canal</th>
-                            <th className="px-6 py-3">Resumen de IA</th>
-                            <th className="px-6 py-3">Mensaje Original</th>
-                            <th className="px-6 py-3">Categorías / Áreas</th>
-                            <th className="px-6 py-3 text-center">Prioridad</th>
-                            <th className="px-6 py-3 text-center">Estado</th>
-                            <th className="px-6 py-3 text-right">Acciones</th>
-                        </tr>
+                            <tr className="border-b border-gray-200 text-sm font-semibold text-white tracking-wider" style={{ backgroundColor: '#226583' }}>
+                                <th className="px-6 py-3">Cliente / Canal</th>
+                                <th className="px-6 py-3">Resumen de IA</th>
+                                <th className="px-6 py-3">Mensaje Original</th>
+                                <th className="px-6 py-3">Categorías / Áreas</th>
+                                <th className="px-6 py-3 text-center">Prioridad</th>
+                                <th className="px-6 py-3 text-center">Estado</th>
+                                <th className="px-6 py-3 text-right">Acciones</th>
+                            </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
                         {mensajes?.length > 0 ? (
@@ -317,7 +315,6 @@ export default function MensajeTable({ mensajes = [], handleDelete, categorias =
                 onClose={closeEditModal}
                 onUpdate={() => {
                     closeEditModal();
-                    router.reload();
                 }}
                 categorias={categorias}
                 is_general={is_general}

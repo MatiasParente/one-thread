@@ -61,12 +61,6 @@ export default function Sidebar({ show, onClose }) {
             icon: UserCog,
         },
         {
-            label: 'Reportes',
-            href: route('reportes'),
-            active: route().current('reportes'),
-            icon: BarChart3,
-        },
-        {
             label: 'Configuración',
             href: route('configuracion'),
             active: 

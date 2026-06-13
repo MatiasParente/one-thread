@@ -1,6 +1,6 @@
 import Sidebar from '@/Components/Sidebar';
-import { useState } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { Menu } from 'lucide-react';
 
 export default function AuthenticatedLayout({ title, subtitle, children }) {
@@ -12,6 +12,12 @@ export default function AuthenticatedLayout({ title, subtitle, children }) {
         .join('')
         .toUpperCase()
         .slice(0, 2);
+
+    useEffect(() => {
+        return router.on('navigate', () => {
+            setSidebarOpen(false);
+        });
+    }, []);
 
     return (
         <div className="flex h-screen overflow-hidden bg-gray-50">

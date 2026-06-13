@@ -1,12 +1,30 @@
 import { useState } from 'react';
-import Button from './Button';
-import { ChevronLeft, ChevronRight, Search, MessageCircle, Send, Mail, Users } from 'lucide-react';
+import Button from '../Button';
+import { ChevronLeft, ChevronRight, Search, MessageCircle, Send, Mail, Users, Trash2, Edit2 } from 'lucide-react';
+import { router } from '@inertiajs/react';
+import EditMensajeroModal from './EditMensajeroModal';
 
 export default function MessengerList({ mensajeros }) {
     const [paginaActual, setPaginaActual] = useState(1);
     const [irAPagina, setIrAPagina] = useState('');
     const [busqueda, setBusqueda] = useState('');
     const [canal, setCanal] = useState('');
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedMensajero, setSelectedMensajero] = useState(null);
+
+    const handleDelete = (id, nombre) => {
+        if (confirm(`¿Estás seguro de que deseas eliminar al mensajero ${nombre || 'seleccionado'}? Todos sus mensajes asociados también serán eliminados.`)) {
+            router.delete(route('mensajeros.destroy', id), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    // Si se elimina el último elemento de una página, retroceder
+                    if (mensajerosPagina.length === 1 && paginaActual > 1) {
+                        setPaginaActual(paginaActual - 1);
+                    }
+                }
+            });
+        }
+    };
 
     const itemsPorPagina = 10;
 
@@ -245,7 +263,7 @@ export default function MessengerList({ mensajeros }) {
                 </div>
             </div>
             {/* Tabla */}
-            <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-lg border-t-4 border-t-green-600 border-x border-b border-gray-200 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-[900px]">
                         <thead>
@@ -269,6 +287,9 @@ export default function MessengerList({ mensajeros }) {
 
                                 <th className="p-3 text-left">
                                     Canales
+                                </th>
+                                <th className="p-3 text-left">
+                                    Acciones
                                 </th>
                             </tr>
                         </thead>
@@ -365,6 +386,27 @@ export default function MessengerList({ mensajeros }) {
                                                             Email
                                                         </span>
                                                     )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex items-center justify-end gap-1">
+                                                    <button
+                                                        title="Editar"
+                                                        onClick={() => {
+                                                            setSelectedMensajero(mensajero);
+                                                            setEditModalOpen(true);
+                                                        }}
+                                                        className="p-1 text-gray-500 hover:text-[#B8860B] hover:bg-gray-100 rounded transition-colors"
+                                                    >
+                                                        <Edit2 className="h-4.5 w-4.5" />
+                                                    </button>
+                                                    <button
+                                                        title="Eliminar"
+                                                        onClick={() => handleDelete(mensajero.id, mensajero.nombre)}
+                                                        className="p-1 text-gray-500 hover:text-[#C41E3A] hover:bg-gray-100 rounded transition-colors"
+                                                    >
+                                                        <Trash2 className="h-4.5 w-4.5" />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -471,6 +513,15 @@ export default function MessengerList({ mensajeros }) {
                     </div>
                 )}
             </div>
+
+            <EditMensajeroModal
+                mensajero={selectedMensajero}
+                isOpen={editModalOpen}
+                onClose={() => {
+                    setEditModalOpen(false);
+                    setSelectedMensajero(null);
+                }}
+            />
         </div>
     );
 }

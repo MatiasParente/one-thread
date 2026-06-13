@@ -48,7 +48,6 @@ export default function EditMensajeModal({ mensaje, isOpen, onClose, onUpdate, c
             onSuccess: () => {
                 if (onUpdate) onUpdate();
                 onClose();
-                router.reload();
             },
         });
     };

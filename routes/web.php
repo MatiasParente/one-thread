@@ -25,15 +25,15 @@ Route::get('/dashboard', DashboardController::class)
     ->name('dashboard');
 
 Route::resource('mensajes-clasificados', MensajeClasificadoController::class)
-    ->only(['index', 'edit', 'update', 'destroy', 'show'])
+    ->only(['index', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
 
 Route::resource('mensajes-simples', MensajeController::class)
-    ->only(['index', 'destroy', 'show'])
+    ->only(['index', 'destroy'])
     ->middleware(['auth', 'verified']);
 
 Route::resource('mensajeros', MensajeroController::class)
-        ->only(['index'])
+        ->only(['index', 'update', 'destroy'])
         ->middleware(['auth', 'verified']);
 
 Route::get('/reportes', function () {
@@ -60,7 +60,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('agentes/{admin}/metricas', [AdminController::class, 'metricas'])->name('agentes.metricas');
     Route::get('agentes/{admin}/carga', [AdminController::class, 'carga'])->name('agentes.carga');
 
-    Route::resource('agentes', AdminController::class);
+    Route::resource('agentes', AdminController::class)->parameters([
+        'agentes' => 'admin'
+    ]);
 
     Route::get('mensajes-clasificados/{id}/respuesta', [AdminMensajeController::class, 'create'])
         ->name('mensajes-clasificados.respuesta');

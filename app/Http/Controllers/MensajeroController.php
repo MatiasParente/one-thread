@@ -10,79 +10,90 @@ class MensajeroController extends Controller
 {
     public function index()
     {
-
         $user = Auth::user();
         $user->load('admin.categorias'); 
 
-        $categorias = $user->admin?->categorias; 
+        $categoriasAdmin = $user->admin?->categorias ?? collect(); 
+        $categoriaIds = $categoriasAdmin->pluck('id')->toArray();
+        $general = in_array(32, $categoriaIds);
 
-        $categoriaIds = $categorias->pluck('id')->toArray();
+        // Optimizacion: Obtener el ultimo mensaje clasificado por mensajero
+        $latestMessages = \Illuminate\Support\Facades\DB::table('mensajes')
+            ->join('mensajes_clasificados', 'mensajes.id', '=', 'mensajes_clasificados.id_mensaje')
+            ->selectRaw('id_mensajero, MAX(mensajes.id) as last_msg_id')
+            ->groupBy('id_mensajero')
+            ->get();
 
-        $general = false;
+        $lastMsgIds = $latestMessages->pluck('last_msg_id')->toArray();
 
-        foreach($categoriaIds as $cat){
-            if($cat == 32){
-                $general = true;
-                break;
+        $classifieds = \App\Models\Mensaje::whereIn('id', $lastMsgIds)
+            ->with('mensaje_clasificado.tipo_mensaje.tipos.categoria')
+            ->get();
+
+        $mensajerosPermitidos = [];
+        $allMensajeros = Mensajero::pluck('id')->toArray();
+        $mensajerosConClasificados = [];
+
+        foreach ($classifieds as $msg) {
+            $mId = $msg->id_mensajero;
+            $mensajerosConClasificados[] = $mId;
+            $cats = collect();
+            if ($msg->mensaje_clasificado && $msg->mensaje_clasificado->tipo_mensaje) {
+                foreach ($msg->mensaje_clasificado->tipo_mensaje as $tm) {
+                    if ($tm->tipos && $tm->tipos->categoria) {
+                        $cats->push($tm->tipos->categoria);
+                    }
+                }
+            }
+            
+            $catIds = $cats->pluck('id')->toArray();
+            $intersect = array_intersect($catIds, $categoriaIds);
+            if ($general || !empty($intersect)) {
+                $mensajerosPermitidos[] = $mId;
             }
         }
 
-        $query = Mensajero::query()
-        ->leftJoin('mensajes','mensajeros.id','=','mensajes.id_mensajero')
-        ->leftJoin('mensajes_clasificados', 'mensajes.id', '=', 'mensajes_clasificados.id_mensaje')
-        ->leftJoin('tipo_mensaje', 'mensajes_clasificados.id_mensaje', '=', 'tipo_mensaje.id_mensaje')
-        ->leftJoin('tipos', 'tipo_mensaje.id_tipo', '=', 'tipos.id')
-        ->leftJoin('categorias', 'tipos.id_categoria', '=', 'categorias.id')
-        ->select('mensajeros.id','mensajeros.nombre', 'mensajeros.apellido', 'mensajeros.telefono','mensajeros.correo','mensajeros.whatsapp_id','mensajeros.telegram_id','mensajeros.instagram_id');
-
-        $mensajeros = $query->orderBy('mensajeros.nombre');
-
-        if ($general) {
-            $mensajes = $query->distinct()->get();
-        } else {
-            $mensajes = $query->whereIn('categorias.id', $categoriaIds)
-                            ->distinct()
-                            ->get();
+        $mensajerosSinClasificar = array_diff($allMensajeros, $mensajerosConClasificados);
+        foreach ($mensajerosSinClasificar as $mId) {
+            $mensajerosPermitidos[] = $mId;
         }
 
+        $mensajeros = Mensajero::whereIn('id', $mensajerosPermitidos)
+            ->orderBy('nombre')
+            ->get();
+
         return Inertia::render('Mensajero/Mensajero', [
-            'mensajeros' => $mensajes,
+            'mensajeros' => $mensajeros,
         ]);
     }
 
-    public function mensajerosAdmin(){
-        $user = Auth::user();
-        $user->load('admin.categorias'); 
+    public function update(\Illuminate\Http\Request $request, $id)
+    {
+        $mensajero = Mensajero::findOrFail($id);
 
-        $categorias = $user->admin?->categorias; 
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:255',
+            'correo' => 'nullable|email|max:255',
+        ]);
 
-        $categoriaIds = $categorias->pluck('id')->toArray();
+        $mensajero->update($validated);
 
-        $general = false;
+        return redirect()->back()->with('success', 'Mensajero actualizado.');
+    }
 
-        foreach($categoriaIds as $cat){
-            if($cat == 32){
-                $general = true;
-                break;
-            }
-        }
+    public function destroy($id)
+    {
+        $mensajero = Mensajero::findOrFail($id);
+        
+        $mensajesIds = \App\Models\Mensaje::where('id_mensajero', $id)->pluck('id');
+        
+        \App\Models\Mensaje_Clasificado::whereIn('id_mensaje', $mensajesIds)->delete();
+        \App\Models\Mensaje::whereIn('id', $mensajesIds)->delete();
 
-        $query = Mensajero::query()
-        ->leftJoin('mensajes','mensajeros.id','=','mensajes.id_mensajero')
-        ->leftJoin('mensajes_clasificados', 'mensajes.id', '=', 'mensajes_clasificados.id_mensaje')
-        ->leftJoin('tipo_mensaje', 'mensajes_clasificados.id_mensaje', '=', 'tipo_mensaje.id_mensaje')
-        ->leftJoin('tipos', 'tipo_mensaje.id_tipo', '=', 'tipos.id')
-        ->leftJoin('categorias', 'tipos.id_categoria', '=', 'categorias.id')
-        ->select('mensajeros.id','mensajeros.nombre', 'mensajeros.apellido', 'mensajeros.telefono','mensajeros.correo','mensajeros.whatsapp_id','mensajeros.telegram_id','mensajeros.instagram_id');
+        $mensajero->delete();
 
-        if ($general) {
-            $mensajes = $query->distinct()->get();
-        } else {
-            $mensajes = $query->whereIn('categorias.id', $categoriaIds)
-                            ->distinct()
-                            ->get();
-        }
-
-        return $mensajes;
+        return redirect()->back()->with('success', 'Mensajero eliminado.');
     }
 }

@@ -19,9 +19,9 @@ import Dropdown from '@/Components/Dropdown';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
-import AdminMensajesList from '@/Components/AdminMensajesList';
-import AdminMetricas from '@/Components/AdminMetricas';
-import AdminCargaTrabajo from '@/Components/AdminCargaTrabajo';
+import AdminMensajesList from '@/Components/Agentes/AdminMensajesList';
+import AdminMetricas from '@/Components/Agentes/AdminMetricas';
+import AdminCargaTrabajo from '@/Components/Agentes/AdminCargaTrabajo';
 
 // ──────────────────────────────────────────────
 // Card de agente con menú 3 puntos, email mailto y botones de acción

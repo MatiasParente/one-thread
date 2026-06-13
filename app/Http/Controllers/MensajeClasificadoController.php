@@ -55,10 +55,13 @@ class MensajeClasificadoController extends Controller
             $query->where('prioridad', $request->prioridad);
         }
 
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
         $mensajes = $query->latest()->get();
 
         $mensajerosQuery = Mensajero::query();
-
 
         if (!$general) {
             $mensajerosQuery->whereHas('mensaje', function ($q) use ($categoriaIds) {
@@ -69,6 +72,8 @@ class MensajeClasificadoController extends Controller
                     });
                 });
             });
+            // Fetch only categories allowed for this admin
+            $categorias = Categoria::with('tipos')->whereIn('id', $categoriaIds)->orderBy('nombre')->get();
         }else{
             $categorias = Categoria::with('tipos')->orderBy('nombre')->get();
         }
@@ -92,7 +97,7 @@ class MensajeClasificadoController extends Controller
             'mensajes' => $mensajes,
             'categorias' => $categorias,
             'is_general' => $general,
-            'filters' => $request->only(['nombre_cliente', 'id_categoria', 'prioridad']),
+            'filters' => $request->only(['nombre_cliente', 'id_categoria', 'prioridad', 'estado']),
         ]);
     }
 

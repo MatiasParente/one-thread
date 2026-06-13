@@ -1,10 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useEffect } from 'react';
-import StatsCards from '@/Components/StatsCards';
-import ChannelDistribution from '@/Components/ChannelDistribution';
-import MessagesByDay from '@/Components/MessagesByDay';
-import QuickSummary from '@/Components/QuickSummary';
+import StatsCards from '@/Components/Dashboard/StatsCards';
+import ChannelDistribution from '@/Components/Dashboard/ChannelDistribution';
+import MessagesByDay from '@/Components/Dashboard/MessagesByDay';
+import QuickSummary from '@/Components/Dashboard/QuickSummary';
 import MensajeTable from '@/Components/MensajesClasificados/MensajeTable';
 
 export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesPorDia, resumenRapido, categorias, general }) {

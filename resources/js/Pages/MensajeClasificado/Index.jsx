@@ -10,11 +10,12 @@ export default function Index({ mensajes, clientes, categorias, filters, is_gene
     const [nombreCliente, setNombreCliente] = useState(filters.nombre_cliente || '');
     const [idCategoria, setIdCategoria] = useState(filters.id_categoria || '');
     const [prioridad, setPrioridad] = useState(filters.prioridad || '');
+    const [estado, setEstado] = useState(filters.estado || '');
 
     useEffect(() => {
         const interval = setInterval(() => {
-            router.reload({ preserveScroll: true, preserveState: true });
-        }, 10000);
+            router.reload({ preserveScroll: true, preserveState: true, only: ['mensajes'] });
+        }, 20000);
         return () => clearInterval(interval);
     }, []);
 
@@ -23,6 +24,7 @@ export default function Index({ mensajes, clientes, categorias, filters, is_gene
         if (nombreCliente) queryParams.nombre_cliente = nombreCliente;
         if (idCategoria) queryParams.id_categoria = idCategoria;
         if (prioridad) queryParams.prioridad = prioridad;
+        if (estado !== '') queryParams.estado = estado;
 
         router.get(route('mensajes-clasificados.index'), queryParams, {
             preserveState: true,
@@ -34,6 +36,7 @@ export default function Index({ mensajes, clientes, categorias, filters, is_gene
         setNombreCliente('');
         setIdCategoria('');
         setPrioridad('');
+        setEstado('');
         router.get(route('mensajes-clasificados.index'), {}, {
             preserveState: true,
             replace: true,
@@ -71,10 +74,13 @@ export default function Index({ mensajes, clientes, categorias, filters, is_gene
                 <MensajeFilterCard
                     nombreCliente={nombreCliente}
                     setNombreCliente={setNombreCliente}
+                    categorias={categorias}
                     idCategoria={idCategoria}
                     setIdCategoria={setIdCategoria}
                     prioridad={prioridad}
                     setPrioridad={setPrioridad}
+                    estado={estado}
+                    setEstado={setEstado}
                     applyFilters={applyFilters}
                     handleClearFilters={handleClearFilters}
                 />
