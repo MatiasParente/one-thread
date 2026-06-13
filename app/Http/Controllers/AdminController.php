@@ -23,7 +23,14 @@ class AdminController extends Controller
     public function index(): Response
     {
         return Inertia::render('Agentes/Index', [
-            'admins' => Admin::with(['user', 'categorias'])->get(),
+            'admins' => Admin::with(['user', 'categorias'])
+                ->withAvg('adminMensajes as puntaje_promedio', 'puntaje')
+                ->get()
+                ->each(function ($admin) {
+                    if ($admin->puntaje_promedio !== null) {
+                        $admin->puntaje_promedio = round((float) $admin->puntaje_promedio, 1);
+                    }
+                }),
             'allCategorias' => Categoria::all(['id', 'nombre']),
         ]);
     }

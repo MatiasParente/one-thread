@@ -30,11 +30,12 @@ class MensajeController extends Controller
         }
 
         $query = Mensaje::query()
-        ->leftJoin('mensajes_clasificados', 'mensajes.id', '=', 'mensajes_clasificados.id_mensaje')
-        ->leftJoin('tipo_mensaje', 'mensajes_clasificados.id_mensaje', '=', 'tipo_mensaje.id_mensaje')
-        ->leftJoin('tipos', 'tipo_mensaje.id_tipo', '=', 'tipos.id')
-        ->leftJoin('categorias', 'tipos.id_categoria', '=', 'categorias.id')
-        ->select('mensajes.id','mensajes.contenido', 'mensajes.origen', 'mensajes.fecha_envio','mensajes.id_mensajero','mensajes.created_at','mensajes.updated_at');
+            ->with('mensajeros:id,nombre,apellido')
+            ->leftJoin('mensajes_clasificados', 'mensajes.id', '=', 'mensajes_clasificados.id_mensaje')
+            ->leftJoin('tipo_mensaje', 'mensajes_clasificados.id_mensaje', '=', 'tipo_mensaje.id_mensaje')
+            ->leftJoin('tipos', 'tipo_mensaje.id_tipo', '=', 'tipos.id')
+            ->leftJoin('categorias', 'tipos.id_categoria', '=', 'categorias.id')
+            ->select('mensajes.id','mensajes.contenido', 'mensajes.origen', 'mensajes.fecha_envio','mensajes.id_mensajero','mensajes.created_at','mensajes.updated_at', 'mensajes_clasificados.id as clasificado_id');
 
         if ($general) {
             $mensajes = $query->distinct()->get();
