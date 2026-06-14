@@ -22,6 +22,7 @@ import InputError from '@/Components/InputError';
 import AdminMensajesList from '@/Components/Agentes/AdminMensajesList';
 import AdminMetricas from '@/Components/Agentes/AdminMetricas';
 import AdminCargaTrabajo from '@/Components/Agentes/AdminCargaTrabajo';
+import StarRating from '@/Components/StarRating';
 
 // ──────────────────────────────────────────────
 // Card de agente con menú 3 puntos, email mailto y botones de acción
@@ -112,6 +113,9 @@ function AdminCard({ admin, isSelected, onSelectPanel, activePanel }) {
             </div>
             <div className="text-center">
                 <p className="text-sm font-semibold text-gray-900">{name}</p>
+                <div className="mt-0.5">
+                    <StarRating value={admin.puntaje_promedio} />
+                </div>
                 {email ? (
                     <a
                         href={`mailto:${email}`}

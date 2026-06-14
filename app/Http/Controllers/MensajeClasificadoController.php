@@ -168,7 +168,11 @@ class MensajeClasificadoController extends Controller
     public function destroy($id)
     {
         $mensaje = Mensaje_Clasificado::findOrFail($id);
-        $mensaje->update(['estado' => 3]);
+        if($mensaje->estado != 3){
+            $mensaje->update(['estado' => 3]);
+        }else{
+            $mensaje->delete();
+        }
 
         return redirect()->back()->with('success', 'Mensaje eliminado.');
     }

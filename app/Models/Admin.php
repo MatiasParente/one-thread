@@ -33,6 +33,15 @@ class Admin extends Model
     }
 
     /**
+     * Relación directa con la tabla pivot admin_mensaje.
+     * Permite acceder a respuestas, puntajes y feedback de cada asignación.
+     */
+    public function adminMensajes()
+    {
+        return $this->hasMany(Admin_Mensaje::class, 'id_admin');
+    }
+
+    /**
      * Mensajes crudos asignados a este admin (ManyToMany via admin_mensaje).
      * Permite acceder a los mensajes que el agente tiene asignados.
      */

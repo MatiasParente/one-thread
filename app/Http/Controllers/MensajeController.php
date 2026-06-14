@@ -63,14 +63,18 @@ class MensajeController extends Controller
             $mensajerosPermitidos[] = $mId; // Visible to everyone if no category
         }
 
-        $query = Mensaje::whereIn('id_mensajero', $mensajerosPermitidos);
+        $query = Mensaje::query()
+            ->with('mensajeros:id,nombre,apellido')
+            ->leftJoin('mensajes_clasificados', 'mensajes.id', '=', 'mensajes_clasificados.id_mensaje')
+            ->select('mensajes.id', 'mensajes.contenido', 'mensajes.origen', 'mensajes.fecha_envio', 'mensajes.id_mensajero', 'mensajes.created_at', 'mensajes.updated_at', 'mensajes_clasificados.id as clasificado_id')
+            ->whereIn('mensajes.id_mensajero', $mensajerosPermitidos);
 
         if ($request->filled('contenido')) {
-            $query->where('contenido', 'like', '%' . $request->contenido . '%');
+            $query->where('mensajes.contenido', 'like', '%' . $request->contenido . '%');
         }
 
         if ($request->filled('origen')) {
-            $query->where('origen', $request->origen);
+            $query->where('mensajes.origen', $request->origen);
         }
 
         if ($request->filled('id_categoria')) {
@@ -82,10 +86,10 @@ class MensajeController extends Controller
                     $allowedForCat[] = $mId;
                 }
             }
-            $query->whereIn('id_mensajero', $allowedForCat);
+            $query->whereIn('mensajes.id_mensajero', $allowedForCat);
         }
 
-        $mensajes = $query->latest('fecha_envio')->get();
+        $mensajes = $query->latest('mensajes.fecha_envio')->get();
 
         $mensajes->transform(function ($msg) use ($mensajerosCategoria) {
             $msg->categorias_derivadas = $mensajerosCategoria[$msg->id_mensajero] ?? [];
