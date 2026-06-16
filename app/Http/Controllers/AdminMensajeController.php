@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin_Mensaje;
+use App\Models\Admin;
 use App\Models\Mensaje;
 use App\Models\Mensaje_Clasificado;
 use Illuminate\Http\Request;
@@ -193,5 +194,19 @@ class AdminMensajeController extends Controller
         }
 
         return redirect()->back()->with('success', 'Conversación finalizada y encuesta enviada.');
+    }
+
+    //funcion para obtener los comentarios de los clientes a un agente o lo que sea
+    public function comentarios(Admin $admin){
+
+    $comentarios = Admin_Mensaje::where('id_admin', $admin->id)
+        ->whereNotNull('puntaje')
+        ->whereNotNull('comentarios_cliente')
+        ->with(['mensaje.mensajeros','mensaje.mensaje_clasificado'])
+        ->orderBy('id_admin', 'desc')
+        ->get();
+
+    return response()->json($comentarios);
+
     }
 }

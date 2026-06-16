@@ -49,7 +49,7 @@ export default function StarRating({ value, size = 14 }) {
     }
 
     return (
-        <div className="flex items-center justify-center gap-0.5" aria-label={num !== null ? `${num.toFixed(1)} de 5 estrellas` : 'Sin puntuación'}>
+        <div className="flex items-center gap-0.5" aria-label={num !== null ? `${num.toFixed(1)} de 5 estrellas` : 'Sin puntuación'}>
             {stars}
         </div>
     );

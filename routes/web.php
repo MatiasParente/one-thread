@@ -60,6 +60,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('agentes/{admin}/metricas', [AdminController::class, 'metricas'])->name('agentes.metricas');
     Route::get('agentes/{admin}/carga', [AdminController::class, 'carga'])->name('agentes.carga');
 
+    Route::get('agentes/{admin}/comentarios', [AdminMensajeController::class,'comentarios'])->name('agentes.comentarios');
+
     Route::resource('agentes', AdminController::class)->parameters([
         'agentes' => 'admin'
     ]);

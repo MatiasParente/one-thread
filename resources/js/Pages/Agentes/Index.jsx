@@ -19,6 +19,7 @@ import Dropdown from '@/Components/Dropdown';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
+import AdminComentariosList from '@/Components/Agentes/AdminComentariosList';
 import AdminMensajesList from '@/Components/Agentes/AdminMensajesList';
 import AdminMetricas from '@/Components/Agentes/AdminMetricas';
 import AdminCargaTrabajo from '@/Components/Agentes/AdminCargaTrabajo';
@@ -114,7 +115,15 @@ function AdminCard({ admin, isSelected, onSelectPanel, activePanel }) {
             <div className="text-center">
                 <p className="text-sm font-semibold text-gray-900">{name}</p>
                 <div className="mt-0.5">
-                    <StarRating value={admin.puntaje_promedio} />
+                    <button
+                    onClick={() => onSelectPanel('comentarios', admin)}
+                    className={` rounded-sm px-2 py-1 text-xs font-medium transition-colors ${isSelected && activePanel === 'comentarios'
+                            ? 'bg-primary text-white'
+                            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                            }`}>
+                        <StarRating value={admin.puntaje_promedio} />
+                    </button>
+                    
                 </div>
                 {email ? (
                     <a
@@ -552,6 +561,10 @@ export default function Index({ admins, allCategorias }) {
                 return (
                     <AdminCargaTrabajo adminId={selectedAdmin.id} />
                 );
+            case 'comentarios':
+                return(
+                    <AdminComentariosList adminId={selectedAdmin.id} /> 
+                );
             default:
                 return null;
         }
@@ -619,6 +632,8 @@ export default function Index({ admins, allCategorias }) {
                                     'Métricas de rendimiento'}
                                 {activePanel === 'carga' &&
                                     'Carga de trabajo actual'}
+                                {activePanel === 'comentarios' &&
+                                    'Comentarios recibidos por clientes'}    
                             </p>
                         </div>
                         <button
