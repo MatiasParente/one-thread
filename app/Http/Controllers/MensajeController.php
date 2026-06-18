@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+
+use Carbon\Carbon;
 use App\Models\Mensaje;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Mensaje_Temporal;
 
 class MensajeController extends Controller
 {
@@ -101,8 +104,11 @@ class MensajeController extends Controller
             $todasCategorias = $todasCategorias->whereIn('id', $categoriaIds)->values();
         }
 
+        $temporales = Mensaje_Temporal::all();
+
         return Inertia::render('Mensaje/Mensaje', [
             'mensajes' => $mensajes,
+            'mensajes_temporales' => $temporales,
             'categorias' => $todasCategorias,
             'filters' => $request->only(['contenido', 'origen', 'id_categoria']),
         ]);
@@ -119,7 +125,18 @@ class MensajeController extends Controller
             'contenido' => 'required|string|max:255',
             'origen' => 'required|string',
             'id_mensajero' => 'required|integer',
+            'temporal_id' => 'sometimes|integer|exists:mensajes_temporal,id', 
         ]);
+
+         // Agregar la fecha actual
+        $validated['fecha_envio'] = Carbon::now();
+
+        if ($request->has('temporal_id')) {
+            $temporal = Mensaje_Temporal::find($request->temporal_id);
+        if ($temporal) {
+            $temporal->delete();
+        }
+    }
 
         Mensaje::create($validated);
 

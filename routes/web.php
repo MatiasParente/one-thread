@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\MensajeTemporalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MensajeClasificadoController;
 use App\Http\Controllers\MensajeController;
@@ -29,6 +30,11 @@ Route::resource('mensajes-clasificados', MensajeClasificadoController::class)
     ->middleware(['auth', 'verified']);
 
 Route::resource('mensajes-simples', MensajeController::class)
+    ->only(['index', 'destroy','store'])
+    ->middleware(['auth', 'verified']);
+
+
+Route::resource('mensajes-temporales', MensajeTemporalController::class)
     ->only(['index', 'destroy'])
     ->middleware(['auth', 'verified']);
 
@@ -48,6 +54,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/mensajero/por-canal/{canal_id}', [MensajeroController::class, 'mensajeroId'])
+    ->middleware(['auth', 'verified'])
+    ->name('mensajero.por-canal');
+
 
 Route::middleware(['auth'])->group(function () {
 

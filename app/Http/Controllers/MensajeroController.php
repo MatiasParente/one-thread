@@ -96,4 +96,13 @@ class MensajeroController extends Controller
 
         return redirect()->back()->with('success', 'Mensajero eliminado.');
     }
+
+    public function mensajeroId($canal_id){
+        
+        $mensajero = Mensajero::where('telegram_id',$canal_id)->first();
+
+
+        return response()->json($mensajero);
+
+    }
 }
