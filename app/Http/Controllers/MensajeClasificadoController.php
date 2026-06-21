@@ -170,11 +170,15 @@ class MensajeClasificadoController extends Controller
         $mensaje = Mensaje_Clasificado::findOrFail($id);
         if($mensaje->estado != 3){
             $mensaje->update(['estado' => 3]);
+            return redirect()->back()->with('success', 'Mensaje marcado como resuelto.');
         }else{
+            $mensajeAsociado = $mensaje->mensaje;
             $mensaje->delete();
+            if ($mensajeAsociado) {
+                $mensajeAsociado->delete();
+            }
+            return redirect()->back()->with('success', 'Mensaje eliminado permanentemente.');
         }
-
-        return redirect()->back()->with('success', 'Mensaje eliminado.');
     }
 
     public function mensajeClasificadosAdmin(){

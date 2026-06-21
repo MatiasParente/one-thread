@@ -4,7 +4,6 @@ import { useState } from "react";
 import axios from 'axios';
 import { router } from '@inertiajs/react';
 
-// Límite de caracteres para el contenido (opcional, si quieres truncar)
 const MAX_CONTENT_LENGTH = 60;
 
 const truncateText = (text, maxLength) => {

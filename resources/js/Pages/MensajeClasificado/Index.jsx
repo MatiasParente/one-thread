@@ -5,6 +5,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Sparkles, Plus } from 'lucide-react';
 import MensajeFilterCard from '@/Components/MensajesClasificados/MensajeFilterCard';
 import MensajeTable from '@/Components/MensajesClasificados/MensajeTable';
+import Swal from 'sweetalert2';
 
 export default function Index({ mensajes, clientes, categorias, filters, is_general }) {
     const [nombreCliente, setNombreCliente] = useState(filters.nombre_cliente || '');
@@ -44,11 +45,22 @@ export default function Index({ mensajes, clientes, categorias, filters, is_gene
     };
 
     const handleDelete = (id, resumen) => {
-        if (confirm(`¿Estás seguro de que deseas eliminar el mensaje clasificado: "${resumen}"?`)) {
-            router.delete(route('mensajes-clasificados.destroy', id), {
-                onSuccess: () => router.reload()
-            });
-        }
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas eliminar permanentemente el mensaje clasificado y su mensaje original: "${resumen}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(route('mensajes-clasificados.destroy', id), {
+                    onSuccess: () => router.reload()
+                });
+            }
+        });
     };
 
     return (

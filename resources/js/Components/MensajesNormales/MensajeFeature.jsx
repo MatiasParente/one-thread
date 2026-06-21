@@ -4,6 +4,7 @@ import { Head, router } from '@inertiajs/react';
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Trash2, Filter, X, MessageSquare } from 'lucide-react';
 import Button from '@/Components/Button';
+import Swal from 'sweetalert2';
 
 export default function Index({ mensajes, categorias = [], filters = {} }) {
     const [contenido, setContenido] = useState(filters.contenido || '');
@@ -33,11 +34,22 @@ export default function Index({ mensajes, categorias = [], filters = {} }) {
     };
 
     const handleDelete = (id, contenidoMsg) => {
-        if (confirm(`¿Eliminar mensaje "${contenidoMsg}"?`)) {
-            router.delete(route('mensajes-simples.destroy', id), {
-                onSuccess: () => router.reload()
-            });
-        }
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas eliminar permanentemente este mensaje y su clasificación (si tiene): "${contenidoMsg}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(route('mensajes-simples.destroy', id), {
+                    onSuccess: () => router.reload()
+                });
+            }
+        });
     };
 
     const [paginaActual, setPaginaActual] = useState(1);

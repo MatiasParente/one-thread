@@ -6,7 +6,7 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm, Link } from '@inertiajs/react';
 
-    export default function Login({ status, canResetPassword }) {
+    export default function Login({ status }) {
         const { data, setData, post, processing, errors, reset } = useForm({
             email: '',
             password: '',
@@ -81,15 +81,6 @@ import { Head, useForm, Link } from '@inertiajs/react';
                     </div>
 
                     <div className="mt-6 flex items-center justify-end">
-                        {canResetPassword && (
-                            <Link
-                                href={route('password.request')}
-                                className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                            >
-                                ¿Olvidaste tu contraseña?
-                            </Link>
-                        )}
-
                         <Button type="submit" className="ms-4" disabled={processing}>
                             Iniciar sesión
                         </Button>

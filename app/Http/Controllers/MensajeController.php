@@ -70,7 +70,11 @@ class MensajeController extends Controller
             ->with('mensajeros:id,nombre,apellido')
             ->leftJoin('mensajes_clasificados', 'mensajes.id', '=', 'mensajes_clasificados.id_mensaje')
             ->select('mensajes.id', 'mensajes.contenido', 'mensajes.origen', 'mensajes.fecha_envio', 'mensajes.id_mensajero', 'mensajes.created_at', 'mensajes.updated_at', 'mensajes_clasificados.id as clasificado_id')
-            ->whereIn('mensajes.id_mensajero', $mensajerosPermitidos);
+            ->whereIn('mensajes.id_mensajero', $mensajerosPermitidos)
+            ->where(function ($q) {
+                $q->whereNull('mensajes_clasificados.id')
+                  ->orWhere('mensajes_clasificados.estado', '!=', 3);
+            });
 
         if ($request->filled('contenido')) {
             $query->where('mensajes.contenido', 'like', '%' . $request->contenido . '%');
@@ -169,9 +173,15 @@ class MensajeController extends Controller
     public function destroy($id)
     {
         $mensaje = Mensaje::findOrFail($id);
+        
+        $mensajeClasificado = \App\Models\Mensaje_Clasificado::where('id_mensaje', $mensaje->id)->first();
+        if ($mensajeClasificado) {
+            $mensajeClasificado->delete();
+        }
+
         $mensaje->delete();
 
-        return redirect()->route('mensajes-simples.index')->with('success', 'Mensaje eliminado.');
+        return redirect()->back()->with('success', 'Mensaje eliminado permanentemente.');
     }
 
     public function mensajesAdmin(){

@@ -37,7 +37,13 @@ class AdminMensajeController extends Controller
             return strtolower($cat->nombre) === 'general';
         });
 
-        $query = Mensaje::where('id_mensajero', $mensajeroId);
+        $query = Mensaje::where('id_mensajero', $mensajeroId)
+            ->where(function ($q) {
+                $q->doesntHave('mensaje_clasificado')
+                  ->orWhereHas('mensaje_clasificado', function ($q2) {
+                      $q2->where('estado', '!=', 3);
+                  });
+            });
 
         if (!$esGeneral) {
             $query->where(function ($q) use ($adminCategoriasIds) {

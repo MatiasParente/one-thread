@@ -2,6 +2,7 @@ import Sidebar from '@/Components/Sidebar';
 import { useState, useEffect } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import { Menu } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function AuthenticatedLayout({ title, subtitle, children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -18,6 +19,27 @@ export default function AuthenticatedLayout({ title, subtitle, children }) {
             setSidebarOpen(false);
         });
     }, []);
+
+    const flash = usePage().props.flash;
+
+    useEffect(() => {
+        if (flash?.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: flash.success,
+                timer: 3000,
+                showConfirmButton: false
+            });
+        }
+        if (flash?.error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: flash.error,
+            });
+        }
+    }, [flash]);
 
     return (
         <div className="flex h-screen overflow-hidden bg-gray-50">

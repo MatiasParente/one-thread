@@ -6,6 +6,7 @@ import ChannelDistribution from '@/Components/Dashboard/ChannelDistribution';
 import MessagesByDay from '@/Components/Dashboard/MessagesByDay';
 import QuickSummary from '@/Components/Dashboard/QuickSummary';
 import MensajeTable from '@/Components/MensajesClasificados/MensajeTable';
+import Swal from 'sweetalert2';
 
 export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesPorDia, resumenRapido, categorias, general }) {
     useEffect(() => {
@@ -17,11 +18,22 @@ export default function Dashboard({ stats, mensajes, mensajesPorCanal, mensajesP
 
     // Declaramos handleDelete para que la tabla pueda borrar registros en el dashboard
     const handleDelete = (id, resumen) => {
-        if (confirm(`¿Estás seguro de que deseas eliminar el mensaje clasificado: "${resumen}"?`)) {
-            router.delete(route('mensajes-clasificados.destroy', id), {
-                onSuccess: () => router.reload()
-            });
-        }
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas eliminar permanentemente el mensaje clasificado y su mensaje original: "${resumen}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(route('mensajes-clasificados.destroy', id), {
+                    onSuccess: () => router.reload()
+                });
+            }
+        });
     };
 
     return (

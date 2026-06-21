@@ -5,6 +5,7 @@ import MensajeTemporalModal from '@/Components/MensajesNormales/MensajeTemporalM
 import { useEffect, useState } from 'react';
 import { MessageSquare } from 'lucide-react';
 import MensajesInbox from '@/Components/MensajesInbox';
+import Swal from 'sweetalert2';
 
 export default function Index({ mensajes,mensajes_temporales }) {
 
@@ -22,9 +23,22 @@ export default function Index({ mensajes,mensajes_temporales }) {
     }, []);
 
     const handleDeleteMessage = (id, contenido) => {
-        if (confirm(`¿Eliminar mensaje "${contenido}"?`)) {
-            router.delete(route('mensajes-simples.destroy', id));
-        }
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `¿Deseas eliminar permanentemente el mensaje y su clasificación (si tiene): "${contenido}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(route('mensajes-simples.destroy', id), {
+                    onSuccess: () => router.reload()
+                });
+            }
+        });
     };
 
     const handleSelectMessage = (mensaje) => {
