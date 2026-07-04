@@ -48,7 +48,10 @@ class ProfileController extends Controller
             'telefono' => $request->telefono,
         ]);
 
-        $admin->categorias()->sync($request->categorias_ids);
+        $esGeneral = $admin->categorias()->where('nombre', 'General')->exists();
+        if ($esGeneral) {
+            $admin->categorias()->sync($request->categorias_ids);
+        }
 
         return Redirect::route('profile.edit');
     }

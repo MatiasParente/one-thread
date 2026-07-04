@@ -1,11 +1,15 @@
 import GuestLayout from '@/Layouts/GuestLayout';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import Button from '@/Components/Button';
 import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 
-export default function Register({ categorias = [] }) { // Definimos un array vacío por defecto
+export default function Register({ categorias = [], postUrl }) { // Definimos un array vacío por defecto
+    const { auth } = usePage().props;
+    const Layout = auth?.user ? AuthenticatedLayout : GuestLayout;
+
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -27,13 +31,13 @@ export default function Register({ categorias = [] }) { // Definimos un array va
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('register'), {
+        post(postUrl ?? route('register'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
 
     return (
-        <GuestLayout>
+        <Layout title="Registro de Usuarios" subtitle="Crea una nueva cuenta de administrador">
             <Head title="Registro de Administrador" />
 
             <form onSubmit={submit}>
@@ -126,14 +130,11 @@ export default function Register({ categorias = [] }) { // Definimos un array va
                 </div>
 
                 <div className="mt-6 flex items-center justify-end">
-                    <Link href={route('login')} className="rounded-md text-sm text-gray-600 underline hover:text-gray-900">
-                        ¿Ya tienes cuenta?
-                    </Link>
                     <Button type="submit" className="ms-4" disabled={processing}>
                         Registrar Administrador
                     </Button>
                 </div>
             </form>
-        </GuestLayout>
+        </Layout>
     );
 }

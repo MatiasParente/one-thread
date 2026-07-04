@@ -8,7 +8,6 @@ use App\Models\User; // <--- 1. IMPORTA TU MODELO AQUÍ
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
@@ -19,11 +18,15 @@ class RegisteredUserController extends Controller
     /**
      * Muestra la vista de registro.
      */
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        // 2. BUSCA LAS CATEGORÍAS Y PÁSALAS A LA VISTA
+        $postUrl = $request->route()->getName() === 'usuarios.registro'
+            ? route('usuarios.registro')
+            : route('register');
+
         return Inertia::render('Auth/Register', [
             'categorias' => Categoria::all(),
+            'postUrl' => $postUrl,
         ]);
     }
 
@@ -60,8 +63,7 @@ class RegisteredUserController extends Controller
         }
 
         event(new Registered($user));
-        Auth::login($user);
 
-        return redirect(route('dashboard'));
+        return redirect()->back()->with('success', 'Usuario registrado correctamente.');
     }
 }

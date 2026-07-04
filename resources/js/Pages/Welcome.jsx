@@ -18,23 +18,12 @@ export default function Welcome({ auth, canLogin, canRegister }) {
                             Dashboard
                         </Link>
                     ) : (
-                        <>
-                            <Link
-                                href={route('login')}
-                                className="text-sm font-bold text-slate-600 hover:text-blue-500 transition relative cursor-pointer"
-                            >
-                                Entrar
-                            </Link>
-
-                            {canRegister && (
-                                <Link
-                                    href={route('register')}
-                                    className="text-sm font-bold px-6 py-2.5 bg-gradient-to-r from-blue-500 to-green-400 text-white rounded-full hover:shadow-lg hover:shadow-blue-500/30 hover:scale-105 transition-all relative cursor-pointer"
-                                >
-                                    Registrarse
-                                </Link>
-                            )}
-                        </>
+                        <Link
+                            href={route('login')}
+                            className="text-sm font-bold px-6 py-2.5 bg-gradient-to-r from-blue-500 to-green-400 text-white rounded-full hover:shadow-lg hover:shadow-blue-500/30 hover:scale-105 transition-all relative cursor-pointer"
+                        >
+                            Entrar
+                        </Link>
                     )}
                 </nav>
 

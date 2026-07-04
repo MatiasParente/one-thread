@@ -9,6 +9,8 @@ import { User, Mail, Phone, FolderHeart } from 'lucide-react';
 export default function UpdateProfileInformation({ mustVerifyEmail, status, admin, allCategorias, className = '' }) {
     const user = usePage().props.auth.user;
 
+    const esGeneral = admin?.categorias?.some(cat => cat.nombre === 'General') ?? false;
+
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: user.name,
         email: user.email,
@@ -113,9 +115,15 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, admi
                 {/* Assigned Categories */}
                 <div className="space-y-2 pt-2 border-t border-gray-100">
                     <InputLabel value="Mis Categorías / Áreas Asignadas" className="text-xs font-semibold text-gray-600 uppercase flex items-center gap-1.5" />
-                    <p className="text-xs text-gray-400">Recibirás y podrás gestionar las consultas asociadas a las siguientes áreas marcadas:</p>
-                    
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 mt-2 bg-gray-50 p-4 rounded-md border border-gray-200">
+                    {!esGeneral ? (
+                        <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-1.5 inline-block">
+                            Solo el administrador general puede modificar las categorías asignadas.
+                        </p>
+                    ) : (
+                        <p className="text-xs text-gray-400">Recibirás y podrás gestionar las consultas asociadas a las siguientes áreas marcadas:</p>
+                    )}
+
+                    <div className={`grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 mt-2 p-4 rounded-md border ${esGeneral ? 'bg-gray-50 border-gray-200' : 'bg-gray-100 border-gray-200'}`}>
                         {allCategorias?.map((cat) => (
                             <div key={cat.id} className="flex items-center">
                                 <input
@@ -124,11 +132,12 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, admi
                                     value={cat.id}
                                     checked={data.categorias_ids.includes(cat.id)}
                                     onChange={() => handleCategoryChange(cat.id)}
-                                    className="rounded border-gray-300 text-[#226583] focus:ring-[#226583] shadow-sm h-4 w-4"
+                                    disabled={!esGeneral}
+                                    className="rounded border-gray-300 text-[#226583] focus:ring-[#226583] shadow-sm h-4 w-4 disabled:cursor-not-allowed disabled:opacity-60"
                                 />
-                                <label 
-                                    htmlFor={`edit-cat-${cat.id}`} 
-                                    className="ml-2 text-sm text-gray-700 font-medium cursor-pointer selection:bg-transparent"
+                                <label
+                                    htmlFor={`edit-cat-${cat.id}`}
+                                    className={`ml-2 text-sm font-medium selection:bg-transparent ${esGeneral ? 'text-gray-700 cursor-pointer' : 'text-gray-500 cursor-not-allowed'}`}
                                 >
                                     {cat.nombre}
                                 </label>

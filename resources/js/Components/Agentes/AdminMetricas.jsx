@@ -109,7 +109,7 @@ export default function AdminMetricas({ adminId }) {
                     icon={ShieldCheck}
                     iconBg="bg-emerald-100"
                     iconColor="text-success"
-                    value={data.confianzaPromedio}
+                    value={`${data.confianzaPromedio * 100}%`}
                     label="Confianza promedio"
                 />
             </div>

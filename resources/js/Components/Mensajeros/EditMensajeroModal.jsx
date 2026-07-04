@@ -75,11 +75,20 @@ export default function EditMensajeroModal({ mensajero, isOpen, onClose }) {
                             Teléfono
                         </label>
                         <input
-                            type="text"
+                            type="tel"
                             value={data.telefono}
-                            onChange={(e) => setData('telefono', e.target.value)}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                if (value === '' || /^\+?[\d-]*$/.test(value)) {
+                                    setData('telefono', value);
+                                }
+                            }}
+                            placeholder="+59899123456 o 598-99-123456"
                             className="w-full border border-gray-200 rounded-sm px-3 py-2 focus:border-primary focus:ring-1 focus:ring-primary-light"
                         />
+                        <p className="text-xs text-gray-400 mt-1">
+                            Solo dígitos, opcional <span className="font-mono">+</span> al inicio y guiones como separadores.
+                        </p>
                         {errors.telefono && <p className="text-red-500 text-sm mt-1">{errors.telefono}</p>}
                     </div>
 

@@ -218,9 +218,7 @@ export default function MensajeTable({ mensajes = [], handleDelete, categorias =
                                             <div className="mt-1 flex items-center gap-1.5 text-xs text-gray-400">
                                                 <span>Confianza:</span>
                                                 <span className="font-mono font-semibold text-gray-500">
-                                                    {mensajeClasificado.puntaje_confianza <= 1
-                                                        ? Math.round(mensajeClasificado.puntaje_confianza * 100)
-                                                        : Math.round(mensajeClasificado.puntaje_confianza)}%
+                                                    {mensajeClasificado.puntaje_confianza * 100}%
                                                 </span>
                                             </div>
                                         </td>

@@ -16,11 +16,17 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = $this->user();
+        $admin = $user?->admin;
+        $esGeneral = $admin
+            ? $admin->categorias()->where('nombre', 'General')->exists()
+            : false;
+
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
             'telefono' => ['required', 'string', 'max:20'],
-            'categorias_ids' => ['required', 'array'],
+            'categorias_ids' => $esGeneral ? ['required', 'array'] : ['sometimes'],
         ];
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\MensajeroController;
 use Inertia\Inertia;
 use App\Http\Controllers\AdminMensajeController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -47,7 +48,7 @@ Route::get('/reportes', function () {
 })->middleware(['auth', 'verified'])->name('reportes');
 
 Route::get('/configuracion', [ConfiguracionController::class, 'index']
-)->middleware(['auth', 'verified'])->name('configuracion');
+)->middleware(['auth', 'verified', 'general.admin'])->name('configuracion');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -60,7 +61,7 @@ Route::get('/mensajero/por-canal/{canal_id}', [MensajeroController::class, 'mens
     ->name('mensajero.por-canal');
 
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'general.admin'])->group(function () {
 
     Route::resource('categorias', CategoriaController::class);
 
@@ -76,6 +77,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('agentes', AdminController::class)->parameters([
         'agentes' => 'admin'
     ]);
+
+    Route::get('usuarios/registro', [RegisteredUserController::class, 'create'])
+        ->name('usuarios.registro');
+    Route::post('usuarios/registro', [RegisteredUserController::class, 'store']);
 
     Route::get('mensajes-clasificados/{id}/respuesta', [AdminMensajeController::class, 'create'])
         ->name('mensajes-clasificados.respuesta');

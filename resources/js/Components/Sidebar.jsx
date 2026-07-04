@@ -9,6 +9,7 @@ import {
     Tags,
     Users,
     UserCog,
+    UserPlus,
     BarChart3,
     Settings,
     User,
@@ -53,6 +54,12 @@ export default function Sidebar({ show, onClose }) {
             href: route('mensajeros.index'),
             active: route().current('mensajeros.*'),
             icon: Users,
+        },
+        {
+            label: 'Registro de Usuarios',
+            href: route('usuarios.registro'),
+            active: route().current('usuarios.registro'),
+            icon: UserPlus,
         },
         {
             label: 'Agentes',

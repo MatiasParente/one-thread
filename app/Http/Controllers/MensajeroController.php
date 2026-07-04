@@ -74,8 +74,10 @@ class MensajeroController extends Controller
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido' => 'nullable|string|max:255',
-            'telefono' => 'nullable|string|max:255',
+            'telefono' => ['nullable', 'string', 'max:20', 'regex:/^\+?[\d-]+$/'],
             'correo' => 'nullable|email|max:255',
+        ], [
+            'telefono.regex' => 'El teléfono debe ser un número, opcionalmente con + al inicio, y puede incluir guiones.',
         ]);
 
         $mensajero->update($validated);
