@@ -1,58 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# One Thread
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <strong>Plataforma que centraliza los canales de comunicación de PyMEs (Telegram y Email) en una única interfaz.</strong><br>
+  Los mensajes recibidos son clasificados automáticamente con IA (Gemini), asignados al agente correspondiente, y priorizados para optimizar tiempos de respuesta y reducir costos operativos.
 </p>
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Objetivo
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Proveer a PyMEs una herramienta simple y accesible para gestionar la atención al cliente multicanal, con clasificación inteligente de mensajes y asignación automática a agentes. Ahorrando tiempo, esfuerzo y dinero.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Stack Tecnológico
 
-## Learning Laravel
+- **Backend:** Laravel 13 + PHP 8.3+
+- **Frontend:** React 18 + Inertia.js v2 + Tailwind CSS 3 + Vite 8
+- **Autenticación:** Laravel Breeze (React) + Sanctum
+- **Base de Datos:** SQLite (desarrollo/testing) / MySQL o MariaDB (producción)
+- **IA:** Google Gemini (Capa gratuita)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Instalación Local
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Sigue estos pasos para levantar el proyecto en tu entorno local.
 
-## Agentic Development
+### 1. Requisitos Previos
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Asegúrate de tener instalado en tu sistema:
+- [PHP](https://www.php.net/downloads) 8.3 o superior
+- [Composer](https://getcomposer.org/)
+- [Node.js](https://nodejs.org/) (v18 o superior)
+- [Git](https://git-scm.com/)
+
+### 2. Clonar el Repositorio
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/MatiasParente/one-thread
+cd one-thread
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 3. Configuración Inicial
 
-## Contributing
+Para instalar las dependencias (PHP y Node), generar el archivo `.env` inicial, crear la key de la aplicación y correr las migraciones automáticamente, simplemente ejecuta:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+composer setup
+```
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4. Configurar Variables de Entorno
 
-## Security Vulnerabilities
+Abre el archivo `.env` en la raíz del proyecto y asegúrate de configurar tu conexión a la base de datos y el secreto para los webhooks de n8n:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+# Configuración de Base de Datos
+DB_CONNECTION=sqlite
+# O si usas MySQL:
+# DB_CONNECTION=mysql
+# DB_DATABASE=one_thread
+# DB_USERNAME=root
+# DB_PASSWORD=
 
-## License
+# Webhook
+N8N_WEBHOOK_SECRET=tu_secreto_aqui
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. Levantar el Servidor de Desarrollo
+
+Para iniciar el entorno localmente, abre dos terminales separadas en la carpeta del proyecto y ejecuta:
+
+**Terminal 1 (Backend de Laravel):**
+```bash
+php artisan serve
+```
+
+**Terminal 2 (Frontend de Vite):**
+```bash
+npm run dev
+```
+
+La aplicación estará disponible en [http://localhost:8000](http://localhost:8000).
+
+---
+
+**Con esto el proyecto quedaria operativo en su entorno local**
