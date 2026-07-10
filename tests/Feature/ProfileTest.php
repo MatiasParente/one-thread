@@ -14,12 +14,17 @@ test('profile page is displayed', function () {
 
 test('profile information can be updated', function () {
     $user = User::factory()->create();
+    $user->admin()->create([
+        'nombre' => $user->name,
+        'telefono' => '123456789',
+    ]);
 
     $response = $this
         ->actingAs($user)
         ->patch('/profile', [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'telefono' => '123456789',
         ]);
 
     $response
@@ -35,12 +40,17 @@ test('profile information can be updated', function () {
 
 test('email verification status is unchanged when the email address is unchanged', function () {
     $user = User::factory()->create();
+    $user->admin()->create([
+        'nombre' => $user->name,
+        'telefono' => '123456789',
+    ]);
 
     $response = $this
         ->actingAs($user)
         ->patch('/profile', [
             'name' => 'Test User',
             'email' => $user->email,
+            'telefono' => '123456789',
         ]);
 
     $response
@@ -52,6 +62,10 @@ test('email verification status is unchanged when the email address is unchanged
 
 test('user can delete their account', function () {
     $user = User::factory()->create();
+    $user->admin()->create([
+        'nombre' => $user->name,
+        'telefono' => '123456789',
+    ]);
 
     $response = $this
         ->actingAs($user)
@@ -69,6 +83,10 @@ test('user can delete their account', function () {
 
 test('correct password must be provided to delete account', function () {
     $user = User::factory()->create();
+    $user->admin()->create([
+        'nombre' => $user->name,
+        'telefono' => '123456789',
+    ]);
 
     $response = $this
         ->actingAs($user)

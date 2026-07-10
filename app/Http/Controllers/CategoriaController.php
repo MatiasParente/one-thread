@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categoria;
+use App\Models\Mensaje_Clasificado;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Mensaje_Clasificado;
 
 class CategoriaController extends Controller
 {
-public function index()
+    public function index()
     {
         // Obtener todas las categorías con sus tipos y mensajes relacionados
         // Luego, calcular la cantidad total de mensajes clasificados por categoría
@@ -17,7 +17,7 @@ public function index()
         $categorias = $categorias->map(function ($categoria) {
 
             $cantidadMensajes = $categoria->tipos
-                ->flatMap(fn($tipo) => $tipo->mensajes)
+                ->flatMap(fn ($tipo) => $tipo->mensajes)
                 ->unique('id')
                 ->count();
 
@@ -26,9 +26,7 @@ public function index()
             return $categoria;
         });
 
-
         $totalMensajes = Mensaje_Clasificado::count();
-
 
         return Inertia::render('Categoria/Categoria', [
             'categorias' => $categorias,

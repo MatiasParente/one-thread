@@ -2,23 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mensaje;
+use App\Models\Mensaje_Clasificado;
 use App\Models\Mensajero;
-use Inertia\Inertia;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class MensajeroController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $user->load('admin.categorias'); 
+        $user->load('admin.categorias');
 
-        $categoriasAdmin = $user->admin?->categorias ?? collect(); 
+        $categoriasAdmin = $user->admin?->categorias ?? collect();
         $categoriaIds = $categoriasAdmin->pluck('id')->toArray();
         $general = in_array(32, $categoriaIds);
 
         // Optimizacion: Obtener el ultimo mensaje clasificado por mensajero
-        $latestMessages = \Illuminate\Support\Facades\DB::table('mensajes')
+        $latestMessages = DB::table('mensajes')
             ->join('mensajes_clasificados', 'mensajes.id', '=', 'mensajes_clasificados.id_mensaje')
             ->selectRaw('id_mensajero, MAX(mensajes.id) as last_msg_id')
             ->groupBy('id_mensajero')
@@ -26,7 +30,7 @@ class MensajeroController extends Controller
 
         $lastMsgIds = $latestMessages->pluck('last_msg_id')->toArray();
 
-        $classifieds = \App\Models\Mensaje::whereIn('id', $lastMsgIds)
+        $classifieds = Mensaje::whereIn('id', $lastMsgIds)
             ->with('mensaje_clasificado.tipo_mensaje.tipos.categoria')
             ->get();
 
@@ -45,10 +49,10 @@ class MensajeroController extends Controller
                     }
                 }
             }
-            
+
             $catIds = $cats->pluck('id')->toArray();
             $intersect = array_intersect($catIds, $categoriaIds);
-            if ($general || !empty($intersect)) {
+            if ($general || ! empty($intersect)) {
                 $mensajerosPermitidos[] = $mId;
             }
         }
@@ -67,7 +71,7 @@ class MensajeroController extends Controller
         ]);
     }
 
-    public function update(\Illuminate\Http\Request $request, $id)
+    public function update(Request $request, $id)
     {
         $mensajero = Mensajero::findOrFail($id);
 
@@ -88,21 +92,21 @@ class MensajeroController extends Controller
     public function destroy($id)
     {
         $mensajero = Mensajero::findOrFail($id);
-        
-        $mensajesIds = \App\Models\Mensaje::where('id_mensajero', $id)->pluck('id');
-        
-        \App\Models\Mensaje_Clasificado::whereIn('id_mensaje', $mensajesIds)->delete();
-        \App\Models\Mensaje::whereIn('id', $mensajesIds)->delete();
+
+        $mensajesIds = Mensaje::where('id_mensajero', $id)->pluck('id');
+
+        Mensaje_Clasificado::whereIn('id_mensaje', $mensajesIds)->delete();
+        Mensaje::whereIn('id', $mensajesIds)->delete();
 
         $mensajero->delete();
 
         return redirect()->back()->with('success', 'Mensajero eliminado.');
     }
 
-    public function mensajeroId($canal_id){
-        
-        $mensajero = Mensajero::where('telegram_id',$canal_id)->first();
+    public function mensajeroId($canal_id)
+    {
 
+        $mensajero = Mensajero::where('telegram_id', $canal_id)->first();
 
         return response()->json($mensajero);
 

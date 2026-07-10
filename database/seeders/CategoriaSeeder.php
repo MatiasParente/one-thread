@@ -23,7 +23,7 @@ class CategoriaSeeder extends Seeder
             ['id' => 27, 'nombre' => 'Calidad'],
             ['id' => 28, 'nombre' => 'Producción'],
             ['id' => 29, 'nombre' => 'Investigación y Desarrollo'],
-            ['id' => 32, 'nombre' => 'General']
+            ['id' => 32, 'nombre' => 'General'],
         ];
 
         foreach ($categorias as $categoria) {

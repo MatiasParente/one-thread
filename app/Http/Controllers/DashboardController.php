@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Mensaje;
 use App\Models\Mensaje_Clasificado;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
@@ -18,23 +18,25 @@ class DashboardController extends Controller
         $categorias = $user->admin?->categorias;
         $categoriaIds = $categorias->pluck('id')->toArray();
 
-        $general = in_array(32, $categoriaIds); 
+        $general = in_array(32, $categoriaIds);
 
-       $applyFilterToClasificado = function ($query) use ($general, $categoriaIds) {
-            if (!$general) {
+        $applyFilterToClasificado = function ($query) use ($general, $categoriaIds) {
+            if (! $general) {
                 $query->whereHas('tipo_mensaje.tipos.categoria', function ($q) use ($categoriaIds) {
                     $q->whereIn('categorias.id', $categoriaIds);
                 });
             }
+
             return $query;
         };
 
         $applyFilterToMensaje = function ($query) use ($general, $categoriaIds) {
-            if (!$general) {
+            if (! $general) {
                 $query->whereHas('mensaje_clasificado.tipo_mensaje.tipos.categoria', function ($q) use ($categoriaIds) {
                     $q->whereIn('categorias.id', $categoriaIds);
                 });
             }
+
             return $query;
         };
 
@@ -42,7 +44,6 @@ class DashboardController extends Controller
         $mensajes = $applyFilterToClasificado($mensajesQuery)
             ->latest('mensajes_clasificados.created_at')
             ->get();
-
 
         $yesterday = now()->subDay()->toDateString();
         $dayBefore = now()->subDays(2)->toDateString();
@@ -63,7 +64,6 @@ class DashboardController extends Controller
         $pendientesAyer = (clone $pendientesQuery)->whereDate('created_at', $yesterday)->count();
         $pendientesAnteayer = (clone $pendientesQuery)->whereDate('created_at', $dayBefore)->count();
 
-        
         $sinAsignarQuery = $applyFilterToMensaje(
             Mensaje::whereDoesntHave('admin_mensajes')
         );
@@ -121,10 +121,9 @@ class DashboardController extends Controller
 
         $resumenRapido = [
             'tiempoRespuesta' => $avgMinutes ? round($avgMinutes) : null,
-            'sinAsignar' => $sinAsignar, 
+            'sinAsignar' => $sinAsignar,
             'actividadHoy' => $actividadHoy,
         ];
-
 
         return Inertia::render('Dashboard', compact('stats', 'mensajes', 'mensajesPorCanal', 'mensajesPorDia', 'resumenRapido', 'categorias', 'general'));
     }

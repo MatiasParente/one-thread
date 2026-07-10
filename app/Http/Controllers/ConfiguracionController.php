@@ -12,7 +12,7 @@ class ConfiguracionController extends Controller
     {
         return Inertia::render('Configuracion/Index', [
             'totalCategorias' => Categoria::query()->count(),
-'totalTipos' => Tipo::query()->count(),
+            'totalTipos' => Tipo::query()->count(),
         ]);
     }
 }
