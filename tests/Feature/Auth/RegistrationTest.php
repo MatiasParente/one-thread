@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Categoria;
+
 test('registration screen can be rendered', function () {
     $response = $this->get('/register');
 
@@ -7,7 +9,7 @@ test('registration screen can be rendered', function () {
 });
 
 test('new users can register', function () {
-    \App\Models\Categoria::create(['id' => 1, 'nombre' => 'Test']);
+    Categoria::create(['id' => 1, 'nombre' => 'Test']);
 
     $response = $this->post('/register', [
         'name' => 'Test User',

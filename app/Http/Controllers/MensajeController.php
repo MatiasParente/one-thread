@@ -10,7 +10,6 @@ use App\Models\Mensajero;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class MensajeController extends Controller
@@ -25,17 +24,10 @@ class MensajeController extends Controller
         $categoriaIds = $categoriasAdmin->pluck('id')->toArray();
         $general = in_array(32, $categoriaIds);
 
-        // Optimizacion: Obtener el ultimo mensaje clasificado por mensajero
-        $latestMessages = DB::table('mensajes')
-            ->join('mensajes_clasificados', 'mensajes.id', '=', 'mensajes_clasificados.id_mensaje')
-            ->selectRaw('id_mensajero, MAX(mensajes.id) as last_msg_id')
-            ->groupBy('id_mensajero')
-            ->get();
-
-        $lastMsgIds = $latestMessages->pluck('last_msg_id')->toArray();
-
-        $classifieds = Mensaje::whereIn('id', $lastMsgIds)
-            ->with('mensaje_clasificado.tipo_mensaje.tipos.categoria')
+        // Obtener todos los mensajes clasificados activos en lugar de solo el último
+        // para asegurar que un mensajero aparezca en todas sus categorías correspondientes.
+        $classifieds = Mensaje_Clasificado::where('estado', '!=', 3)
+            ->with(['mensaje:id,id_mensajero', 'tipo_mensaje.tipos.categoria'])
             ->get();
 
         $mensajerosCategoria = [];
@@ -43,20 +35,34 @@ class MensajeController extends Controller
         $allMensajeros = Mensajero::pluck('id')->toArray();
         $mensajerosConClasificados = [];
 
-        foreach ($classifieds as $msg) {
-            $mId = $msg->id_mensajero;
+        foreach ($classifieds as $msgClas) {
+            if (! $msgClas->mensaje) {
+                continue;
+            }
+
+            $mId = $msgClas->mensaje->id_mensajero;
             $mensajerosConClasificados[] = $mId;
-            $cats = collect();
-            if ($msg->mensaje_clasificado && $msg->mensaje_clasificado->tipo_mensaje) {
-                foreach ($msg->mensaje_clasificado->tipo_mensaje as $tm) {
+
+            if (! isset($mensajerosCategoria[$mId])) {
+                $mensajerosCategoria[$mId] = collect();
+            }
+
+            if ($msgClas->tipo_mensaje) {
+                foreach ($msgClas->tipo_mensaje as $tm) {
                     if ($tm->tipos && $tm->tipos->categoria) {
-                        $cats->push($tm->tipos->categoria);
+                        $mensajerosCategoria[$mId]->push($tm->tipos->categoria);
                     }
                 }
             }
-            $mensajerosCategoria[$mId] = $cats;
+        }
 
-            $catIds = $cats->pluck('id')->toArray();
+        $mensajerosConClasificados = array_unique($mensajerosConClasificados);
+
+        foreach ($mensajerosCategoria as $mId => $cats) {
+            $catsUnique = $cats->unique('id')->values();
+            $mensajerosCategoria[$mId] = $catsUnique;
+
+            $catIds = $catsUnique->pluck('id')->toArray();
             $intersect = array_intersect($catIds, $categoriaIds);
             if ($general || ! empty($intersect)) {
                 $mensajerosPermitidos[] = $mId;
