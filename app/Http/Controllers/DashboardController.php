@@ -16,9 +16,15 @@ class DashboardController extends Controller
         $user->load('admin.categorias.tipos');
 
         $categorias = $user->admin?->categorias;
-        $categoriaIds = $categorias->pluck('id')->toArray();
+        $categoriaIds = $categorias ? $categorias->pluck('id')->toArray() : [];
 
         $general = in_array(32, $categoriaIds);
+
+        if (! $general) {
+            $categorias = \App\Models\Categoria::with('tipos')->whereIn('id', $categoriaIds)->orderBy('nombre')->get();
+        } else {
+            $categorias = \App\Models\Categoria::with('tipos')->orderBy('nombre')->get();
+        }
 
         $applyFilterToClasificado = function ($query) use ($general, $categoriaIds) {
             if (! $general) {
