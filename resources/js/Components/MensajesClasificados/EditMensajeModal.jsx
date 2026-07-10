@@ -116,25 +116,23 @@ export default function EditMensajeModal({ mensaje, isOpen, onClose, onUpdate, c
                         <div className="border-t border-gray-200 pt-4 mt-2">
                             <label className="block text-sm font-bold text-gray-900 mb-3">Categorías y Tipos</label>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-48 overflow-y-auto pr-2">
-                                {categorias.map(categoria => (
+                                {categorias
+                                    .filter(categoria => categoria.tipos && categoria.tipos.length > 0)
+                                    .map(categoria => (
                                     <div key={categoria.id} className="rounded-md border border-gray-200 p-3 bg-gray-50">
                                         <h4 className="font-semibold text-gray-800 mb-2 border-b border-gray-200 pb-1 text-sm">{categoria.nombre}</h4>
                                         <div className="space-y-2">
-                                            {categoria.tipos && categoria.tipos.length > 0 ? (
-                                                categoria.tipos.map(tipo => (
-                                                    <label key={tipo.id} className="flex items-center space-x-2">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={data.tipos_ids.includes(tipo.id)}
-                                                            onChange={() => handleTipoChange(tipo.id)}
-                                                            className="rounded border-gray-300 text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
-                                                        />
-                                                        <span className="text-xs text-gray-700">{tipo.nombre}</span>
-                                                    </label>
-                                                ))
-                                            ) : (
-                                                <span className="text-xs text-gray-400 italic">No hay tipos</span>
-                                            )}
+                                            {categoria.tipos.map(tipo => (
+                                                <label key={tipo.id} className="flex items-center space-x-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={data.tipos_ids.includes(tipo.id)}
+                                                        onChange={() => handleTipoChange(tipo.id)}
+                                                        className="rounded border-gray-300 text-primary shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                                                    />
+                                                    <span className="text-xs text-gray-700">{tipo.nombre}</span>
+                                                </label>
+                                            ))}
                                         </div>
                                     </div>
                                 ))}
