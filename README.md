@@ -1,87 +1,135 @@
-# One Thread
+<div align="center">
+  <img src="https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/n8n-FF6E57?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n" />
+  <img src="https://img.shields.io/badge/Gemini-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Google Gemini" />
+  <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
+  <img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Gmail" />
+</div>
+
+<h1 align="center">One Thread</h1>
 
 <p align="center">
-  <strong>Plataforma que centraliza los canales de comunicación de PyMEs (Telegram y Email) en una única interfaz.</strong><br>
-  Los mensajes recibidos son clasificados automáticamente con IA (Gemini), asignados al agente correspondiente, y priorizados para optimizar tiempos de respuesta y reducir costos operativos.
+  <strong>Plataforma SaaS para la centralización y clasificación inteligente de canales de comunicación para PyMEs.</strong>
 </p>
 
+## Sobre el Proyecto
+
+**One Thread** es una solución desarrollada como proyecto final para la unidad curricular **PHP como taller**, perteneciente a la carrera **Tecnólogo en Informática** de la **UTEC (Universidad Tecnológica), sede Paysandú**.
+
+Este sistema nace con el objetivo de proveer a las PyMEs una herramienta centralizada, simple y accesible para gestionar la atención al cliente de forma omnicanal. Mediante la automatización de flujos y el uso de Inteligencia Artificial, One Thread optimiza los tiempos de respuesta y reduce significativamente la carga operativa de los equipos de soporte.
+
+### Equipo de Desarrollo
+
+- **Jhon Guimaraens**
+- **Carlos Cardozo**
+- **Pilar Perez**
+- **Matías Parente**
+
 ---
 
-## Objetivo
+## Características Principales
 
-Proveer a PyMEs una herramienta simple y accesible para gestionar la atención al cliente multicanal, con clasificación inteligente de mensajes y asignación automática a agentes. Ahorrando tiempo, esfuerzo y dinero.
-
-## Stack Tecnológico
-
-- **Backend:** Laravel 13 + PHP 8.3+
-- **Frontend:** React 18 + Inertia.js v2 + Tailwind CSS 3 + Vite 8
-- **Autenticación:** Laravel Breeze (React) + Sanctum
-- **Base de Datos:** SQLite (desarrollo/testing) / MySQL o MariaDB (producción)
-- **IA:** Google Gemini (Capa gratuita)
+- **Centralización Multicanal:** Integración fluida de canales de mensajería como **Telegram** y correo electrónico (**Gmail**) en una única interfaz web.
+- **Clasificación con IA:** Análisis y etiquetado automático del contenido, prioridad y sentimiento de los mensajes entrantes utilizando la inteligencia artificial de **Google Gemini**.
+- **Flujos Automatizados:** Recepción, procesamiento y orquestación de mensajes impulsados a través de **n8n**.
+- **Gestión de Agentes:** Asignación automática o manual de tickets a los agentes correspondientes, manteniendo un historial consolidado por cliente.
+- **Interfaz Moderna:** Aplicación de página única (SPA) desarrollada con **React** y estilizada con **Tailwind CSS**, garantizando una experiencia de usuario rápida e intuitiva.
 
 ---
 
-## Instalación Local
+## Tecnologías y Herramientas
 
-Sigue estos pasos para levantar el proyecto en tu entorno local.
+### Backend y Arquitectura Core
+- **[Laravel 11+](https://laravel.com/):** Framework principal del backend (PHP 8.3+).
+- **[SQLite / MySQL](https://www.mysql.com/):** Base de datos relacional (SQLite para desarrollo/testing, MySQL/MariaDB para producción).
+- **[Laravel Breeze & Sanctum](https://laravel.com/docs/breeze):** Sistema de autenticación robusto y seguro.
+
+### Frontend
+- **[React 18](https://reactjs.org/):** Biblioteca para la construcción de interfaces de usuario.
+- **[Inertia.js v2](https://inertiajs.com/):** Enlace entre Laravel y React sin necesidad de construir una API REST clásica.
+- **[Tailwind CSS 3](https://tailwindcss.com/):** Framework de utilidades CSS para un diseño ágil y moderno.
+- **[Vite 8](https://vitejs.dev/):** Entorno de desarrollo ultrarrápido y empaquetador de módulos.
+
+### Integraciones y Automatización
+- **[n8n](https://n8n.io/):** Herramienta de automatización de flujos de trabajo (orquestación de bots).
+- **[Bots de Telegram & Gmail API](https://core.telegram.org/bots):** Fuentes de entrada de mensajes.
+- **[Google Gemini](https://deepmind.google/technologies/gemini/):** Motor de IA para el análisis semántico y clasificación de la información.
+
+---
+
+## Instalación y Configuración Local
+
+Siga estos pasos para desplegar el entorno de desarrollo en su máquina local:
 
 ### 1. Requisitos Previos
 
-Asegúrate de tener instalado en tu sistema:
-- [PHP](https://www.php.net/downloads) 8.3 o superior
-- [Composer](https://getcomposer.org/)
-- [Node.js](https://nodejs.org/) (v18 o superior)
-- [Git](https://git-scm.com/)
+Asegúrese de contar con el siguiente software instalado:
+- **PHP** (v8.3 o superior)
+- **Composer**
+- **Node.js** (v18 o superior) y **npm**
+- **Git**
 
 ### 2. Clonar el Repositorio
 
 ```bash
-git clone https://github.com/MatiasParente/one-thread
+git clone https://github.com/MatiasParente/one-thread.git
 cd one-thread
 ```
 
 ### 3. Configuración Inicial
 
-Para instalar las dependencias (PHP y Node), generar el archivo `.env` inicial, crear la key de la aplicación y correr las migraciones automáticamente, simplemente ejecuta:
+Para instalar las dependencias (PHP y Node), generar el archivo `.env` inicial, crear la clave de la aplicación y correr las migraciones automáticamente, ejecute el comando personalizado incluido en el proyecto:
 
 ```bash
 composer setup
 ```
 
+### 4. Variables de Entorno
 
-### 4. Configurar Variables de Entorno
-
-Abre el archivo `.env` en la raíz del proyecto y asegúrate de configurar tu conexión a la base de datos y el secreto para los webhooks de n8n:
+Abra el archivo `.env` en la raíz del proyecto y configure los parámetros de su base de datos, así como el secreto para los webhooks provenientes de n8n:
 
 ```env
-# Configuración de Base de Datos
+# Configuración de Base de Datos (Por defecto SQLite)
 DB_CONNECTION=sqlite
-# O si usas MySQL:
+
+# En caso de utilizar MySQL:
 # DB_CONNECTION=mysql
 # DB_DATABASE=one_thread
 # DB_USERNAME=root
-# DB_PASSWORD=
+# DB_PASSWORD=tu_contraseña
 
-# Webhook
+# Seguridad del Webhook
 N8N_WEBHOOK_SECRET=tu_secreto_aqui
 ```
 
-### 5. Levantar el Servidor de Desarrollo
+### 5. Levantar el Entorno de Desarrollo
 
-Para iniciar el entorno localmente, abre dos terminales separadas en la carpeta del proyecto y ejecuta:
+El proyecto requiere ejecutar los servidores de backend y frontend en simultáneo. Puede utilizar nuestro comando integrado o ejecutar ambos procesos en terminales separadas:
 
-**Terminal 1 (Backend de Laravel):**
+**Opción A: Todo en uno**
+```bash
+composer dev
+```
+*(Requiere que el entorno soporte ejecución concurrente de procesos)*
+
+**Opción B: Terminales separadas**
+
+Terminal 1 (Servidor de Laravel):
 ```bash
 php artisan serve
 ```
 
-**Terminal 2 (Frontend de Vite):**
+Terminal 2 (Servidor de Vite):
 ```bash
 npm run dev
 ```
 
-La aplicación estará disponible en [http://localhost:8000](http://localhost:8000).
+La plataforma estará disponible en: [http://localhost:8000](http://localhost:8000).
 
 ---
 
-**Con esto el proyecto quedaria operativo en su entorno local**
+<p align="center">
+  Desarrollado para la materia <strong>PHP como taller</strong> - UTEC Paysandú, Uruguay
+</p>
