@@ -16,7 +16,7 @@
 
 ## Sobre el Proyecto
 
-**One Thread** es una solución desarrollada como proyecto final para la unidad curricular **PHP como taller**, perteneciente a la carrera **Tecnólogo en Informática** de la **UTEC (Universidad Tecnológica), sede Paysandú**.
+**One Thread** es una solución desarrollada como proyecto final para la unidad curricular **PHP**, perteneciente a la carrera **Tecnólogo en Informática** de la **UTEC (Universidad Tecnológica), sede Paysandú**.
 
 Este sistema nace con el objetivo de proveer a las PyMEs una herramienta centralizada, simple y accesible para gestionar la atención al cliente de forma omnicanal. Mediante la automatización de flujos y el uso de Inteligencia Artificial, One Thread optimiza los tiempos de respuesta y reduce significativamente la carga operativa de los equipos de soporte.
 
@@ -131,5 +131,5 @@ La plataforma estará disponible en: [http://localhost:8000](http://localhost:80
 ---
 
 <p align="center">
-  Desarrollado para la materia <strong>PHP como taller</strong> - UTEC Paysandú, Uruguay
+  Desarrollado para la materia <strong>PHP</strong> - UTEC Paysandú, Uruguay
 </p>
